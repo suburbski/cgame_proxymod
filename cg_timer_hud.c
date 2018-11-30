@@ -14,8 +14,11 @@
 #define NADE_EXPLODE_TIME 2500
 
 typedef struct {
+	/** the entity number of the nade being tracked, -1 if not tracking */
 	int id;
+	/** predicted time of when the nade will explode */
 	int explode_time;
+	/** flag for whether this nade was seen in current snapshot */
 	int seen;
 } nade_info_t;
 
@@ -31,42 +34,31 @@ static vmCvar_t timer_item_rgba;
 static vmCvar_t timer_gb_rgba;
 static vmCvar_t timer_outline_rgba;
 
+static cvarTable_t timer_cvars[] = {
+	{&timer_draw, "mdd_hud_timer_draw", "0", CVAR_ARCHIVE},
+	{&timer_x, "mdd_hud_timer_x", "275", CVAR_ARCHIVE},
+	{&timer_y, "mdd_hud_timer_y", "275", CVAR_ARCHIVE},
+	{&timer_w, "mdd_hud_timer_w", "100", CVAR_ARCHIVE},
+	{&timer_h, "mdd_hud_timer_h", "16", CVAR_ARCHIVE},
+	{&timer_item_w, "mdd_hud_timer_item_w", "5", CVAR_ARCHIVE},
+	{&timer_item_rgba, "mdd_hud_timer_item_rgba", "1 1 0 1", CVAR_ARCHIVE},
+	{&timer_gb_rgba, "mdd_hud_timer_gb_rgba", "1 0 0 1", CVAR_ARCHIVE},
+	{&timer_outline_rgba, "mdd_hud_timer_outline_rgba", "1 1 1 1", CVAR_ARCHIVE}
+};
+
+// forward declarations for helpers
 static int find_nade(int nade_id);
 static int track_nade(int nade_id, int time);
 static void draw_outline(vec4_t color);
 static void draw_item(float progress, vec4_t color);
-
-static void init_timer_cvars(void) {
-	// what are arrays?
-	g_syscall(CG_CVAR_REGISTER, &timer_draw, "mdd_hud_timer_draw", "0", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_x, "mdd_hud_timer_x", "275", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_y, "mdd_hud_timer_y", "275", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_w, "mdd_hud_timer_w", "100", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_h, "mdd_hud_timer_h", "16", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_item_w, "mdd_hud_timer_item_w", "5", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_item_rgba, "mdd_hud_timer_item_rgba", "1 1 0 1", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_gb_rgba, "mdd_hud_timer_gb_rgba", "1 0 0 1", CVAR_ARCHIVE);
-	g_syscall(CG_CVAR_REGISTER, &timer_outline_rgba, "mdd_hud_timer_outline_rgba", "1 1 1 1", CVAR_ARCHIVE);
-}
+static void init_timer_cvars(void);
+static void update_timer_cvars(void);
 
 void timer_hud_init(void) {
 	init_timer_cvars();
 
 	for (int i = 0; i < MAX_NADES; i++)
 		nades[i].id = -1;
-}
-
-static void update_timer_cvars(void) {
-	// what are arrays?
-	g_syscall(CG_CVAR_UPDATE, &timer_draw);
-	g_syscall(CG_CVAR_UPDATE, &timer_x);
-	g_syscall(CG_CVAR_UPDATE, &timer_y);
-	g_syscall(CG_CVAR_UPDATE, &timer_w);
-	g_syscall(CG_CVAR_UPDATE, &timer_h);
-	g_syscall(CG_CVAR_UPDATE, &timer_item_w);
-	g_syscall(CG_CVAR_UPDATE, &timer_item_rgba);
-	g_syscall(CG_CVAR_UPDATE, &timer_gb_rgba);
-	g_syscall(CG_CVAR_UPDATE, &timer_outline_rgba);
 }
 
 void timer_hud_draw(void) {
@@ -100,7 +92,7 @@ void timer_hud_draw(void) {
 	ps = getPs();
 
 	// gb stuff
-	// todo: use pps if available
+	// todo: make gb timer off-able and use pps if available and cvar
 	if (ps->pm_flags & PMF_TIME_KNOCKBACK
 		&& ps->groundEntityNum != ENTITYNUM_NONE
 		&& !(ps->pm_flags & PMF_RESPAWNED))
@@ -109,7 +101,8 @@ void timer_hud_draw(void) {
 		draw_item(gb_progress, gb_color);
 	}
 
-	// cull exploded nades, and set valid nades to not seen yet
+	// cull exploded nades to make space
+	// and set valid nades to not seen in snapshot yet
 	for (int i = 0; i < MAX_NADES; i++) {
 		if (nades[i].id == -1)
 			continue;
@@ -120,7 +113,7 @@ void timer_hud_draw(void) {
 			nades[i].seen = 0;
 	}
 
-	// traverse ent list to update nade tracking
+	// traverse ent list to update nade infos
 	for (int i = 0; i < snap->numEntities; i++) {
 		entityState_t entity = snap->entities[i];
 		if (entity.eType == ET_MISSILE
@@ -128,14 +121,14 @@ void timer_hud_draw(void) {
 			&& entity.clientNum == ps->clientNum)
 		{
 			int nade_index = find_nade(entity.number);
-			if (nade_index == -1)
+			if (nade_index == -1) // new nade
 				track_nade(entity.number, snap->serverTime);
 			else
 				nades[nade_index].seen = 1;
 		}
 	}
 
-	// cull unseen nades and draw the rest
+	// cull nades not in snapshot (prolly prematurely detonated) and draw the rest
 	for (int i = 0; i < MAX_NADES; i++) {
 		if (nades[i].id == -1)
 			continue;
@@ -196,4 +189,15 @@ static void draw_item(float progress, vec4_t color) {
 
 	g_syscall( CG_R_SETCOLOR, color );
 	CG_DrawAdjPic(x + (w - i_w) * progress, y, i_w, h, cgs.media.gfxWhiteShader);
+}
+
+static void init_timer_cvars(void) {
+	for(int i = 0; i < ARRAY_LEN(timer_cvars); i++)
+		g_syscall(CG_CVAR_REGISTER, timer_cvars[i].vmCvar, timer_cvars[i].cvarName,
+			timer_cvars[i].defaultString, timer_cvars[i].cvarFlags);
+}
+
+static void update_timer_cvars(void) {
+	for(int i = 0; i < ARRAY_LEN(timer_cvars); i++)
+		g_syscall(CG_CVAR_UPDATE, timer_cvars[i].vmCvar);
 }
