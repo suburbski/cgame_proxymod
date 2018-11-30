@@ -24,7 +24,8 @@
 #include "cg_cvar.h"
 #include "cg_utils.h"
 
-
+extern void timer_hud_init(void);
+extern void timer_hud_draw(void);
 
 static hud_t hud;
 static hud_ammo_t ammo;
@@ -35,6 +36,7 @@ void hud_setup( void ) {
 	hud_baseSetup( &hud );
 	hud_ammoSetup( &ammo );
 	hud_jumpDelaySetup( &jump );
+	timer_hud_init();
 }
 
 
@@ -42,8 +44,9 @@ void hud_setup( void ) {
 void hud_update( void ) {
 	// TODO: instead of just calling setup
 	// TODO: we check which structs require an update
-	hud_setup( );
-	//hud_jumpDelaySetup( &jump );
+	hud_baseSetup( &hud );
+	hud_ammoSetup( &ammo );
+	hud_jumpDelaySetup( &jump );
 }
 
 
@@ -80,6 +83,8 @@ void hud_draw( void ) {
 		hud_jumpDelayControl( &jump );
 		hud_jumpDelayDraw( &jump );
 	}
+
+	timer_hud_draw();
 
 	// make sure the last color doesn't leak into defrag's UI
 	g_syscall( CG_R_SETCOLOR, colorWhite );
