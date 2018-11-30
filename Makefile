@@ -2,7 +2,7 @@
 # -- build options
 # -------------------------------------------------------------------------------------------------------------
 
-BINARY = cgamei386
+BINARY = cgamex86
 
 SRC_FILES = $(shell ls *.c)
 HDR_FILES = $(shell ls *.h)
@@ -39,15 +39,15 @@ endif
 
 
 SHLIBCFLAGS=-fPIC -std=c99
-SHLIBLDFLAGS=-Wl,--no-undefined -shared -Wl
+SHLIBLDFLAGS=-Wl,--no-undefined -shared
 EXTLIBS = -lm
 
 # -------------------------------------------------------------------------------------------------------------
 # -- build rules
 # -------------------------------------------------------------------------------------------------------------
 
-release: banner $(BR)/$(BINARY).so
-debug: banner $(BD)/$(BINARY).so
+release: banner $(BR)/$(BINARY).dll
+debug: banner $(BD)/$(BINARY).dll
 all: banner release
 
 
@@ -72,12 +72,12 @@ clean:
 # -- release build
 # -------------------------------------------------------------------------------------------------------------
 
-$(BR)/$(BINARY).so: $(BR) $(OBJR_Q3A)
+$(BR)/$(BINARY).dll: $(BR) $(OBJR_Q3A)
 	@printf "\n"
-	@printf "\033\13301;32m->\033\13301;37m linking to $(BR)$(B_Q3A)/$(BINARY).so\n\033\13300;39m"
+	@printf "\033\13301;32m->\033\13301;37m linking to $(BR)$(B_Q3A)/$(BINARY).dll\n\033\13300;39m"
 	@$(CC) $(RELEASE_CFLAGS) $(SHLIBLDFLAGS) -o $@ $(OBJR_Q3A)
-	@printf "\033\13301;32m->\033\13301;37m stripping $(BR)$(B_Q3A)/$(BINARY).so\n\033\13300;39m"
-	strip $(BR)/$(BINARY).so
+	@printf "\033\13301;32m->\033\13301;37m stripping $(BR)$(B_Q3A)/$(BINARY).dll\n\033\13300;39m"
+	strip $(BR)/$(BINARY).dll
 
 $(BR)/%.o: %.c $(HDR_FILES)
 	@printf "R \033\13301;33m-\033\13301;37m %-20s %s\033\13300;39m\n" $< $@
@@ -93,9 +93,9 @@ $(BR):
 # -- debug build
 # -------------------------------------------------------------------------------------------------------------
 
-$(BD)/$(BINARY).so: $(BD) $(OBJD_Q3A)
+$(BD)/$(BINARY).dll: $(BD) $(OBJD_Q3A)
 	@printf "\n"
-	@printf "\033\13301;32m->\033\13301;37m linking to $(BD)/$(BINARY).so\n\033\13300;39m"
+	@printf "\033\13301;32m->\033\13301;37m linking to $(BD)/$(BINARY).dll\n\033\13300;39m"
 	@$(CC) $(DEBUG_CFLAGS) $(SHLIBLDFLAGS) -o $@ $(EXTLIBS) $(OBJD_Q3A)
 
 
