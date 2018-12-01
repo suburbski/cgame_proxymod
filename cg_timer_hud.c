@@ -3,12 +3,15 @@
 #include "cg_draw.h"
 #include "cg_cvar.h"
 #include "cg_utils.h"
+#include "q_math.h"
+#include "surfaceflags.h"
 
 #define	PMF_TIME_KNOCKBACK	64
 #define	PMF_RESPAWNED		512
 
 #define ET_MISSILE 3
 #define MAX_GB_TIME 250
+#define MAX_RL_TIME 15000
 
 #define MAX_NADES 10
 #define NADE_EXPLODE_TIME 2500
@@ -125,6 +128,26 @@ void timer_hud_draw(void) {
 				track_nade(entity.number, snap->serverTime);
 			else
 				nades[nade_index].seen = 1;
+		}
+		else if (entity.eType == ET_MISSILE
+					&& entity.weapon == WP_ROCKET_LAUNCHER
+					&& entity.clientNum == ps->clientNum)
+		{
+			trace_t t;
+			vec3_t origin;
+			vec3_t dest;
+			float elapsed_time = (cgs.time - entity.pos.trTime)*0.001;
+
+			VectorMA(entity.pos.trBase, elapsed_time,
+				entity.pos.trDelta, origin);
+			VectorMA(entity.pos.trBase, MAX_RL_TIME*0.001, entity.pos.trDelta,
+				dest);
+
+			// a rocket dest should never change (ignoring movers)
+			// trace doesn't need to be recomputed each time
+			g_syscall(CG_CM_BOXTRACE, &t, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
+			float total_time = Distance(entity.pos.trBase, t.endpos) / VectorLength(entity.pos.trDelta);
+			draw_item(elapsed_time / total_time, item_color);
 		}
 	}
 
