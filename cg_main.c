@@ -24,7 +24,7 @@
 #include "cg_draw.h"
 
 cgs_t cgs;
-
+extern void trigger_vis_init(void);
 
 /* CLIENT to VM */
 __DLLEXPORT__ int32_t vmMain( int32_t cmd, int32_t arg0, int32_t arg1, int32_t arg2, int32_t arg3, int32_t arg4, int32_t arg5, int32_t arg6, int32_t arg7, int32_t arg8, int32_t arg9, int32_t arg10, int32_t arg11 ) {
@@ -77,6 +77,7 @@ __DLLEXPORT__ int32_t vmMain( int32_t cmd, int32_t arg0, int32_t arg1, int32_t a
 	/* POST CALL */
 	switch(cmd) {
 		case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
+			trigger_vis_init();
 		break;
 
 		case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
