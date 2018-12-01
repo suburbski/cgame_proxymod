@@ -68,7 +68,6 @@ void rl_trace_render(void) {
 			VectorMA(entity.pos.trBase, MAX_RL_TIME*0.001, entity.pos.trDelta,
 				dest);
 			g_syscall(CG_CM_BOXTRACE, &beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
-			VectorCopy(beam_trace.endpos, dest);
 			if(line_draw.integer) {
 				vec4_t color;
 				sscanf(line_rgba.string, "%f %f %f %f", &color[0],
@@ -76,7 +75,7 @@ void rl_trace_render(void) {
 
 				memset( &beam, 0, sizeof( beam ) );
 				VectorCopy(origin, beam.oldorigin);
-				VectorCopy(dest, beam.origin);
+				VectorCopy(beam_trace.endpos, beam.origin);
 				beam.reType = RT_RAIL_CORE;
 				beam.customShader = line_shader;
 				AxisClear( beam.axis );
@@ -88,7 +87,7 @@ void rl_trace_render(void) {
 			}
 			if(mark_draw.integer) {
 				qhandle_t m_shader = g_syscall(CG_R_REGISTERSHADER, mark_shader.string);
-				add_mark(m_shader, dest, beam_trace.plane.normal, 0, 1, 1, 1, 1,
+				add_mark(m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1,
 					qfalse, mark_size.integer);
 			}
 		}
