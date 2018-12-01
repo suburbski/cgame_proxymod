@@ -504,7 +504,7 @@ typedef struct usercmd_s {
 	int32_t				serverTime;
 	int32_t				angles[3];
 	int32_t 			buttons;
-	byte			weapon;           // weapon 
+	byte			weapon;           // weapon
 	signed char	forwardmove, rightmove, upmove;
 } usercmd_t;
 
@@ -550,9 +550,12 @@ typedef enum {
 #define	MAX_STATS				16
 #define	MAX_PERSISTANT			16
 #define	MAX_POWERUPS			16
-#define	MAX_WEAPONS				16		
+#define	MAX_WEAPONS				16
 
 #define	MAX_PS_EVENTS			2
+#define	PITCH				0		// up / down
+#define	YAW					1		// left / right
+#define	ROLL				2		// fall over
 
 typedef struct playerState_s {
 	int32_t			commandTime;	// cmd->serverTime of last executed command
@@ -717,7 +720,40 @@ typedef struct {
 } snapshot_t;
 
 
+// trace stuff
+typedef struct cplane_s {
+	vec3_t	normal;
+	float	dist;
+	byte	type;			// for fast side tests: 0,1,2 = axial, 3 = nonaxial
+	byte	signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
+	byte	pad[2];
+} cplane_t;
 
+
+// a trace is returned when a box is swept through the world
+typedef struct {
+	qboolean	allsolid;	// if true, plane is not valid
+	qboolean	startsolid;	// if true, the initial point was in a solid area
+	float		fraction;	// time completed, 1.0 = didn't hit anything
+	vec3_t		endpos;		// final position
+	cplane_t	plane;		// surface normal at impact, transformed to world space
+	int			surfaceFlags;	// surface hit
+	int			contents;	// contents on other side of surface hit
+	int			entityNum;	// entity the contacted sirface is a part of
+} trace_t;
+
+
+// vector stuff
+#define DotProduct(x,y)			((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
+#define VectorSubtract(a,b,c)	((c)[0]=(a)[0]-(b)[0],(c)[1]=(a)[1]-(b)[1],(c)[2]=(a)[2]-(b)[2])
+#define VectorAdd(a,b,c)		((c)[0]=(a)[0]+(b)[0],(c)[1]=(a)[1]+(b)[1],(c)[2]=(a)[2]+(b)[2])
+#define VectorCopy(a,b)			((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2])
+#define	VectorScale(v, s, o)	((o)[0]=(v)[0]*(s),(o)[1]=(v)[1]*(s),(o)[2]=(v)[2]*(s))
+#define	VectorMA(v, s, b, o)	((o)[0]=(v)[0]+(b)[0]*(s),(o)[1]=(v)[1]+(b)[1]*(s),(o)[2]=(v)[2]+(b)[2]*(s))
+#define VectorClear(a)			((a)[0]=(a)[1]=(a)[2]=0)
+#define VectorNegate(a,b)		((b)[0]=-(a)[0],(b)[1]=-(a)[1],(b)[2]=-(a)[2])
+#define VectorSet(v, x, y, z)	((v)[0]=(x), (v)[1]=(y), (v)[2]=(z))
+#define Vector4Copy(a,b)		((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
 
 
 extern vec4_t	g_color_table[10];

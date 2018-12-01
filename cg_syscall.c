@@ -32,6 +32,8 @@
 
 #define _ptr(x)   (add(x)) // ???
 
+void rl_trace_render(void);
+
 int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 
 	switch( cmd ) {
@@ -99,7 +101,7 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 		g_syscall( cmd, ptr(0) );
 		return 0;
 
-	case CG_REMOVECOMMAND: 
+	case CG_REMOVECOMMAND:
 		g_syscall( cmd, ptr(0) );
 		return 0;
 	case CG_SENDCLIENTCOMMAND:
@@ -201,6 +203,8 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 		g_syscall( cmd, ptr(0), arg(1), arg(2), arg(3), arg(4) );
 		return 0;
 	case CG_R_RENDERSCENE:
+		// no salvation for me
+		rl_trace_render();
 		g_syscall( cmd, ptr(0) );
 		return 0;
 	case CG_R_SETCOLOR:
