@@ -30,6 +30,7 @@ void trigger_vis_init(void) {
 	init_trigger_cvars();
 	bboxShader = g_syscall(CG_R_REGISTERSHADER, "bbox");
     bboxShader_nocull = g_syscall(CG_R_REGISTERSHADER, "bbox_nocull");
+    memset(trigger, 0, sizeof(trigger));
     parse_triggers();
 }
 
@@ -40,12 +41,12 @@ void trigger_vis_render(void) {
 		return;
 
 	int num_models = g_syscall(CG_CM_NUMINLINEMODELS);
-	for(int i = 1; i <= num_models; i++) {
+	for(int i = 0; i < num_models; i++) {
 		if (trigger[i]) {
 			vec3_t mins;
 			vec3_t maxs;
 			vec4_t color = { 0, 128, 0, 255 };
-			g_syscall(CG_R_MODELBOUNDS, i, mins, maxs);
+			g_syscall(CG_R_MODELBOUNDS, i + 1, mins, maxs);
 			R_DrawBBox(vec3_origin, mins, maxs, color);
 		}
 	}
@@ -54,7 +55,6 @@ void trigger_vis_render(void) {
 // ripped from breadsticks
 static void parse_triggers(void) {
 	char token[MAX_TOKEN_CHARS];
-	memset(trigger, 0, sizeof(trigger));
     for( ;; ) {
     	qboolean is_trigger = qfalse;
         int model = -1;
@@ -83,8 +83,8 @@ static void parse_triggers(void) {
             }
         }
 
-        if ( is_trigger )
-            trigger[model + 1] = qtrue; // why +1? idk
+        if ( is_trigger && model > 0)
+            trigger[model] = qtrue; // why +1? idk
     }
 }
 
