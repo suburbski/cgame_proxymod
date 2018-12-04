@@ -34,6 +34,7 @@
 
 void rl_trace_render(void);
 void trigger_vis_render(void);
+int should_filter_sound(int entity_num, int is_loop);
 
 int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 
@@ -141,6 +142,8 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 	case CG_CM_MARKFRAGMENTS:
 		return g_syscall( cmd, arg(0), ptr(1), ptr(2), arg(3), ptr(4), arg(5), ptr(6) );
 	case CG_S_STARTSOUND:
+		if(should_filter_sound(arg(1), 0))
+			return 0;
 		g_syscall( cmd, ptr(0), arg(1), arg(2), arg(3) );
 		return 0;
 	case CG_S_STARTLOCALSOUND:
@@ -150,6 +153,8 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 		g_syscall( cmd, arg(0));
 		return 0;
 	case CG_S_ADDLOOPINGSOUND:
+		if(should_filter_sound(arg(0), 1))
+			return 0;
 		g_syscall( cmd, arg(0), ptr(1), ptr(2), arg(3) );
 		return 0;
 	case CG_S_ADDREALLOOPINGSOUND:

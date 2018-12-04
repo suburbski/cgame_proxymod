@@ -46,7 +46,7 @@ vmCvar_t mdd_hud_jumpDelay_textOffsetY;
 vmCvar_t mdd_hud_jumpDelay_textSize;
 vmCvar_t mdd_hud_jumpDelay_textColor;
 
-
+vmCvar_t mdd_local_sounds_only;
 
 static cvarTable_t cvarTable[] = {
 	{ &mdd_cgameproxy_version, "mdd_cgameproxy_version", VERSION, CVAR_USERINFO|CVAR_INIT },
@@ -67,7 +67,9 @@ static cvarTable_t cvarTable[] = {
 	{ &mdd_hud_jumpDelay_textOffsetX, "mdd_hud_jumpDelay_textOffsetX",  "320", CVAR_ARCHIVE },
 	{ &mdd_hud_jumpDelay_textOffsetY, "mdd_hud_jumpDelay_textOffsetY",  "220", CVAR_ARCHIVE },
 	{ &mdd_hud_jumpDelay_textSize,    "mdd_hud_jumpDelay_textSize",     "16",  CVAR_ARCHIVE },
-	{ &mdd_hud_jumpDelay_textColor,   "mdd_hud_jumpDelay_textColor",    "7",   CVAR_ARCHIVE }
+	{ &mdd_hud_jumpDelay_textColor,   "mdd_hud_jumpDelay_textColor",    "7",   CVAR_ARCHIVE },
+
+	{ &mdd_local_sounds_only,   "mdd_local_sounds_only",    "0",   CVAR_ARCHIVE }
 };
 
 
