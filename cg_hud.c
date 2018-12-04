@@ -27,7 +27,6 @@
 extern void timer_hud_init(void);
 extern void timer_hud_draw(void);
 extern void rl_trace_init(void);
-extern void rl_trace_draw(void);
 
 static hud_t hud;
 static hud_ammo_t ammo;
