@@ -48,13 +48,14 @@ void cg_init( int32_t cmd, int32_t clientNum ) {
 	init_gfx( clientNum );
 	init_hud( );
 	init_cvars( );
+	entityStates_init();
 }
 
 
 
 void init_gfx( int32_t clientNum ) {
 	cgs.clientNum = clientNum;
-	
+
 	g_syscall( CG_GETGLCONFIG, &cgs.glconfig ); // rendering configuration
 	cgs.screenXScale = cgs.glconfig.vidWidth  / 640.0;
 	cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;

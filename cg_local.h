@@ -756,6 +756,11 @@ typedef struct {
 #define Vector4Copy(a,b)		((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
 
 
+// entity stuff
+extern entityState_t cg_entityStates[1024];
+void entityStates_init(void);
+void entityStates_update(void);
+
 extern vec4_t	g_color_table[10];
 
 #define Q_COLOR_ESCAPE	'^'
