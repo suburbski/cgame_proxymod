@@ -7,8 +7,8 @@
 #include "surfaceflags.h"
 #include "q_math.h"
 
-#define	MAX_SUBMODELS			256
-#define	MAX_TOKEN_CHARS			1024
+#define MAX_SUBMODELS           256
+#define MAX_TOKEN_CHARS         1024
 
 qhandle_t bboxShader;
 qhandle_t bboxShader_nocull;
@@ -18,7 +18,7 @@ qboolean trigger[MAX_SUBMODELS];
 static vmCvar_t trigger_draw;
 
 static cvarTable_t trigger_cvars[] = {
-	{&trigger_draw, "mdd_triggers_draw", "0", CVAR_ARCHIVE}
+    {&trigger_draw, "mdd_triggers_draw", "0", CVAR_ARCHIVE}
 };
 
 static void parse_triggers(void);
@@ -27,36 +27,36 @@ static void init_trigger_cvars(void);
 static void update_trigger_cvars(void);
 
 void trigger_vis_init(void) {
-	init_trigger_cvars();
-	bboxShader = g_syscall(CG_R_REGISTERSHADER, "bbox");
+    init_trigger_cvars();
+    bboxShader = g_syscall(CG_R_REGISTERSHADER, "bbox");
     bboxShader_nocull = g_syscall(CG_R_REGISTERSHADER, "bbox_nocull");
     memset(trigger, 0, sizeof(trigger));
     parse_triggers();
 }
 
 void trigger_vis_render(void) {
-	update_trigger_cvars();
+    update_trigger_cvars();
 
-	if(!trigger_draw.integer)
-		return;
+    if(!trigger_draw.integer)
+        return;
 
-	int num_models = g_syscall(CG_CM_NUMINLINEMODELS);
-	for(int i = 0; i < num_models; i++) {
-		if (trigger[i]) {
-			vec3_t mins;
-			vec3_t maxs;
-			vec4_t color = { 0, 128, 0, 255 };
-			g_syscall(CG_R_MODELBOUNDS, i + 1, mins, maxs);
-			R_DrawBBox(vec3_origin, mins, maxs, color);
-		}
-	}
+    int num_models = g_syscall(CG_CM_NUMINLINEMODELS);
+    for(int i = 0; i < num_models; i++) {
+        if (trigger[i]) {
+            vec3_t mins;
+            vec3_t maxs;
+            vec4_t color = { 0, 128, 0, 255 };
+            g_syscall(CG_R_MODELBOUNDS, i + 1, mins, maxs);
+            R_DrawBBox(vec3_origin, mins, maxs, color);
+        }
+    }
 }
 
 // ripped from breadsticks
 static void parse_triggers(void) {
-	char token[MAX_TOKEN_CHARS];
+    char token[MAX_TOKEN_CHARS];
     for( ;; ) {
-    	qboolean is_trigger = qfalse;
+        qboolean is_trigger = qfalse;
         int model = -1;
 
         if (!g_syscall(CG_GET_ENTITY_TOKEN, token, sizeof(token)))
@@ -179,12 +179,12 @@ static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color) {
 }
 
 static void init_trigger_cvars(void) {
-	for(int i = 0; i < ARRAY_LEN(trigger_cvars); i++)
-		g_syscall(CG_CVAR_REGISTER, trigger_cvars[i].vmCvar, trigger_cvars[i].cvarName,
-			trigger_cvars[i].defaultString, trigger_cvars[i].cvarFlags);
+    for(int i = 0; i < ARRAY_LEN(trigger_cvars); i++)
+        g_syscall(CG_CVAR_REGISTER, trigger_cvars[i].vmCvar, trigger_cvars[i].cvarName,
+            trigger_cvars[i].defaultString, trigger_cvars[i].cvarFlags);
 }
 
 static void update_trigger_cvars(void) {
-	for(int i = 0; i < ARRAY_LEN(trigger_cvars); i++)
-		g_syscall(CG_CVAR_UPDATE, trigger_cvars[i].vmCvar);
+    for(int i = 0; i < ARRAY_LEN(trigger_cvars); i++)
+        g_syscall(CG_CVAR_UPDATE, trigger_cvars[i].vmCvar);
 }
