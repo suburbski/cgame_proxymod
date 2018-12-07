@@ -6,7 +6,6 @@
 #include "surfaceflags.h"
 #include "q_math.h"
 
-#define ET_MISSILE 3
 #define MAX_RL_TIME 15000
 
 #define MAX_MARK_FRAGMENTS  128

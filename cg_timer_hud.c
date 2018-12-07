@@ -5,27 +5,17 @@
 #include "cg_utils.h"
 #include "q_math.h"
 #include "surfaceflags.h"
+#include "nade_tracking.h"
 
 #define PMF_TIME_KNOCKBACK  64
 #define PMF_RESPAWNED       512
 
-#define ET_MISSILE 3
 #define MAX_GB_TIME 250
 #define MAX_RL_TIME 15000
 
-#define MAX_NADES 10
 #define NADE_EXPLODE_TIME 2500
 
-typedef struct {
-    /** the entity number of the nade being tracked, -1 if not tracking */
-    int id;
-    /** predicted time of when the nade will explode */
-    int explode_time;
-    /** flag for whether this nade was seen in current snapshot */
-    int seen;
-} nade_info_t;
-
-static nade_info_t nades[MAX_NADES];
+nade_info_t nades[MAX_NADES];
 
 static vmCvar_t timer_draw;
 static vmCvar_t timer_x;
