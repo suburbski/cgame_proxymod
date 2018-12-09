@@ -42,6 +42,9 @@ void draw_nade_path(trajectory_t *pos, int end_time, const unsigned char *color)
     int sample_timer = 0;
     vec3_t currentOrigin, origin;
 
+    if(pos->trType != TR_GRAVITY)
+        return;
+
     memset(&beam, 0, sizeof(beam));
 
     beam.reType = RT_RAIL_CORE;
