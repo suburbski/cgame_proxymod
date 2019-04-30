@@ -34,7 +34,6 @@
 
 void rl_trace_render(void);
 void gl_trace_render(void);
-void trigger_vis_render(void);
 int should_filter_sound(int entity_num, int is_loop);
 
 int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
@@ -214,7 +213,6 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 		rl_trace_render();
 		// me too
 		gl_trace_render();
-		trigger_vis_render();
 		g_syscall( cmd, ptr(0) );
 		return 0;
 	case CG_R_SETCOLOR:
