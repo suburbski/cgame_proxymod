@@ -18,12 +18,12 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_INIT_H__
-#define __CG_INIT_H__
+#ifndef CG_INIT_H
+#define CG_INIT_H
 
 
 
 void init_gfx( int32_t clientNum );
 void init_hud( void );
 
-#endif // __CG_INIT_H__
+#endif // CG_INIT_H

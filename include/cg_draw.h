@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_DRAW_H__
-#define __CG_DRAW_H__
+#ifndef CG_DRAW_H
+#define CG_DRAW_H
 
 
 
@@ -42,4 +42,4 @@ void    CG_DrawText( float x, float y, float sizePx, vec4_t color, uint8_t align
 int8_t  getColor( uint8_t color, float opacity, vec4_t c );
 
 
-#endif // __CG_DRAW_H__
+#endif // CG_DRAW_H

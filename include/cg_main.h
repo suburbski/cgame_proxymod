@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_MAIN_H__
-#define __CG_MAIN_H__
+#ifndef CG_MAIN_H
+#define CG_MAIN_H
 
 
 
@@ -71,4 +71,4 @@ int32_t cg_init( int32_t cmd, int32_t clientNum );
 
 
 
-#endif // __CG_MAIN_H__
+#endif // CG_MAIN_H

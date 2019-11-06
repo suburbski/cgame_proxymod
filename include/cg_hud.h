@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_HUD_H__
-#define __CG_HUD_H__
+#ifndef CG_HUD_H
+#define CG_HUD_H
 
 
 
@@ -112,4 +112,4 @@ int8_t hud_boxDraw( float x, float y, float w, float h );
 
 
 
-#endif // __CG_HUD_H__
+#endif // CG_HUD_H

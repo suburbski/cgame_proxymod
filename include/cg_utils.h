@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __UTILS_H__
-#define __UTILS_H__
+#ifndef CG_UTILS_H
+#define CG_UTILS_H
 
 
 
@@ -61,4 +61,4 @@ uint32_t getTime( void );
 
 
 
-#endif // __UTILS_H__
+#endif // CG_UTILS_H

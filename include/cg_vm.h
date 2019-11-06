@@ -20,8 +20,8 @@
 	Note: mdd client proxymod contains code from Kevin Masterson a.k.a. CyberMind <kevinm@planetquake.com>
 		of the QMM - Q3 MultiMod
 */
-#ifndef __VM_H__
-#define __VM_H__
+#ifndef CG_VM_H
+#define CG_VM_H
 
 
 
@@ -107,7 +107,7 @@ typedef enum {
 
 
 
-#endif //__VM_H__
+#endif // CG_VM_H
 typedef struct {
   int32_t   vmMagic;
   int32_t   instructionCount;

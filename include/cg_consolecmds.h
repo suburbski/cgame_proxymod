@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_CONSOLECMDS_H__
-#define __CG_CONSOLECMDS_H__
+#ifndef CG_CONSOLECMDS_H
+#define CG_CONSOLECMDS_H
 
 
 
@@ -27,4 +27,4 @@ qboolean *CG_ConsoleCommand( void );
 
 
 
-#endif //__CG_CONSOLECMDS_H__
+#endif // CG_CONSOLECMDS_H

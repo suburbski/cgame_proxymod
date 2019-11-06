@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_CVAR_H__
-#define __CG_CVAR_H__
+#ifndef CG_CVAR_H
+#define CG_CVAR_H
 
 
 
@@ -75,4 +75,4 @@ int8_t init_cvars( void );
 
 
 
-#endif // __CG_CVAR_H__
+#endif // CG_CVAR_H

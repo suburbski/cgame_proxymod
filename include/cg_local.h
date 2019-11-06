@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __CG_LOCAL_H__
-#define __CG_LOCAL_H__
+#ifndef CG_LOCAL_H
+#define CG_LOCAL_H
 
 #ifdef WIN32
 #	include <Windows.h>
@@ -823,4 +823,4 @@ extern vec4_t	g_color_table[10];
 #define	GIANTCHAR_WIDTH		32
 #define	GIANTCHAR_HEIGHT	48
 
-#endif // __CG_LOCAL_H__
+#endif // CG_LOCAL_H

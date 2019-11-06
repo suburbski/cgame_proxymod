@@ -18,8 +18,8 @@
 	==============================
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#ifndef __FILE_H__
-#define __FILE_H__
+#ifndef CG_FILE_H
+#define CG_FILE_H
 
 
 typedef uint32_t fileHandle_t;
@@ -38,4 +38,4 @@ typedef enum {
 	FS_SEEK_SET
 } fsOrigin_t;
 
-#endif // __FILE_H__
+#endif // CG_FILE_H
