@@ -22,9 +22,9 @@
 
 //handling syscalls from QVM (passing them to engine)
 //this adds the base VM address to a given value
-#define add(x)    ((x) ? (void*)((x) + (int32_t)memoryBase) : NULL)
+#define add(x)    ((x) ? (void*)((x) + (intptr_t)memoryBase) : NULL)
 //this subtracts the base VM address from a given value
-#define sub(x)    ((x) ? (void*)((x) - (int32_t)memoryBase) : NULL)
+#define sub(x)    ((x) ? (void*)((x) - (intptr_t)memoryBase) : NULL)
 //this gets an argument value
 #define arg(x)    (args[(x)])
 //this adds the base VM address to an argument value

@@ -376,7 +376,7 @@ static void VM_Run( vm_t *vm ) {
 		//convert opStack[0] float->int32_t
 		case OP_CVFI: opStack[0] = (int32_t)(*(float *)&opStack[0]); break;
 		}
-	} while( opPointer );
+	} while( (int32_t)(intptr_t)opPointer );
 
 //	vm->opBase = opBase;
 	vm->opStack = opStack;
