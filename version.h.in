@@ -1,0 +1,7 @@
+#ifndef VERSION_H
+#define VERSION_H
+
+// The configured options and settings
+#define VERSION "@PROJECT_VERSION@"
+
+#endif // VERSION_H

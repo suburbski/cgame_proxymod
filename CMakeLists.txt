@@ -4,6 +4,9 @@ project(cgame_proxymod
   VERSION 0.0.2.0 # <mayor>.<compat>.<minor>.<build>
   LANGUAGES C)
 
+configure_file(version.h.in version.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." FALSE)
 if(${FORCE_COLORED_OUTPUT})
   if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")

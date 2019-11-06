@@ -22,6 +22,7 @@
 #include "cg_local.h"
 #include "cg_cvar.h"
 #include "cg_utils.h"
+#include "version.h"
 
 
 

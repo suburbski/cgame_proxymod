@@ -27,6 +27,7 @@
 #include "cg_hud.h"
 #include "cg_cvar.h"
 #include "cg_utils.h"
+#include "version.h"
 
 
 

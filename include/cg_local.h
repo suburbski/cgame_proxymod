@@ -46,9 +46,6 @@
 #define DEFAULT_VMPATH   "vm/cgame.qvm"
 #define GAME             "Q3A"
 
-//<mayor>.<compat>.<minor>.<build>
-#define VERSION "0.0.1.0"
-
 
 
 typedef int32_t (QDECL *syscall_t)(uint32_t, ...);
