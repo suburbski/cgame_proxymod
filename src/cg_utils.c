@@ -20,8 +20,6 @@
 */
 #include "cg_utils.h"
 
-#include "cg_local.h"
-
 #include <stdarg.h>
 #include <stdio.h>
 

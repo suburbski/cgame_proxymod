@@ -21,6 +21,8 @@
 #ifndef CG_DRAW_H
 #define CG_DRAW_H
 
+#include "cg_local.h"
+
 typedef enum
 {
   STEREO_CENTER,

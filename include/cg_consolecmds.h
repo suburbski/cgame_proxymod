@@ -21,6 +21,8 @@
 #ifndef CG_CONSOLECMDS_H
 #define CG_CONSOLECMDS_H
 
+#include "cg_local.h"
+
 qboolean* CG_ConsoleCommand(void);
 
 #endif // CG_CONSOLECMDS_H

@@ -21,6 +21,8 @@
 #ifndef CG_INIT_H
 #define CG_INIT_H
 
+#include <stdint.h>
+
 void init_gfx(int32_t clientNum);
 void init_hud(void);
 

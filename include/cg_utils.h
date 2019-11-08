@@ -21,6 +21,8 @@
 #ifndef CG_UTILS_H
 #define CG_UTILS_H
 
+#include "cg_local.h"
+
 #define ARRAY_LEN(x) (sizeof(x) / sizeof(*(x)))
 
 #define PSF_USERINPUT_NONE 0

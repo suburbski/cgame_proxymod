@@ -21,6 +21,8 @@
 #ifndef CG_MAIN_H
 #define CG_MAIN_H
 
+#include <stdint.h>
+
 typedef enum
 {
   CG_INIT,

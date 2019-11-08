@@ -21,6 +21,8 @@
 #ifndef CG_CVAR_H
 #define CG_CVAR_H
 
+#include <stdint.h>
+
 #define MAX_CVAR_VALUE_STRING 256
 
 enum

@@ -21,6 +21,8 @@
 #ifndef CG_HUD_H
 #define CG_HUD_H
 
+#include "cg_local.h"
+
 typedef struct
 {
   vec4_t color;

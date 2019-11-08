@@ -21,7 +21,6 @@
 #include "cg_draw.h"
 
 #include "cg_hud.h"
-#include "cg_local.h"
 
 // DELME
 void draw_compass(void);
