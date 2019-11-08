@@ -21,15 +21,15 @@
     of the QMM - Q3 MultiMod
 */
 #ifndef CG_VM_H
-#  define CG_VM_H
+#define CG_VM_H
 
-#  include "cg_local.h"
+#include "cg_local.h"
 
 // magic number is stored in file as 44 14 72 12
-#  define VM_MAGIC 0x12721444
-#  define VM_MAGIC_BIG 0x44147212
+#define VM_MAGIC 0x12721444
+#define VM_MAGIC_BIG 0x44147212
 
-#  define MAX_QPATH 64
+#define MAX_QPATH 64
 
 typedef enum
 {
@@ -95,7 +95,6 @@ typedef enum
   OP_CVFI
 } vmOps_t;
 
-#endif // CG_VM_H
 typedef struct
 {
   int32_t vmMagic;
@@ -168,3 +167,5 @@ void*    VM_ExplicitArgPtr(vm_t* vm, int32_t intValue);
 int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args);
 int32_t       int_byteswap(int32_t i);
 short         short_byteswap(short s);
+
+#endif // CG_VM_H
