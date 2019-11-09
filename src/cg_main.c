@@ -53,6 +53,7 @@ __DLLEXPORT__ int32_t vmMain(
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     cg_init(cmd, arg2);
+    init_entityStates();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );

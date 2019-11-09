@@ -4,16 +4,21 @@
 #include "cg_local.h"
 #include "cg_utils.h"
 
-entityState_t cg_entityStates[1024];
+static vmCvar_t mdd_local_sounds_only;
+
+static cvarTable_t sound_cvars[] = { { &mdd_local_sounds_only, "mdd_local_sounds_only", "0", CVAR_ARCHIVE } };
+
+static entityState_t cg_entityStates[1024];
 
 void init_entityStates(void)
 {
+  init_cvars(sound_cvars, ARRAY_LEN(sound_cvars));
   memset(cg_entityStates, -1, sizeof(cg_entityStates));
 }
 
 void update_entityStates(void)
 {
-  snapshot_t* snap = getSnap();
+  snapshot_t const* const snap = getSnap();
   for (int i = 0; i < snap->numEntities; i++)
   {
     cg_entityStates[snap->entities[i].number] = snap->entities[i];
@@ -22,10 +27,10 @@ void update_entityStates(void)
 
 int8_t should_filter_sound(int entity_num, int8_t is_loop)
 {
-  float const local_sounds_only = cvar_getValue("mdd_local_sounds_only");
+  update_cvars(sound_cvars, ARRAY_LEN(sound_cvars));
 
   // todo: also bail if its sp?
-  if (!local_sounds_only) return 0;
+  if (!mdd_local_sounds_only.integer) return 0;
 
   // this messes up our own weapon noises
   // can't do anything about this w/o df code

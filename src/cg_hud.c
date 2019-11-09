@@ -35,14 +35,10 @@ vmCvar_t mdd_cgameproxy_version;
 vmCvar_t mdd_hud_draw;
 vmCvar_t mdd_hud_opacity;
 
-vmCvar_t mdd_local_sounds_only;
-
 static cvarTable_t cvarTable[] = {
   { &mdd_cgameproxy_version, "mdd_cgameproxy_version", VERSION, CVAR_USERINFO | CVAR_INIT },
   { &mdd_hud_draw, "mdd_hud_draw", "1", CVAR_ARCHIVE },
-  { &mdd_hud_opacity, "mdd_hud_opacity", "0.5", CVAR_ARCHIVE },
-
-  { &mdd_local_sounds_only, "mdd_local_sounds_only", "0", CVAR_ARCHIVE }
+  { &mdd_hud_opacity, "mdd_hud_opacity", "0.5", CVAR_ARCHIVE }
 };
 
 static hud_t hud;

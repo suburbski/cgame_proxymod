@@ -47,7 +47,6 @@ void cg_init(int32_t cmd, int32_t clientNum)
 
   init_gfx(clientNum);
   init_hud();
-  init_entityStates();
 }
 
 void init_gfx(int32_t clientNum)
