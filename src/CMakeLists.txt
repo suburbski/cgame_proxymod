@@ -13,7 +13,7 @@ add_library(${BINARY_NAME} SHARED
   cg_rl.c
   cg_syscall.c
   cg_time.c
-  cg_trigger_vis.c
+  cg_trig.c
   cg_utils.c
   cg_vm.c
   q_math.c)

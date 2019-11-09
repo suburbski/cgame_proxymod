@@ -21,6 +21,7 @@
 #include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
+#include "cg_trig.h"
 
 // handling syscalls from QVM (passing them to engine)
 // this adds the base VM address to a given value
@@ -34,8 +35,7 @@
 
 #define _ptr(x) (add(x)) // ???
 
-void trigger_vis_render(void);
-int  should_filter_sound(int entity_num, int is_loop);
+int should_filter_sound(int entity_num, int is_loop);
 
 int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
 {
@@ -215,7 +215,7 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
     draw_rl();
     // me too
     draw_gl();
-    trigger_vis_render();
+    draw_trig();
     g_syscall(cmd, ptr(0));
     return 0;
   case CG_R_SETCOLOR:

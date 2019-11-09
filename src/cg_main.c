@@ -23,9 +23,9 @@
 #include "cg_consolecmds.h"
 #include "cg_draw.h"
 #include "cg_local.h"
+#include "cg_trig.h"
 
-cgs_t       cgs;
-extern void trigger_vis_init(void);
+cgs_t cgs;
 
 /* CLIENT to VM */
 __DLLEXPORT__ int32_t vmMain(
@@ -93,7 +93,7 @@ __DLLEXPORT__ int32_t vmMain(
   switch (cmd)
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
-    trigger_vis_init();
+    init_trig();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );

@@ -1,3 +1,5 @@
+#include "cg_trig.h"
+
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_local.h"
@@ -25,7 +27,7 @@ static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color);
 static void init_trigger_cvars(void);
 static void update_trigger_cvars(void);
 
-void trigger_vis_init(void)
+void init_trig(void)
 {
   init_trigger_cvars();
   bboxShader        = g_syscall(CG_R_REGISTERSHADER, "bbox");
@@ -34,7 +36,7 @@ void trigger_vis_init(void)
   parse_triggers();
 }
 
-void trigger_vis_render(void)
+void draw_trig(void)
 {
   update_trigger_cvars();
 
