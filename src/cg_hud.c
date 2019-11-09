@@ -23,6 +23,7 @@
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_gl.h"
+#include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_time.h"
@@ -39,17 +40,6 @@ vmCvar_t mdd_hud_ammo_offsetY;
 vmCvar_t mdd_hud_ammo_size;
 vmCvar_t mdd_hud_ammo_textColor;
 
-vmCvar_t mdd_hud_jumpDelay_draw;
-vmCvar_t mdd_hud_jumpDelay_offsetX;
-vmCvar_t mdd_hud_jumpDelay_offsetY;
-vmCvar_t mdd_hud_jumpDelay_width;
-vmCvar_t mdd_hud_jumpDelay_height;
-
-vmCvar_t mdd_hud_jumpDelay_textOffsetX;
-vmCvar_t mdd_hud_jumpDelay_textOffsetY;
-vmCvar_t mdd_hud_jumpDelay_textSize;
-vmCvar_t mdd_hud_jumpDelay_textColor;
-
 vmCvar_t mdd_local_sounds_only;
 
 static cvarTable_t cvarTable[] = {
@@ -63,29 +53,17 @@ static cvarTable_t cvarTable[] = {
   { &mdd_hud_ammo_size, "mdd_hud_ammo_size", "32", CVAR_ARCHIVE },
   { &mdd_hud_ammo_textColor, "mdd_hud_ammo_textColor", "7", CVAR_ARCHIVE },
 
-  { &mdd_hud_jumpDelay_draw, "mdd_hud_jumpDelay_draw", "0", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_offsetX, "mdd_hud_jumpDelay_graphOffsetX", "330", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_offsetY, "mdd_hud_jumpDelay_graphOffsetY", "140", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_width, "mdd_hud_jumpDelay_graphWidth", "16", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_height, "mdd_hud_jumpDelay_graphHeight", "300", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_textOffsetX, "mdd_hud_jumpDelay_textOffsetX", "320", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_textOffsetY, "mdd_hud_jumpDelay_textOffsetY", "220", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_textSize, "mdd_hud_jumpDelay_textSize", "16", CVAR_ARCHIVE },
-  { &mdd_hud_jumpDelay_textColor, "mdd_hud_jumpDelay_textColor", "7", CVAR_ARCHIVE },
-
   { &mdd_local_sounds_only, "mdd_local_sounds_only", "0", CVAR_ARCHIVE }
 };
 
 static hud_t           hud;
 static hud_ammo_t      ammo;
-static hud_jumpDelay_t jump;
 
 void hud_setup(void)
 {
   init_cvars(cvarTable, ARRAY_LEN(cvarTable));
   hud_baseSetup(&hud);
   hud_ammoSetup(&ammo);
-  hud_jumpDelaySetup(&jump);
   init_time();
   init_rl();
   init_gl();
@@ -97,7 +75,6 @@ void hud_update(void)
   // TODO: we check which structs require an update
   hud_baseSetup(&hud);
   hud_ammoSetup(&ammo);
-  hud_jumpDelaySetup(&jump);
 }
 
 int8_t hud_baseSetup(hud_t* h)
@@ -118,92 +95,15 @@ void hud_draw(void)
   if (!hud_draw) return;
 
   float const hud_ammo_draw      = cvar_getValue("mdd_hud_ammo_draw");
-  float const hud_jumpDelay_draw = cvar_getValue("mdd_hud_jumpDelay_draw");
 
   if (hud_ammo_draw) hud_ammoDraw(&ammo);
 
-  if (hud_jumpDelay_draw)
-  {
-    hud_jumpDelayControl(&jump);
-    hud_jumpDelayDraw(&jump);
-  }
+  draw_jump();
 
   draw_time();
 
   // make sure the last color doesn't leak into defrag's UI
   g_syscall(CG_R_SETCOLOR, colorWhite);
-}
-
-/*
- *
- * Setup and Draw BARS
- *
- */
-
-/*
-int8_t hud_vBarDraw( float percent, hud_bar_t *bar ) {
-  float barLength;
-
-  // sanity checks
-  if( percent > 100 ) {
-    percent = 100.0;
-  }
-
-  if( bar == NULL ) {
-    return qfalse;
-  }
-
-  bar->value = percent;
-  barLength = (bar->width * bar->value) / (100.0 * 2.0);
-
-  hud_boxDraw( bar->xPos, bar->yPos, bar->width, bar->height, bar->colorBackdrop );
-
-  // left half of bar
-  g_syscall( CG_R_SETCOLOR, bar->colorBar );
-  CG_DrawPic( bar->xPos, bar->yPos, barLength, bar->height, cgs.media.gfxWhiteShader );
-
-  // right half of bar
-  g_syscall( CG_R_SETCOLOR, bar->colorBar );
-  CG_DrawPic( bar->xPos+bar->width-barLength, bar->yPos, barLength, bar->height, cgs.media.gfxWhiteShader );
-
-  return qtrue;
-}
-*/
-
-/*
-int8_t hud_hBarDraw( float percent, hud_bar_t *bar ) {
-  // TODO: implement
-  return qtrue;
-}
-*/
-
-int8_t hud_boxDraw(float x, float y, float w, float h)
-{
-  // Draw a simple transparent box to put graphs into
-  vec4_t backdrop;
-
-  backdrop[0] = hud.color[0];
-  backdrop[1] = hud.color[1];
-  backdrop[2] = hud.color[2];
-  backdrop[3] = hud.color[3];
-
-  g_syscall(CG_R_SETCOLOR, backdrop);
-  CG_DrawPic(x, y, w, h, cgs.media.gfxWhiteShader); // backdrop
-
-  // make border stand out
-  backdrop[3] += 0.5;
-  if (backdrop[3] > 1.0)
-  {
-    backdrop[3] = 1.0;
-  }
-
-  g_syscall(CG_R_SETCOLOR, backdrop);
-  CG_DrawPic(x, y - 1, w, 1, cgs.media.gfxWhiteShader);         // North
-  CG_DrawPic(x, y + h, w, 1, cgs.media.gfxWhiteShader);         // South
-  CG_DrawPic(x + w, y - 1, 1, h + 2, cgs.media.gfxWhiteShader); // East
-  CG_DrawPic(x - 1, y - 1, 1, h + 2, cgs.media.gfxWhiteShader); // West
-
-  return qtrue;
 }
 
 /*
@@ -304,214 +204,5 @@ int8_t hud_ammoDraw(hud_ammo_t* ammoHud)
 
   // TODO: color the text of the ammo red in case of low ammo
   // TODO: make textsize cvar dependant
-  return qtrue;
-}
-
-/*
- *
- * Jump Delay Hud
- *
- */
-int8_t hud_jumpDelaySetup(hud_jumpDelay_t* jumpHud)
-{
-  float const mdd_hud_opacity = cvar_getValue("mdd_hud_opacity");
-  float const draw            = cvar_getValue("mdd_hud_jumpDelay_draw");
-  float const widthPx         = cvar_getValue("mdd_hud_jumpDelay_graphWidth");
-  float const heightPx        = cvar_getValue("mdd_hud_jumpDelay_graphHeight");
-  float       xPos            = cvar_getValue("mdd_hud_jumpDelay_graphOffsetX");
-  float       yPos            = cvar_getValue("mdd_hud_jumpDelay_graphOffsetY");
-  float       textPosX        = cvar_getValue("mdd_hud_jumpDelay_textOffsetX");
-  float       textPosY        = cvar_getValue("mdd_hud_jumpDelay_textOffsetY");
-  float const textSize        = cvar_getValue("mdd_hud_jumpDelay_textSize");
-  float const textColor       = cvar_getValue("mdd_hud_jumpDelay_textColor");
-
-  convertAdjustedToNative(&xPos, &yPos, &textPosX, &textPosY);
-
-  jumpHud->mode = draw; // 0=off, 1=text, 2=graph, 3=text and graph
-
-  jumpHud->xPos   = xPos;
-  jumpHud->yPos   = yPos;
-  jumpHud->width  = widthPx;
-  jumpHud->height = heightPx;
-
-  jumpHud->preJumpColor[0] = 0.0;
-  jumpHud->preJumpColor[1] = 0.0;
-  jumpHud->preJumpColor[2] = 1.0;
-  jumpHud->preJumpColor[3] = mdd_hud_opacity + 0.5;
-  if (jumpHud->preJumpColor[3] > 1.0) jumpHud->preJumpColor[3] = 1.0;
-
-  jumpHud->postJumpColor[0] = 1.0;
-  jumpHud->postJumpColor[1] = 0.0;
-  jumpHud->postJumpColor[2] = 0.0;
-  jumpHud->postJumpColor[3] = mdd_hud_opacity + 0.5;
-  if (jumpHud->postJumpColor[3] > 1.0) jumpHud->postJumpColor[3] = 1.0;
-
-  getColor(textColor, 1.0, jumpHud->textColor);
-
-  jumpHud->textPosX = textPosX;
-  jumpHud->textPosY = textPosY;
-  jumpHud->textSize = textSize;
-
-  return qtrue;
-}
-
-int8_t hud_jumpDelayDraw(hud_jumpDelay_t* jumpHud)
-{
-  const float rangeMs = 300;
-  float       middle, upHeight, downHeight, barUp, barDown;
-
-  middle  = jumpHud->yPos + (jumpHud->height / 2.0);
-  barUp   = jumpHud->postDelay;
-  barDown = jumpHud->preDelay;
-
-  // clamp values
-  if (jumpHud->postDelay > rangeMs) barUp = rangeMs;
-
-  if (jumpHud->preDelay > rangeMs) barDown = rangeMs;
-
-  upHeight   = (jumpHud->height / 2) * (barUp / rangeMs);
-  downHeight = (jumpHud->height / 2) * (barDown / rangeMs);
-
-  // draw graph
-  if (jumpHud->mode & 2)
-  {
-    hud_boxDraw(jumpHud->xPos, jumpHud->yPos, jumpHud->width, jumpHud->height);
-
-    g_syscall(CG_R_SETCOLOR, jumpHud->preJumpColor);
-    CG_DrawPic(jumpHud->xPos, middle, jumpHud->width, downHeight, cgs.media.gfxWhiteShader);
-
-    g_syscall(CG_R_SETCOLOR, jumpHud->postJumpColor);
-    CG_DrawPic(jumpHud->xPos, (middle - upHeight), jumpHud->width, upHeight, cgs.media.gfxWhiteShader);
-  }
-  // draw text next to it
-  if (jumpHud->mode & 1)
-  {
-    CG_DrawText(
-      jumpHud->textPosX,
-      jumpHud->textPosY,
-      jumpHud->textSize,
-      jumpHud->textColor,
-      qfalse,
-      vaf("%i ms", jumpHud->fullDelay));
-  }
-
-  return qtrue;
-}
-
-int8_t hud_jumpDelayControl(hud_jumpDelay_t* jumpHud)
-{
-  int8_t         inAir = 0, jump = 0, state = 0, lastState = 0;
-  uint32_t       now;
-  playerState_t* ps;
-  /*
-   * To draw this hud we have to make a little state machine
-   *
-   * AIR_NOJUMP:        The player is midair, not holding the jump button
-   * AIR_JUMP:          The player is midair, holding jump button
-   * GROUND_JUMP:       The player is on the ground, holding jump button
-   * GROUND_NOJUMP:     The player is on the ground, not holding jump button
-   * AIR_JUMPNORELEASE: The player is midair, without releasing the jump button
-   */
-
-  now       = getSnap()->serverTime;
-  ps        = getPs();
-  inAir     = isInAir(ps);
-  jump      = isJumping(ps);
-  lastState = jumpHud->lastState;
-
-  // determine current state
-  switch (lastState)
-  {
-  case AIR_JUMP:
-  case AIR_NOJUMP:
-    if (inAir)
-    {
-      if (jump)
-        state = AIR_JUMP;
-      else
-        state = AIR_NOJUMP;
-    }
-    else
-    {
-      if (jump)
-        state = GROUND_JUMP;
-      else
-        state = GROUND_NOJUMP;
-    }
-    break;
-
-  // edge case at end of cycle
-  case GROUND_NOJUMP:
-  case GROUND_JUMP:
-  case AIR_JUMPNORELEASE:
-    if (inAir)
-    {
-      if (jump)
-        state = AIR_JUMPNORELEASE;
-      else
-        state = AIR_NOJUMP;
-    }
-    else
-    {
-      if (jump)
-        state = GROUND_JUMP;
-      else
-        state = GROUND_NOJUMP;
-    }
-    break;
-
-  default:
-    state = GROUND_NOJUMP;
-    break;
-  }
-
-  // act on current state
-  switch (state)
-  {
-  case AIR_NOJUMP:
-    jumpHud->fullDelay = jumpHud->postDelay + jumpHud->preDelay;
-    if (lastState == AIR_JUMP)
-    {
-      jumpHud->preDelay  = 0;
-      jumpHud->postDelay = 0;
-    }
-    // we spend the most time in this state
-    // that is why here we show the last jump stats
-    break;
-
-  case AIR_JUMP:
-    if (lastState == AIR_NOJUMP)
-    {
-      jumpHud->t_jumpPreGround = now;
-    }
-    jumpHud->preDelay = now - jumpHud->t_jumpPreGround; // ms
-    break;
-
-  case GROUND_JUMP:
-    if (lastState == AIR_JUMP)
-    {
-      jumpHud->t_groundTouch = now;
-    }
-    jumpHud->postDelay = 0;
-    break;
-
-  case GROUND_NOJUMP:
-    jumpHud->t_jumpPreGround = now; // display 0 on 2nd jump CJ
-    jumpHud->t_groundTouch   = now;
-    jumpHud->preDelay        = 0;
-    jumpHud->postDelay       = 0;
-    break;
-
-  case AIR_JUMPNORELEASE:
-    jumpHud->postDelay = now - jumpHud->t_groundTouch; // ms
-    break;
-
-  default:
-    break;
-  }
-
-  //	g_syscall( CG_PRINT, vaf("%u\n", state));
-  jumpHud->lastState = state;
-
   return qtrue;
 }

@@ -8,6 +8,7 @@ add_library(${BINARY_NAME} SHARED
   cg_gl.c
   cg_hud.c
   cg_init.c
+  cg_jump.c
   cg_main.c
   cg_rl.c
   cg_syscall.c

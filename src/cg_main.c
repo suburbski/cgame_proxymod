@@ -23,6 +23,7 @@
 #include "cg_consolecmds.h"
 #include "cg_draw.h"
 #include "cg_entity.h"
+#include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_trig.h"
 
@@ -95,6 +96,8 @@ __DLLEXPORT__ int32_t vmMain(
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     init_trig();
+
+    init_jump();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
