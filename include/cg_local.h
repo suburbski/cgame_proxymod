@@ -50,12 +50,31 @@ extern syscall_t g_syscall;
 
 // Quake3 Defines...
 typedef uint8_t byte;
+
 typedef enum
 {
   qfalse,
   qtrue
 } qboolean;
-// typedef int32_t fileHandle_t;
+
+typedef uint32_t qhandle_t;
+typedef int32_t  sfxHandle_t;
+typedef int32_t  fileHandle_t;
+typedef int32_t  clipHandle_t;
+
+#define ARRAY_LEN(x) (sizeof(x) / sizeof(*(x)))
+#define STRARRAY_LEN(x) (ARRAY_LEN(x) - 1)
+
+// angle indexes
+#define PITCH 0 // up / down
+#define YAW 1   // left / right
+#define ROLL 2  // fall over
+
+// the game guarantees that no string from the network will ever
+// exceed MAX_STRING_CHARS
+#define MAX_STRING_CHARS 1024  // max length of a string passed to Cmd_TokenizeString
+#define MAX_STRING_TOKENS 1024 // max tokens resulting from Cmd_TokenizeString
+#define MAX_TOKEN_CHARS 1024   // max length of an individual token
 
 // mode parm for FS_FOpenFile
 typedef enum
@@ -234,8 +253,6 @@ int32_t initVM(void);
 /* cg_modules */
 int32_t loadModules(void);
 
-typedef uint32_t qhandle_t;
-
 #define MAX_STRING_CHARS 1024 // max length of a string passed to Cmd_TokenizeString
 #define MAX_CONFIGSTRINGS 1024
 #define MAX_GAMESTATE_CHARS 16000
@@ -383,10 +400,6 @@ typedef vec_t vec5_t[5];
 typedef int32_t fixed4_t;
 typedef int32_t fixed8_t;
 typedef int32_t fixed16_t;
-
-typedef int32_t sfxHandle_t;
-typedef int32_t fileHandle_t;
-typedef int32_t clipHandle_t;
 
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846f // matches value in gcc v2 math.h
@@ -573,9 +586,27 @@ typedef enum
   WP_NUM_WEAPONS
 } weapon_t;
 
-#define MAX_GENTITIES (1 << 10)
+/*
+========================================================================
+
+  ELEMENTS COMMUNICATED ACROSS THE NET
+
+========================================================================
+*/
+
+#define ANGLE2SHORT(x) ((int)((x)*65536 / 360) & 65535)
+#define SHORT2ANGLE(x) ((x) * (360.0 / 65536))
+
+#define GENTITYNUM_BITS 10 // don't need to send any more
+#define MAX_GENTITIES (1 << GENTITYNUM_BITS)
+
+// entitynums are communicated with GENTITY_BITS, so any reserved
+// values that are going to be communcated over the net need to
+// also be in this range
 #define ENTITYNUM_NONE (MAX_GENTITIES - 1)
-#define MAX_ENTITIES_IN_SNAPSHOT 256
+
+//=========================================================
+
 // bit field limits
 #define MAX_STATS 16
 #define MAX_PERSISTANT 16
@@ -583,9 +614,6 @@ typedef enum
 #define MAX_WEAPONS 16
 
 #define MAX_PS_EVENTS 2
-#define PITCH 0 // up / down
-#define YAW 1   // left / right
-#define ROLL 2  // fall over
 
 typedef struct playerState_s
 {
@@ -731,6 +759,8 @@ typedef struct entityState_s
   int32_t generic1;
 } entityState_t;
 
+#define MAX_ENTITIES_IN_SNAPSHOT 256
+
 // snapshots are a view of the server at a given time
 
 // Snapshots are generated at regular time intervals by the server,
@@ -774,7 +804,7 @@ typedef struct
   cplane_t plane;        // surface normal at impact, transformed to world space
   int      surfaceFlags; // surface hit
   int      contents;     // contents on other side of surface hit
-  int      entityNum;    // entity the contacted sirface is a part of
+  int      entityNum;    // entity the contacted surface is a part of
 } trace_t;
 
 // vector stuff
@@ -795,7 +825,24 @@ extern entityState_t cg_entityStates[1024];
 void                 entityStates_init(void);
 void                 entityStates_update(void);
 
-extern vec4_t g_color_table[10];
+#define Byte4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
+
+// all drawing is done to a 640*480 virtual screen size
+// and will be automatically scaled to the real resolution
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+
+#define TINYCHAR_WIDTH (SMALLCHAR_WIDTH)
+#define TINYCHAR_HEIGHT (SMALLCHAR_HEIGHT / 2)
+
+#define SMALLCHAR_WIDTH 8
+#define SMALLCHAR_HEIGHT 16
+
+#define BIGCHAR_WIDTH 16
+#define BIGCHAR_HEIGHT 16
+
+#define GIANTCHAR_WIDTH 32
+#define GIANTCHAR_HEIGHT 48
 
 #define Q_COLOR_ESCAPE '^'
 #define Q_IsColorString(p) (p && *(p) == Q_COLOR_ESCAPE && *((p) + 1) && *((p) + 1) != Q_COLOR_ESCAPE)
@@ -823,19 +870,6 @@ extern vec4_t g_color_table[10];
 #define S_COLOR_ORANGE "^8"
 #define S_COLOR_MDGREY "^9"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
-#define TINYCHAR_WIDTH (SMALLCHAR_WIDTH)
-#define TINYCHAR_HEIGHT (SMALLCHAR_HEIGHT / 2)
-
-#define SMALLCHAR_WIDTH 8
-#define SMALLCHAR_HEIGHT 16
-
-#define BIGCHAR_WIDTH 16
-#define BIGCHAR_HEIGHT 16
-
-#define GIANTCHAR_WIDTH 32
-#define GIANTCHAR_HEIGHT 48
+extern vec4_t g_color_table[8];
 
 #endif // CG_LOCAL_H
