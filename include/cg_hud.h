@@ -39,22 +39,9 @@ typedef struct
   float  value;
 } hud_bar_t;
 
-typedef struct
-{
-  float   xPos;
-  float   yPos;
-  float   size;
-  uint8_t ammo[16];
-  vec4_t  colorText;
-  vec4_t  colorBackdrop;
-} hud_ammo_t;
-
 void   hud_setup(void);
 void   hud_update(void);
 int8_t hud_baseSetup(hud_t* h);
 void   hud_draw(void);
-
-int8_t hud_ammoSetup(hud_ammo_t* hud);
-int8_t hud_ammoDraw(hud_ammo_t* hud);
 
 #endif // CG_HUD_H

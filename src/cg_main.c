@@ -20,6 +20,7 @@
 */
 #include "cg_main.h"
 
+#include "cg_ammo.h"
 #include "cg_consolecmds.h"
 #include "cg_draw.h"
 #include "cg_entity.h"
@@ -97,6 +98,7 @@ __DLLEXPORT__ int32_t vmMain(
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     init_trig();
 
+    init_ammo();
     init_jump();
     break;
 
