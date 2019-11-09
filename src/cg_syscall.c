@@ -18,6 +18,7 @@
   ==============================
   Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
+#include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
 
@@ -33,7 +34,6 @@
 
 #define _ptr(x) (add(x)) // ???
 
-void gl_trace_render(void);
 void trigger_vis_render(void);
 int  should_filter_sound(int entity_num, int is_loop);
 
@@ -214,7 +214,7 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
     // no salvation for me
     draw_rl();
     // me too
-    gl_trace_render();
+    draw_gl();
     trigger_vis_render();
     g_syscall(cmd, ptr(0));
     return 0;

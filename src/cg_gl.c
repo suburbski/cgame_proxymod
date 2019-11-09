@@ -1,3 +1,5 @@
+#include "cg_gl.h"
+
 #include "cg_cvar.h"
 #include "cg_local.h"
 #include "cg_utils.h"
@@ -132,13 +134,13 @@ void update_gl_trace_cvars(void)
   for (int i = 0; i < ARRAY_LEN(gl_trace_cvars); i++) g_syscall(CG_CVAR_UPDATE, gl_trace_cvars[i].vmCvar);
 }
 
-void gl_trace_init(void)
+void init_gl(void)
 {
   init_gl_trace_cvars();
   beam_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
 }
 
-void gl_trace_render(void)
+void draw_gl(void)
 {
   vec3_t        forward, muzzle;
   entityState_t entity;

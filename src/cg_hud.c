@@ -22,13 +22,13 @@
 
 #include "cg_cvar.h"
 #include "cg_draw.h"
+#include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_utils.h"
 
 extern void timer_hud_init(void);
 extern void timer_hud_draw(void);
-extern void gl_trace_init(void);
 
 static hud_t           hud;
 static hud_ammo_t      ammo;
@@ -41,7 +41,7 @@ void hud_setup(void)
   hud_jumpDelaySetup(&jump);
   timer_hud_init();
   init_rl();
-  gl_trace_init();
+  init_gl();
 }
 
 void hud_update(void)

@@ -6,7 +6,7 @@ add_library(${BINARY_NAME} SHARED
   cg_draw.c
   cg_entity_states.c
   cg_filter_sounds.c
-  cg_gl_trace.c
+  cg_gl.c
   cg_hud.c
   cg_init.c
   cg_main.c
