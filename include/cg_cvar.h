@@ -23,8 +23,6 @@
 
 #include <stdint.h>
 
-#define MAX_CVAR_VALUE_STRING 256
-
 enum
 {
   CVAR_ARCHIVE    = 0x0001, // set to cause it to be saved to vars.rc
@@ -49,7 +47,12 @@ enum
   CVAR_PROTECTED      = 0x2000  // prevent modifying this var from VMs or the server
 };
 
+#define MAX_CVAR_VALUE_STRING 256
+
 typedef uint32_t cvarHandle_t;
+
+// the modules that run in the virtual machine can't access the cvar_t directly,
+// so they must ask for structured updates
 typedef struct
 {
   cvarHandle_t handle;
@@ -67,7 +70,7 @@ typedef struct
   int       cvarFlags;
 } cvarTable_t;
 
-int8_t cvar_getFloat(const char* var_name, float* value);
+float  cvar_getValue(char const* var_name);
 int8_t init_cvars(void);
 
 #endif // CG_CVAR_H

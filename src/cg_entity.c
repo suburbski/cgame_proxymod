@@ -22,8 +22,7 @@ void update_entityStates(void)
 
 int8_t should_filter_sound(int entity_num, int8_t is_loop)
 {
-  float local_sounds_only;
-  cvar_getFloat("mdd_local_sounds_only", &local_sounds_only);
+  float const local_sounds_only = cvar_getValue("mdd_local_sounds_only");
 
   // todo: also bail if its sp?
   if (!local_sounds_only) return 0;

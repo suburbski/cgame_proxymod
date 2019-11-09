@@ -53,9 +53,7 @@ void hud_update(void)
 
 int8_t hud_baseSetup(hud_t* h)
 {
-  float hud_opacity = 1.0;
-
-  cvar_getFloat("mdd_hud_opacity", &hud_opacity);
+  float const hud_opacity = cvar_getValue("mdd_hud_opacity");
 
   h->color[0] = 1.0;
   h->color[1] = 1.0;
@@ -67,13 +65,11 @@ int8_t hud_baseSetup(hud_t* h)
 
 void hud_draw(void)
 {
-  float hud_draw, hud_ammo_draw, hud_jumpDelay_draw;
-
-  cvar_getFloat("mdd_hud_draw", &hud_draw);
+  float const hud_draw = cvar_getValue("mdd_hud_draw");
   if (!hud_draw) return;
 
-  cvar_getFloat("mdd_hud_ammo_draw", &hud_ammo_draw);
-  cvar_getFloat("mdd_hud_jumpDelay_draw", &hud_jumpDelay_draw);
+  float const hud_ammo_draw      = cvar_getValue("mdd_hud_ammo_draw");
+  float const hud_jumpDelay_draw = cvar_getValue("mdd_hud_jumpDelay_draw");
 
   if (hud_ammo_draw) hud_ammoDraw(&ammo);
 
@@ -166,9 +162,7 @@ int8_t hud_vBarSetup( hud_bar_t *bar, float xPosAdj, float yPosAdj, float widthA
   // Position graph on adjusted 640x480 grid
   // Switch to native resolution and draw graph
   // Bar slides in from both sides and hits in the center
-  float mdd_hud_opacity;
-
-  cvar_getFloat( "mdd_hud_opacity", &mdd_hud_opacity );
+  float const mdd_hud_opacity = cvar_getValue("mdd_hud_opacity");
 
   bar->width  = widthAdj;
   bar->height = heightAdj;
@@ -198,14 +192,11 @@ int8_t hud_vBarSetup( hud_bar_t *bar, float xPosAdj, float yPosAdj, float widthA
 
 int8_t hud_ammoSetup(hud_ammo_t* ammoHud)
 {
-  float mdd_hud_opacity;
-  float xPosAdj, yPosAdj, size, textColor;
-
-  cvar_getFloat("mdd_hud_opacity", &mdd_hud_opacity);
-  cvar_getFloat("mdd_hud_ammo_offsetX", &xPosAdj);
-  cvar_getFloat("mdd_hud_ammo_offsetY", &yPosAdj);
-  cvar_getFloat("mdd_hud_ammo_size", &size);
-  cvar_getFloat("mdd_hud_ammo_textColor", &textColor);
+  float const mdd_hud_opacity = cvar_getValue("mdd_hud_opacity");
+  float const xPosAdj         = cvar_getValue("mdd_hud_ammo_offsetX");
+  float const yPosAdj         = cvar_getValue("mdd_hud_ammo_offsetY");
+  float const size            = cvar_getValue("mdd_hud_ammo_size");
+  float const textColor       = cvar_getValue("mdd_hud_ammo_textColor");
 
   ammoHud->xPos = xPosAdj;
   ammoHud->yPos = yPosAdj;
@@ -274,21 +265,16 @@ int8_t hud_ammoDraw(hud_ammo_t* ammoHud)
  */
 int8_t hud_jumpDelaySetup(hud_jumpDelay_t* jumpHud)
 {
-  float xPos, yPos, widthPx, heightPx;
-  float textPosX, textPosY, textSize, textColor;
-  float mdd_hud_opacity;
-  float draw;
-
-  cvar_getFloat("mdd_hud_opacity", &mdd_hud_opacity);
-  cvar_getFloat("mdd_hud_jumpDelay_draw", &draw);
-  cvar_getFloat("mdd_hud_jumpDelay_graphWidth", &widthPx);
-  cvar_getFloat("mdd_hud_jumpDelay_graphHeight", &heightPx);
-  cvar_getFloat("mdd_hud_jumpDelay_graphOffsetX", &xPos);
-  cvar_getFloat("mdd_hud_jumpDelay_graphOffsetY", &yPos);
-  cvar_getFloat("mdd_hud_jumpDelay_textOffsetX", &textPosX);
-  cvar_getFloat("mdd_hud_jumpDelay_textOffsetY", &textPosY);
-  cvar_getFloat("mdd_hud_jumpDelay_textSize", &textSize);
-  cvar_getFloat("mdd_hud_jumpDelay_textColor", &textColor);
+  float const mdd_hud_opacity = cvar_getValue("mdd_hud_opacity");
+  float const draw            = cvar_getValue("mdd_hud_jumpDelay_draw");
+  float const widthPx         = cvar_getValue("mdd_hud_jumpDelay_graphWidth");
+  float const heightPx        = cvar_getValue("mdd_hud_jumpDelay_graphHeight");
+  float       xPos            = cvar_getValue("mdd_hud_jumpDelay_graphOffsetX");
+  float       yPos            = cvar_getValue("mdd_hud_jumpDelay_graphOffsetY");
+  float       textPosX        = cvar_getValue("mdd_hud_jumpDelay_textOffsetX");
+  float       textPosY        = cvar_getValue("mdd_hud_jumpDelay_textOffsetY");
+  float const textSize        = cvar_getValue("mdd_hud_jumpDelay_textSize");
+  float const textColor       = cvar_getValue("mdd_hud_jumpDelay_textColor");
 
   convertAdjustedToNative(&xPos, &yPos, &textPosX, &textPosY);
 
