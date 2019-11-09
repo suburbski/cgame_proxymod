@@ -25,10 +25,8 @@
 #include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
+#include "cg_time.h"
 #include "cg_utils.h"
-
-extern void timer_hud_init(void);
-extern void timer_hud_draw(void);
 
 static hud_t           hud;
 static hud_ammo_t      ammo;
@@ -39,7 +37,7 @@ void hud_setup(void)
   hud_baseSetup(&hud);
   hud_ammoSetup(&ammo);
   hud_jumpDelaySetup(&jump);
-  timer_hud_init();
+  init_time();
   init_rl();
   init_gl();
 }
@@ -85,7 +83,7 @@ void hud_draw(void)
     hud_jumpDelayDraw(&jump);
   }
 
-  timer_hud_draw();
+  draw_time();
 
   // make sure the last color doesn't leak into defrag's UI
   g_syscall(CG_R_SETCOLOR, colorWhite);

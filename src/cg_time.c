@@ -1,3 +1,5 @@
+#include "cg_time.h"
+
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_local.h"
@@ -46,14 +48,14 @@ static void draw_item(float progress, vec4_t color);
 static void init_timer_cvars(void);
 static void update_timer_cvars(void);
 
-void timer_hud_init(void)
+void init_time(void)
 {
   init_timer_cvars();
 
   for (int i = 0; i < MAX_NADES; i++) nades[i].id = -1;
 }
 
-void timer_hud_draw(void)
+void draw_time(void)
 {
   vec4_t         outline_color;
   vec4_t         item_color;
