@@ -21,6 +21,9 @@
 #ifndef CG_CVAR_H
 #define CG_CVAR_H
 
+#include "cg_local.h"
+
+#include <stddef.h>
 #include <stdint.h>
 
 enum
@@ -70,7 +73,9 @@ typedef struct
   int       cvarFlags;
 } cvarTable_t;
 
-float  cvar_getValue(char const* var_name);
-int8_t init_cvars(void);
+float cvar_getValue(char const* var_name);
+
+void init_cvars(cvarTable_t const* cvars, size_t size);
+void update_cvars(cvarTable_t const* cvars, size_t size);
 
 #endif // CG_CVAR_H

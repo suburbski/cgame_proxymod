@@ -27,6 +27,54 @@
 #include "cg_rl.h"
 #include "cg_time.h"
 #include "cg_utils.h"
+#include "version.h"
+
+vmCvar_t mdd_cgameproxy_version;
+vmCvar_t mdd_hud_draw;
+vmCvar_t mdd_hud_opacity;
+
+vmCvar_t mdd_hud_ammo_draw;
+vmCvar_t mdd_hud_ammo_offsetX;
+vmCvar_t mdd_hud_ammo_offsetY;
+vmCvar_t mdd_hud_ammo_size;
+vmCvar_t mdd_hud_ammo_textColor;
+
+vmCvar_t mdd_hud_jumpDelay_draw;
+vmCvar_t mdd_hud_jumpDelay_offsetX;
+vmCvar_t mdd_hud_jumpDelay_offsetY;
+vmCvar_t mdd_hud_jumpDelay_width;
+vmCvar_t mdd_hud_jumpDelay_height;
+
+vmCvar_t mdd_hud_jumpDelay_textOffsetX;
+vmCvar_t mdd_hud_jumpDelay_textOffsetY;
+vmCvar_t mdd_hud_jumpDelay_textSize;
+vmCvar_t mdd_hud_jumpDelay_textColor;
+
+vmCvar_t mdd_local_sounds_only;
+
+static cvarTable_t cvarTable[] = {
+  { &mdd_cgameproxy_version, "mdd_cgameproxy_version", VERSION, CVAR_USERINFO | CVAR_INIT },
+  { &mdd_hud_draw, "mdd_hud_draw", "1", CVAR_ARCHIVE },
+  { &mdd_hud_opacity, "mdd_hud_opacity", "0.5", CVAR_ARCHIVE },
+
+  { &mdd_hud_ammo_draw, "mdd_hud_ammo_draw", "0", CVAR_ARCHIVE },
+  { &mdd_hud_ammo_offsetX, "mdd_hud_ammo_offsetX", "610", CVAR_ARCHIVE },
+  { &mdd_hud_ammo_offsetY, "mdd_hud_ammo_offsetY", "30", CVAR_ARCHIVE },
+  { &mdd_hud_ammo_size, "mdd_hud_ammo_size", "32", CVAR_ARCHIVE },
+  { &mdd_hud_ammo_textColor, "mdd_hud_ammo_textColor", "7", CVAR_ARCHIVE },
+
+  { &mdd_hud_jumpDelay_draw, "mdd_hud_jumpDelay_draw", "0", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_offsetX, "mdd_hud_jumpDelay_graphOffsetX", "330", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_offsetY, "mdd_hud_jumpDelay_graphOffsetY", "140", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_width, "mdd_hud_jumpDelay_graphWidth", "16", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_height, "mdd_hud_jumpDelay_graphHeight", "300", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_textOffsetX, "mdd_hud_jumpDelay_textOffsetX", "320", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_textOffsetY, "mdd_hud_jumpDelay_textOffsetY", "220", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_textSize, "mdd_hud_jumpDelay_textSize", "16", CVAR_ARCHIVE },
+  { &mdd_hud_jumpDelay_textColor, "mdd_hud_jumpDelay_textColor", "7", CVAR_ARCHIVE },
+
+  { &mdd_local_sounds_only, "mdd_local_sounds_only", "0", CVAR_ARCHIVE }
+};
 
 static hud_t           hud;
 static hud_ammo_t      ammo;
@@ -34,6 +82,7 @@ static hud_jumpDelay_t jump;
 
 void hud_setup(void)
 {
+  init_cvars(cvarTable, ARRAY_LEN(cvarTable));
   hud_baseSetup(&hud);
   hud_ammoSetup(&ammo);
   hud_jumpDelaySetup(&jump);
