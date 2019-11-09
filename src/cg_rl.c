@@ -1,3 +1,5 @@
+#include "cg_rl.h"
+
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_local.h"
@@ -41,13 +43,13 @@ void add_mark(
 static void init_rl_trace_cvars(void);
 static void update_rl_trace_cvars(void);
 
-void rl_trace_init(void)
+void init_rl(void)
 {
   init_rl_trace_cvars();
   line_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
 }
 
-void rl_trace_render(void)
+void draw_rl(void)
 {
   snapshot_t*    snap;
   playerState_t* ps;

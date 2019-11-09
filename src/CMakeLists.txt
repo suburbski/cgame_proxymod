@@ -10,7 +10,7 @@ add_library(${BINARY_NAME} SHARED
   cg_hud.c
   cg_init.c
   cg_main.c
-  cg_rl_trace.c
+  cg_rl.c
   cg_syscall.c
   cg_timer_hud.c
   cg_trigger_vis.c
