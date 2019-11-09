@@ -22,6 +22,7 @@
 
 #include "cg_consolecmds.h"
 #include "cg_draw.h"
+#include "cg_entity.h"
 #include "cg_local.h"
 #include "cg_trig.h"
 
@@ -59,7 +60,7 @@ __DLLEXPORT__ int32_t vmMain(
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback );
     cgs.time = arg0;         // servertime
-    entityStates_update();
+    update_entityStates();
     break;
 
   case CG_CROSSHAIR_PLAYER: // int32_t (*CG_CrosshairPlayer)( void );

@@ -18,6 +18,7 @@
   ==============================
   Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
+#include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
@@ -34,8 +35,6 @@
 #define ptr(x) (add(arg(x)))
 
 #define _ptr(x) (add(x)) // ???
-
-int should_filter_sound(int entity_num, int is_loop);
 
 int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
 {

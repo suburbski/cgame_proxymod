@@ -604,6 +604,8 @@ typedef enum
 // values that are going to be communcated over the net need to
 // also be in this range
 #define ENTITYNUM_NONE (MAX_GENTITIES - 1)
+#define ENTITYNUM_WORLD (MAX_GENTITIES - 2)
+#define ENTITYNUM_MAX_NORMAL (MAX_GENTITIES - 2)
 
 //=========================================================
 
@@ -819,11 +821,6 @@ typedef struct
 #define VectorNegate(a, b) ((b)[0] = -(a)[0], (b)[1] = -(a)[1], (b)[2] = -(a)[2])
 #define VectorSet(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
 #define Vector4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
-
-// entity stuff
-extern entityState_t cg_entityStates[1024];
-void                 entityStates_init(void);
-void                 entityStates_update(void);
 
 #define Byte4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
 

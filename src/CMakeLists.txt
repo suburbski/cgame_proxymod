@@ -4,8 +4,7 @@ add_library(${BINARY_NAME} SHARED
   cg_consolecmds.c
   cg_cvar.c
   cg_draw.c
-  cg_entity_states.c
-  cg_filter_sounds.c
+  cg_entity.c
   cg_gl.c
   cg_hud.c
   cg_init.c
