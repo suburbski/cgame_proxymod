@@ -21,10 +21,8 @@
 */
 #include "cg_consolecmds.h"
 
-#include "cg_local.h"
-
 // STUB
-qboolean* CG_ConsoleCommand(void)
+qboolean CG_ConsoleCommand(void)
 {
   //  char cmdBuffer[256];
   //	uint32_t argc;

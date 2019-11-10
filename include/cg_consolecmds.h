@@ -23,6 +23,6 @@
 
 #include "cg_local.h"
 
-qboolean* CG_ConsoleCommand(void);
+qboolean CG_ConsoleCommand(void);
 
 #endif // CG_CONSOLECMDS_H
