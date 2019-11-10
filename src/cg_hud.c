@@ -27,9 +27,11 @@ static vmCvar_t hud;
 static vmCvar_t version;
 static vmCvar_t pps_offset;
 
-static cvarTable_t hud_cvars[] = { { &hud, "mdd_hud", "1", CVAR_ARCHIVE },
-                                   { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
-                                   { &pps_offset, "mdd_pps_offset", "0xe9d98", CVAR_ARCHIVE } };
+static cvarTable_t hud_cvars[] = {
+  { &hud, "mdd_hud", "1", CVAR_ARCHIVE },
+  { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
+  { &pps_offset, "mdd_pps_offset", "0xe9d98", CVAR_ARCHIVE } // TODO: only debug build
+};
 
 void init_hud(void)
 {

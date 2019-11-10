@@ -21,17 +21,75 @@
 */
 #include "cg_consolecmds.h"
 
-// STUB
+#include "cg_vm.h"
+
+#include <stdlib.h>
+
+static void CG_PointsTo_f(void);
+
+typedef struct
+{
+  char* cmd;
+  void (*function)(void);
+} consoleCommand_t;
+
+static consoleCommand_t commands[] = {
+  { "mdd_points_to", CG_PointsTo_f } // TODO: only debug build
+};
+
+/*
+=================
+CG_ConsoleCommand
+
+The string has been tokenized and can be retrieved with
+Cmd_Argc() / Cmd_Argv()
+=================
+*/
 qboolean CG_ConsoleCommand(void)
 {
-  //  char cmdBuffer[256];
-  //  uint32_t argc;
+  char cmd[MAX_STRING_CHARS];
+  g_syscall(CG_ARGV, 0, cmd, sizeof(cmd));
 
-  //  argc = g_syscall( CG_ARGC );
-  //  g_syscall( CG_ARGV, 0, cmdBuffer, sizeof(cmdBuffer) );
+  for (uint8_t i = 0; i < ARRAY_LEN(commands); ++i)
+  {
+    if (!Q_stricmp(cmd, commands[i].cmd))
+    {
+      commands[i].function();
+      return qtrue;
+    }
+  }
 
-  //  g_syscall( CG_PRINT, vaf("^6%s^7\n", cmdBuffer) );
-  //  TODO: check if the player uses one of our commands
+  return qfalse;
+}
 
-  return qfalse; // not a command
+/*
+=================
+CG_InitConsoleCommands
+
+Let the client system know about all of our commands
+so it can perform tab completion
+=================
+*/
+void CG_InitConsoleCommands(void)
+{
+  for (uint8_t i = 0; i < ARRAY_LEN(commands); ++i)
+  {
+    g_syscall(CG_ADDCOMMAND, commands[i].cmd);
+  }
+}
+
+static void CG_PointsTo_f(void)
+{
+  if (g_syscall(CG_ARGC) != 2)
+  {
+    g_syscall(CG_PRINT, "usage: p <pointer>\n");
+    return;
+  }
+
+  char cmd[MAX_STRING_CHARS];
+  g_syscall(CG_ARGV, 1, cmd, sizeof(cmd));
+
+  long const offset = strtol(cmd, NULL, 0);
+  // TODO: assert if offset > g_VM.dataSegmentMask
+  g_syscall(CG_PRINT, vaf("%s -> 0x%lx\n", cmd, *(int32_t*)((intptr_t)g_VM.dataSegment + (intptr_t)offset)));
 }

@@ -18,7 +18,8 @@ add_library(${BINARY_NAME} SHARED
   cg_trig.c
   cg_utils.c
   cg_vm.c
-  q_math.c)
+  q_math.c
+  q_shared.c)
 
 set_target_properties(${BINARY_NAME} PROPERTIES
   LINK_FLAGS_RELEASE -s
