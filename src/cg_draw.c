@@ -70,6 +70,21 @@ void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
 
 /*
 ================
+CG_FillRect
+
+Coordinates are 640*480 virtual values
+=================
+*/
+void CG_FillRect(float x, float y, float w, float h, vec4_t const color)
+{
+  g_syscall(CG_R_SETCOLOR, color);
+  CG_AdjustFrom640(&x, &y, &w, &h);
+  trap_R_DrawStretchPic(x, y, w, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  g_syscall(CG_R_SETCOLOR, NULL);
+}
+
+/*
+================
 CG_DrawSides
 
 Coords are virtual 640x480

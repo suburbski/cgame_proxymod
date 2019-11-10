@@ -31,6 +31,7 @@ typedef enum
 } stereoFrame_t;
 
 void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
+void CG_FillRect(float x, float y, float w, float h, vec4_t const color);
 void CG_DrawSides(float x, float y, float w, float h, float size);
 void CG_DrawTopBottom(float x, float y, float w, float h, float size);
 void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const color);
