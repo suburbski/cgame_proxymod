@@ -8,12 +8,6 @@
 
 #include <stdio.h>
 
-#define SnapVector(v)                                                                                                  \
-  {                                                                                                                    \
-    v[0] = ((int)(v[0]));                                                                                              \
-    v[1] = ((int)(v[1]));                                                                                              \
-    v[2] = ((int)(v[2]));                                                                                              \
-  }
 #define MASK_SHOT 0x6000001
 
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)

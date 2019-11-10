@@ -819,6 +819,13 @@ typedef struct
 
 #define Byte4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
 
+#define SnapVector(v)                                                                                                  \
+  {                                                                                                                    \
+    v[0] = ((int32_t)(v[0]));                                                                                          \
+    v[1] = ((int32_t)(v[1]));                                                                                          \
+    v[2] = ((int32_t)(v[2]));                                                                                          \
+  }
+
 // all drawing is done to a 640*480 virtual screen size
 // and will be automatically scaled to the real resolution
 #define SCREEN_WIDTH 640
