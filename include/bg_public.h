@@ -1,6 +1,7 @@
 #ifndef BG_PUBLIC_H
 #define BG_PUBLIC_H
 
+#include "cg_local.h"
 #include "surfaceflags.h"
 
 #define DEFAULT_GRAVITY 800
@@ -46,5 +47,8 @@
 #define MASK_WATER (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME)
 #define MASK_OPAQUE (CONTENTS_SOLID | CONTENTS_SLIME | CONTENTS_LAVA)
 #define MASK_SHOT (CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE)
+
+void BG_EvaluateTrajectory(trajectory_t const* tr, int32_t atTime, vec3_t result);
+void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t result);
 
 #endif // BG_PUBLIC_H

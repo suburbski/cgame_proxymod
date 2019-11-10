@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(${BINARY_NAME} SHARED
+  bg_misc.c
   cg_ammo.c
   cg_consolecmds.c
   cg_cvar.c

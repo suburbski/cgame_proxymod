@@ -6,37 +6,6 @@
 #include "nade_tracking.h"
 #include "q_math.h"
 
-/*
-================
-BG_EvaluateTrajectory
-
-================
-*/
-void BG_EvaluateTrajectory(trajectory_t const* tr, int atTime, vec3_t result)
-{
-  float deltaTime;
-  deltaTime = (atTime - tr->trTime) * .001; // milliseconds to seconds
-  VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
-  result[2] -= .5f * DEFAULT_GRAVITY * deltaTime * deltaTime;
-}
-
-/*
-================
-BG_EvaluateTrajectoryDelta
-
-For determining velocity at a given time
-================
-*/
-void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int atTime, vec3_t result)
-{
-  float deltaTime;
-  deltaTime = (atTime - tr->trTime) * .001; // milliseconds to seconds
-  VectorCopy(tr->trDelta, result);
-  result[2] -= DEFAULT_GRAVITY * deltaTime;
-}
-
-static qhandle_t beam_shader;
-
 static vmCvar_t gl_path_draw;
 static vmCvar_t gl_path_rgba;
 static vmCvar_t gl_path_preview_draw;
@@ -48,6 +17,8 @@ static cvarTable_t gl_cvars[] = {
   { &gl_path_preview_draw, "mdd_gl_path_preview_draw", "1", CVAR_ARCHIVE },
   { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE },
 };
+
+static qhandle_t beam_shader;
 
 void init_gl(void)
 {
