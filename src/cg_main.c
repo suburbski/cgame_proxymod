@@ -24,8 +24,13 @@
 #include "cg_consolecmds.h"
 #include "cg_draw.h"
 #include "cg_entity.h"
+#include "cg_gl.h"
+#include "cg_hud.h"
+#include "cg_init.h"
 #include "cg_jump.h"
 #include "cg_local.h"
+#include "cg_rl.h"
+#include "cg_time.h"
 #include "cg_trig.h"
 
 cgs_t cgs;
@@ -97,10 +102,15 @@ __DLLEXPORT__ int32_t vmMain(
   switch (cmd)
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
+    init_hud();
+
     init_trig();
 
     init_ammo();
+    init_gl();
     init_jump();
+    init_rl();
+    init_time();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -108,7 +118,12 @@ __DLLEXPORT__ int32_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback )
-    CG_DrawActiveFrame(arg0, arg1, arg2);
+    if (draw_hud())
+    {
+      draw_ammo();
+      draw_jump();
+      draw_time();
+    }
     break;
 
   case CG_CROSSHAIR_PLAYER: // int32_t (*CG_CrosshairPlayer)( void )

@@ -20,8 +20,6 @@
 */
 #include "cg_draw.h"
 
-#include "cg_hud.h"
-
 // DELME
 void draw_compass(void);
 
@@ -30,13 +28,6 @@ int PASSFLOAT(float x)
   float floatTemp;
   floatTemp = x;
   return *(int*)&floatTemp;
-}
-
-int32_t CG_DrawActiveFrame(int32_t serverTime, stereoFrame_t stereoView, qboolean demoPlayback)
-{
-  hud_update();
-  hud_draw();
-  return 0;
 }
 
 void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader)

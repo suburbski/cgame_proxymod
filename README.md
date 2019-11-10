@@ -10,13 +10,13 @@ The proxymod can be configured via the console using the "mdd_" prefix.
 		mdd_cgameproxy_version
 		mdd_hud_draw
 		mdd_hud_opacity
-		
+
 		mdd_hud_ammo_draw
 		mdd_hud_ammo_offsetX
 		mdd_hud_ammo_offsetY
 		mdd_hud_ammo_size
 		mdd_hud_ammo_textColor
-		
+
 		mdd_hud_jumpDelay_draw
 		mdd_hud_jumpDelay_graphOffsetX
 		mdd_hud_jumpDelay_graphOffsetY

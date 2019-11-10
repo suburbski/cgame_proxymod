@@ -344,11 +344,6 @@ typedef struct
   qhandle_t gfxCharsetProp;
   qhandle_t gfxCharsetPropGlow;
   qhandle_t gfxCharsetPropB;
-
-  qhandle_t gfxLogo;
-
-  /* Ammo hud */
-  qhandle_t gfxAmmo[16];
 } cgMedia_t;
 
 typedef struct

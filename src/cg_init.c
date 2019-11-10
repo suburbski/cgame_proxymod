@@ -20,11 +20,6 @@
 */
 #include "cg_init.h"
 
-#include "cg_cvar.h"
-#include "cg_draw.h"
-#include "cg_entity.h"
-#include "cg_hud.h"
-#include "cg_local.h"
 #include "cg_utils.h"
 #include "version.h"
 
@@ -37,6 +32,8 @@ __DLLEXPORT__ void dllEntry(syscall_t psyscall)
   g_syscall = psyscall;
 }
 
+static void init_gfx(int32_t clientNum);
+
 void cg_init(int32_t cmd, int32_t clientNum)
 {
   g_syscall(CG_PRINT, vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
@@ -46,10 +43,9 @@ void cg_init(int32_t cmd, int32_t clientNum)
   memset(&cgs, 0, sizeof(cgs));
 
   init_gfx(clientNum);
-  init_hud();
 }
 
-void init_gfx(int32_t clientNum)
+static void init_gfx(int32_t clientNum)
 {
   cgs.clientNum = clientNum;
 
@@ -67,20 +63,4 @@ void init_gfx(int32_t clientNum)
   cgs.media.gfxCharsetProp     = g_syscall(CG_R_REGISTERSHADER, "menu/art/font1_prop.tga");
   cgs.media.gfxCharsetPropGlow = g_syscall(CG_R_REGISTERSHADER, "menu/art/font1_prop_glo.tga");
   cgs.media.gfxCharsetPropB    = g_syscall(CG_R_REGISTERSHADER, "menu/art/font2_prop.tga");
-}
-
-void init_hud(void)
-{
-  // cgs.media.gfxLogo = g_syscall( CG_R_REGISTERSHADER, "gfx/mdd/rd-mini" );
-  cgs.media.gfxAmmo[0] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_gauntlet");
-  cgs.media.gfxAmmo[1] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_machinegun");
-  cgs.media.gfxAmmo[2] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_shotgun");
-  cgs.media.gfxAmmo[3] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_grenade");
-  cgs.media.gfxAmmo[4] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_rocket");
-  cgs.media.gfxAmmo[5] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_lightning");
-  cgs.media.gfxAmmo[6] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_railgun");
-  cgs.media.gfxAmmo[7] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_plasma");
-  cgs.media.gfxAmmo[8] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_bfg");
-
-  hud_setup();
 }

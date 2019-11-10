@@ -23,7 +23,6 @@
 
 #include <stdint.h>
 
-void init_gfx(int32_t clientNum);
-void init_hud(void);
+void cg_init(int32_t cmd, int32_t clientNum);
 
 #endif // CG_INIT_H

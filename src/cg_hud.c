@@ -20,15 +20,7 @@
 */
 #include "cg_hud.h"
 
-#include "cg_ammo.h"
 #include "cg_cvar.h"
-#include "cg_draw.h"
-#include "cg_gl.h"
-#include "cg_jump.h"
-#include "cg_local.h"
-#include "cg_rl.h"
-#include "cg_time.h"
-#include "cg_utils.h"
 #include "version.h"
 
 vmCvar_t mdd_cgameproxy_version;
@@ -41,45 +33,14 @@ static cvarTable_t cvarTable[] = {
   { &mdd_hud_opacity, "mdd_hud_opacity", "0.5", CVAR_ARCHIVE }
 };
 
-static hud_t hud;
-
-void hud_setup(void)
+void init_hud(void)
 {
   init_cvars(cvarTable, ARRAY_LEN(cvarTable));
-  hud_baseSetup(&hud);
-  init_time();
-  init_rl();
-  init_gl();
 }
 
-void hud_update(void)
+uint8_t draw_hud(void)
 {
-  // TODO: instead of just calling setup
-  // TODO: we check which structs require an update
-  hud_baseSetup(&hud);
-}
+  update_cvars(cvarTable, ARRAY_LEN(cvarTable));
 
-int8_t hud_baseSetup(hud_t* h)
-{
-  float const hud_opacity = cvar_getValue("mdd_hud_opacity");
-
-  h->color[0] = 1.0;
-  h->color[1] = 1.0;
-  h->color[2] = 1.0;
-  h->color[3] = hud_opacity;
-
-  return qtrue;
-}
-
-void hud_draw(void)
-{
-  float const hud_draw = cvar_getValue("mdd_hud_draw");
-  if (!hud_draw) return;
-
-  draw_ammo();
-  draw_jump();
-  draw_time();
-
-  // make sure the last color doesn't leak into defrag's UI
-  g_syscall(CG_R_SETCOLOR, colorWhite);
+  return mdd_hud_draw.integer;
 }

@@ -21,8 +21,6 @@
 #ifndef CG_MAIN_H
 #define CG_MAIN_H
 
-#include <stdint.h>
-
 typedef enum
 {
   CG_INIT,
@@ -65,7 +63,5 @@ typedef enum
   CG_EVENT_HANDLING
   //	void (*CG_EventHandling)(int32_t type);
 } cgameExport_t;
-
-int32_t cg_init(int32_t cmd, int32_t clientNum);
 
 #endif // CG_MAIN_H

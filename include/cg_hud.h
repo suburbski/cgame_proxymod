@@ -21,27 +21,10 @@
 #ifndef CG_HUD_H
 #define CG_HUD_H
 
-#include "cg_local.h"
+#include <stdint.h>
 
-typedef struct
-{
-  vec4_t color;
-} hud_t;
+void init_hud(void);
 
-typedef struct
-{
-  float  width;
-  float  height;
-  float  xPos;
-  float  yPos;
-  vec4_t colorBar;
-  vec4_t colorBackdrop;
-  float  value;
-} hud_bar_t;
-
-void   hud_setup(void);
-void   hud_update(void);
-int8_t hud_baseSetup(hud_t* h);
-void   hud_draw(void);
+uint8_t draw_hud(void);
 
 #endif // CG_HUD_H
