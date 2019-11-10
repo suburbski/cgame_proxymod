@@ -36,8 +36,6 @@ void CG_DrawSides(float x, float y, float w, float h, float size);
 void CG_DrawTopBottom(float x, float y, float w, float h, float size);
 void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const color);
 void CG_DrawPic(float x, float y, float w, float h, qhandle_t hShader);
-void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader);
-void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj);
 
 void CG_DrawChar(float x, float y, float w, float h, uint8_t ch);
 void CG_DrawText(
@@ -58,7 +56,5 @@ void CG_Draw3DModel(
   qhandle_t    skin,
   vec3_t const origin,
   vec3_t const angles);
-
-int8_t getColor(uint8_t color, float opacity, vec4_t c);
 
 #endif // CG_DRAW_H

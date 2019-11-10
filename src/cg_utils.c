@@ -80,22 +80,6 @@ playerState_t const* getPs(void)
   return &tmp->ps;
 }
 
-int8_t isInAir(playerState_t const* ps)
-{
-  if (ps == NULL)
-    return -1;
-  else
-    return (ps->groundEntityNum == ENTITYNUM_NONE) ? qtrue : qfalse;
-}
-
-int8_t isJumping(playerState_t const* ps)
-{
-  if (ps == NULL)
-    return -1;
-  else
-    return (ps->stats[13] & PSF_USERINPUT_JUMP) ? qtrue : qfalse;
-}
-
 uint32_t getTime(void)
 {
   return g_syscall(CG_MILLISECONDS);

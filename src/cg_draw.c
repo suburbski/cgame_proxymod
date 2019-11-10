@@ -140,35 +140,6 @@ void CG_DrawPic(float x, float y, float w, float h, qhandle_t hShader)
   trap_R_DrawStretchPic(x, y, w, h, 0, 0, 1, 1, hShader);
 }
 
-void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader)
-{
-  CG_AdjustFrom640(&x, &y, &width, &height);
-  g_syscall(
-    CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(width),
-    PASSFLOAT(height),
-    PASSFLOAT(0),
-    PASSFLOAT(0),
-    PASSFLOAT(1),
-    PASSFLOAT(1),
-    hShader);
-}
-
-void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj)
-{
-  if (xAdj != NULL) *xAdj = ((cgs.glconfig.vidWidth) / 640.0) * (*xAdj);
-
-  if (yAdj != NULL) *yAdj = ((cgs.glconfig.vidHeight) / 480.0) * (*yAdj);
-
-  if (wAdj != NULL) *wAdj = ((cgs.glconfig.vidWidth) / 640.0) * (*wAdj);
-
-  if (hAdj != NULL) *hAdj = ((cgs.glconfig.vidHeight) / 480.0) * (*hAdj);
-
-  return;
-}
-
 /*
 ===============
 CG_DrawChar
@@ -291,52 +262,4 @@ void CG_Draw3DModel(
   g_syscall(CG_R_CLEARSCENE);
   g_syscall(CG_R_ADDREFENTITYTOSCENE, &ent);
   g_syscall(CG_R_RENDERSCENE, &refdef);
-}
-
-int8_t getColor(uint8_t color, float opacity, vec4_t c)
-{
-  float tmp;
-
-  tmp = opacity;
-  if (opacity > 1.0 || opacity < 0) tmp = 1.0;
-
-  switch (color)
-  {
-  case 0:
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-  case 7:
-    c[0] = color & 1;
-    c[1] = color & 2;
-    c[2] = color & 4;
-    c[3] = tmp;
-    break;
-
-  // these two colors don't fit the pattern, probably a mistake.
-  case 5:
-    c[0] = 0.0;
-    c[1] = 1.0;
-    c[2] = 1.0;
-    c[3] = tmp;
-    break;
-
-  case 6:
-    c[0] = 1.0;
-    c[1] = 0.0;
-    c[2] = 1.0;
-    c[3] = tmp;
-    break;
-
-  default:
-    c[0] = 1.0;
-    c[1] = 1.0;
-    c[2] = 1.0;
-    c[3] = tmp;
-    return qfalse;
-    break;
-  }
-
-  return qtrue;
 }

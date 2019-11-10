@@ -51,8 +51,6 @@ char const* getConfigString(int32_t index);
 
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);
-int8_t               isInAir(playerState_t const* ps);
-int8_t               isJumping(playerState_t const* ps);
 uint32_t             getTime(void);
 
 #endif // CG_UTILS_H
