@@ -533,7 +533,7 @@ float Q_rsqrt(float number)
   i  = 0x5f3759df - (i >> 1); // what the fuck?
   y  = *(float*)&i;
   y  = y * (threehalfs - (x2 * y * y)); // 1st iteration
-  //	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+  //  y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
 
   return y;
 }
@@ -680,10 +680,10 @@ Returns 1, 2, or 1 + 2
 // this is the slow, general version
 int BoxOnPlaneSide2 (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
-  int		i;
-  float	dist1, dist2;
-  int		sides;
-  vec3_t	corners[2];
+  int   i;
+  float dist1, dist2;
+  int   sides;
+  vec3_t  corners[2];
 
   for (i=0 ; i<3 ; i++)
   {
@@ -784,226 +784,226 @@ __declspec(naked) int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s
 
   __asm {
 
-		push ebx
+    push ebx
 
-		cmp bops_initialized, 1
-		je  initialized
-		mov bops_initialized, 1
+    cmp bops_initialized, 1
+    je  initialized
+    mov bops_initialized, 1
 
-		mov Ljmptab[0*4], offset Lcase0
-		mov Ljmptab[1*4], offset Lcase1
-		mov Ljmptab[2*4], offset Lcase2
-		mov Ljmptab[3*4], offset Lcase3
-		mov Ljmptab[4*4], offset Lcase4
-		mov Ljmptab[5*4], offset Lcase5
-		mov Ljmptab[6*4], offset Lcase6
-		mov Ljmptab[7*4], offset Lcase7
+    mov Ljmptab[0*4], offset Lcase0
+    mov Ljmptab[1*4], offset Lcase1
+    mov Ljmptab[2*4], offset Lcase2
+    mov Ljmptab[3*4], offset Lcase3
+    mov Ljmptab[4*4], offset Lcase4
+    mov Ljmptab[5*4], offset Lcase5
+    mov Ljmptab[6*4], offset Lcase6
+    mov Ljmptab[7*4], offset Lcase7
 
 initialized:
 
-		mov edx,dword ptr[4+12+esp]
-		mov ecx,dword ptr[4+4+esp]
-		xor eax,eax
-		mov ebx,dword ptr[4+8+esp]
-		mov al,byte ptr[17+edx]
-		cmp al,8
-		jge Lerror
-		fld dword ptr[0+edx]
-		fld st(0)
-		jmp dword ptr[Ljmptab+eax*4]
+    mov edx,dword ptr[4+12+esp]
+    mov ecx,dword ptr[4+4+esp]
+    xor eax,eax
+    mov ebx,dword ptr[4+8+esp]
+    mov al,byte ptr[17+edx]
+    cmp al,8
+    jge Lerror
+    fld dword ptr[0+edx]
+    fld st(0)
+    jmp dword ptr[Ljmptab+eax*4]
 Lcase0:
-		fmul dword ptr[ebx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ebx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ebx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ebx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase1:
-		fmul dword ptr[ecx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ebx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ecx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ebx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase2:
-		fmul dword ptr[ebx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ecx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ebx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ecx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase3:
-		fmul dword ptr[ecx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ecx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ecx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ecx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase4:
-		fmul dword ptr[ebx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ebx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ebx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ebx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase5:
-		fmul dword ptr[ecx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ebx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ecx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ebx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase6:
-		fmul dword ptr[ebx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ecx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ecx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
-		jmp LSetSides
+    fmul dword ptr[ebx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ecx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ecx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
+    jmp LSetSides
 Lcase7:
-		fmul dword ptr[ecx]
-		fld dword ptr[0+4+edx]
-		fxch st(2)
-		fmul dword ptr[ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[4+ecx]
-		fld dword ptr[0+8+edx]
-		fxch st(2)
-		fmul dword ptr[4+ebx]
-		fxch st(2)
-		fld st(0)
-		fmul dword ptr[8+ecx]
-		fxch st(5)
-		faddp st(3),st(0)
-		fmul dword ptr[8+ebx]
-		fxch st(1)
-		faddp st(3),st(0)
-		fxch st(3)
-		faddp st(2),st(0)
+    fmul dword ptr[ecx]
+    fld dword ptr[0+4+edx]
+    fxch st(2)
+    fmul dword ptr[ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[4+ecx]
+    fld dword ptr[0+8+edx]
+    fxch st(2)
+    fmul dword ptr[4+ebx]
+    fxch st(2)
+    fld st(0)
+    fmul dword ptr[8+ecx]
+    fxch st(5)
+    faddp st(3),st(0)
+    fmul dword ptr[8+ebx]
+    fxch st(1)
+    faddp st(3),st(0)
+    fxch st(3)
+    faddp st(2),st(0)
 LSetSides:
-		faddp st(2),st(0)
-		fcomp dword ptr[12+edx]
-		xor ecx,ecx
-		fnstsw ax
-		fcomp dword ptr[12+edx]
-		and ah,1
-		xor ah,1
-		add cl,ah
-		fnstsw ax
-		and ah,1
-		add ah,ah
-		add cl,ah
-		pop ebx
-		mov eax,ecx
-		ret
+    faddp st(2),st(0)
+    fcomp dword ptr[12+edx]
+    xor ecx,ecx
+    fnstsw ax
+    fcomp dword ptr[12+edx]
+    and ah,1
+    xor ah,1
+    add cl,ah
+    fnstsw ax
+    and ah,1
+    add ah,ah
+    add cl,ah
+    pop ebx
+    mov eax,ecx
+    ret
 Lerror:
-		int 3
+    int 3
   }
 }
 #    pragma warning(default : 4035)
@@ -1096,7 +1096,7 @@ vec_t VectorNormalize2(const vec3_t v, vec3_t out)
   if (length)
   {
 #ifndef Q3_VM // bk0101022 - FPE related
-//	  assert( ((Q_fabs(v[0])!=0.0f) || (Q_fabs(v[1])!=0.0f) || (Q_fabs(v[2])!=0.0f)) );
+//    assert( ((Q_fabs(v[0])!=0.0f) || (Q_fabs(v[1])!=0.0f) || (Q_fabs(v[2])!=0.0f)) );
 #endif
     ilength = 1 / length;
     out[0]  = v[0] * ilength;
@@ -1106,7 +1106,7 @@ vec_t VectorNormalize2(const vec3_t v, vec3_t out)
   else
   {
 #ifndef Q3_VM // bk0101022 - FPE related
-//	  assert( ((Q_fabs(v[0])==0.0f) && (Q_fabs(v[1])==0.0f) && (Q_fabs(v[2])==0.0f)) );
+//    assert( ((Q_fabs(v[0])==0.0f) && (Q_fabs(v[1])==0.0f) && (Q_fabs(v[2])==0.0f)) );
 #endif
     VectorClear(out);
   }
@@ -1180,7 +1180,7 @@ PlaneTypeForNormal
 =================
 */
 /*
-int	PlaneTypeForNormal (vec3_t normal) {
+int PlaneTypeForNormal (vec3_t normal) {
   if ( normal[0] == 1.0 )
     return PLANE_X;
   if ( normal[1] == 1.0 )

@@ -70,10 +70,10 @@ void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
 void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
 {
 #if 0
-	// adjust for wide screens
-	if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-		*x += 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * 640 / 480 ) );
-	}
+  // adjust for wide screens
+  if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
+    *x += 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * 640 / 480 ) );
+  }
 #endif
   // scale for screen sizes
   *x *= cgs.screenXScale;

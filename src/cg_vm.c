@@ -117,7 +117,7 @@ static void VM_Run(vm_t* vm)
       {
         int32_t  ret  = 0;
         int32_t* args = NULL;
-        // int			*fp;
+        // int      *fp;
 
         // system trap or real system function
 
@@ -488,9 +488,9 @@ static void VM_Run(vm_t* vm)
     }
   } while ((int32_t)(intptr_t)opPointer);
 
-  //	vm->opBase = opBase;
+  //  vm->opBase = opBase;
   vm->opStack = opStack;
-  //	vm->opPointer = opPointer;
+  //  vm->opPointer = opPointer;
 }
 
 // public function to begin the process of executing a VM
