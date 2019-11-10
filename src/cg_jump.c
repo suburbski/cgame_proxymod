@@ -301,6 +301,13 @@ void draw_jump(void)
   // draw text next to it
   if (jump_.mode & 1)
   {
-    CG_DrawText(jump_.textPosX, jump_.textPosY, jump_.textSize, jump_.textColor, qfalse, vaf("%i ms", jump_.fullDelay));
+    CG_DrawText(
+      jump_.textPosX,
+      jump_.textPosY,
+      jump_.textSize,
+      vaf("%i ms", jump_.fullDelay),
+      jump_.textColor,
+      qfalse,
+      qtrue /*shadow*/);
   }
 }

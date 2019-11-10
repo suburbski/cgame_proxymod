@@ -20,6 +20,8 @@
 */
 #include "cg_draw.h"
 
+#include "cg_utils.h"
+
 static inline int PASSFLOAT(float x)
 {
   union
@@ -63,9 +65,9 @@ void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
 #endif
   // scale for screen sizes
   *x *= cgs.screenXScale;
-  *y *= cgs.screenYScale;
+  *y *= cgs.screenXScale; // Note that screenXScale is used to avoid widescreen stretching.
   *w *= cgs.screenXScale;
-  *h *= cgs.screenYScale;
+  *h *= cgs.screenXScale; // Note that screenXScale is used to avoid widescreen stretching.
 }
 
 /*
@@ -121,19 +123,17 @@ void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const co
   g_syscall(CG_R_SETCOLOR, NULL);
 }
 
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
+/*
+================
+CG_DrawPic
+
+Coordinates are 640*480 virtual values
+=================
+*/
+void CG_DrawPic(float x, float y, float w, float h, qhandle_t hShader)
 {
-  g_syscall(
-    CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(width),
-    PASSFLOAT(height),
-    PASSFLOAT(0),
-    PASSFLOAT(0),
-    PASSFLOAT(1),
-    PASSFLOAT(1),
-    hShader);
+  CG_AdjustFrom640(&x, &y, &w, &h);
+  trap_R_DrawStretchPic(x, y, w, h, 0, 0, 1, 1, hShader);
 }
 
 void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader)
@@ -165,65 +165,80 @@ void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj)
   return;
 }
 
-void drawChar(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t c)
+/*
+===============
+CG_DrawChar
+
+Coordinates and size in 640*480 virtual screen size
+===============
+*/
+void CG_DrawChar(float x, float y, float w, float h, uint8_t ch)
 {
-  int32_t row, col;
-  float   frow, fcol;
-  float   size;
+  if (ch == ' ') return;
 
-  row = c >> 4;
-  col = c & 15;
+  float const frow = .0625 * (ch >> 4);
+  float const fcol = .0625 * (ch & 15);
+  float const size = .0625;
 
-  frow = row * 0.0625;
-  fcol = col * 0.0625;
-  size = 0.0625;
-
-  g_syscall(
-    CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(width),
-    PASSFLOAT(height),
-    PASSFLOAT(fcol),
-    PASSFLOAT(frow),
-    PASSFLOAT(fcol + size),
-    PASSFLOAT(frow + size),
-    cgs.media.gfxCharsetShader);
+  CG_AdjustFrom640(&x, &y, &w, &h);
+  trap_R_DrawStretchPic(x, y, w, h, fcol, frow, fcol + size, frow + size, cgs.media.gfxCharsetShader);
 }
 
-void CG_DrawText(float x, float y, float sizePx, vec4_t color, uint8_t alignRight, const char* string)
+void CG_DrawText(
+  float        x,
+  float        y,
+  float        sizePx,
+  char const*  string,
+  vec4_t const color,
+  qboolean     alignRight,
+  qboolean     shadow)
 {
-  const char* s;
-  float       tmpX;
-  uint32_t    len;
-  int32_t     i;
-
   if (string == NULL) return;
 
-  s    = string;
+  float         tmpX = x;
+  int32_t const len  = strlen(string);
+
+  // draw the drop shadow
+  if (shadow)
+  {
+    g_syscall(CG_R_SETCOLOR, colorBlack);
+    if (alignRight)
+    {
+      for (int32_t i = len - 1; i >= 0; --i)
+      {
+        tmpX -= sizePx;
+        CG_DrawChar(tmpX + 2, y + 2, sizePx, sizePx, string[i]);
+      }
+    }
+    else
+    {
+      for (int32_t i = 0; i < len; ++i)
+      {
+        CG_DrawChar(tmpX + 2, y + 2, sizePx, sizePx, string[i]);
+        tmpX += sizePx;
+      }
+    }
+  }
+
   tmpX = x;
-
   g_syscall(CG_R_SETCOLOR, color);
-
   if (alignRight)
   {
-    len = strlen(string);
-    for (i = len - 1; i >= 0; i--)
+    for (int32_t i = len - 1; i >= 0; --i)
     {
       tmpX -= sizePx;
-      drawChar(tmpX, y, sizePx, sizePx, s[i]);
+      CG_DrawChar(tmpX, y, sizePx, sizePx, string[i]);
     }
   }
   else
   {
-    // align left
-    while (*s != '\0')
+    for (int32_t i = 0; i < len; ++i)
     {
-      drawChar(tmpX, y, sizePx, sizePx, *s);
-      s++;
+      CG_DrawChar(tmpX, y, sizePx, sizePx, string[i]);
       tmpX += sizePx;
     }
   }
+  g_syscall(CG_R_SETCOLOR, NULL);
 }
 
 int8_t getColor(uint8_t color, float opacity, vec4_t c)

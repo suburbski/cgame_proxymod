@@ -35,12 +35,19 @@ void CG_FillRect(float x, float y, float w, float h, vec4_t const color);
 void CG_DrawSides(float x, float y, float w, float h, float size);
 void CG_DrawTopBottom(float x, float y, float w, float h, float size);
 void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const color);
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
+void CG_DrawPic(float x, float y, float w, float h, qhandle_t hShader);
 void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader);
 void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj);
 
-void   drawChar(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t c);
-void   CG_DrawText(float x, float y, float sizePx, vec4_t color, uint8_t alignRight, const char* string);
+void CG_DrawChar(float x, float y, float w, float h, uint8_t ch);
+void CG_DrawText(
+  float        x,
+  float        y,
+  float        sizePx,
+  char const*  string,
+  vec4_t const color,
+  qboolean     alignRight,
+  qboolean     shadow);
 int8_t getColor(uint8_t color, float opacity, vec4_t c);
 
 #endif // CG_DRAW_H
