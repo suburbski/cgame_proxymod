@@ -70,12 +70,12 @@ typedef struct
   vmCvar_t* vmCvar;
   char*     cvarName;
   char*     defaultString;
-  int       cvarFlags;
+  int32_t   cvarFlags;
 } cvarTable_t;
 
-void  ParseVec(char* data, float* vec, uint8_t size);
-int   cvar_getInteger(char const* var_name);
-float cvar_getValue(char const* var_name);
+void    ParseVec(char* data, float* vec, uint8_t size);
+int32_t cvar_getInteger(char const* var_name);
+float   cvar_getValue(char const* var_name);
 
 void init_cvars(cvarTable_t const* cvars, size_t size);
 void update_cvars(cvarTable_t const* cvars, size_t size);
