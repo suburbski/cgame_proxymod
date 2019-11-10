@@ -163,7 +163,8 @@ int32_t QDECL VM_Exec(
 qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem);
 void     VM_Destroy(vm_t* vm);
 qboolean VM_Restart(vm_t* vm, qboolean savemem);
-void*    VM_ExplicitArgPtr(vm_t* vm, int32_t intValue);
+void*    VM_ArgPtr(int32_t intValue);
+void*    VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue);
 int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args);
 int32_t       int_byteswap(int32_t i);
 short         short_byteswap(short s);

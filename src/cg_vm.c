@@ -784,16 +784,13 @@ qboolean VM_Restart(vm_t* vm, qboolean savemem)
   return qtrue;
 }
 
-void* VM_ExplicitArgPtr(vm_t* vm, int32_t intValue)
+void* VM_ArgPtr(int32_t intValue)
 {
-  if (!intValue)
-  {
-    return NULL;
-  }
+  return (void*)(g_VM.dataSegment + (intValue & g_VM.dataSegmentMask));
+}
 
-  // currentVM is missing on reconnect here as well?
-  if (vm == NULL) return NULL;
-
+void* VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue)
+{
   return (void*)(vm->dataSegment + (intValue & vm->dataSegmentMask));
 }
 

@@ -1,6 +1,8 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
 // This file must be identical in the quake and utils directories
+#ifndef SURFACEFLAGS_H
+#define SURFACEFLAGS_H
 
 // contents flags are seperate bits
 // a given brush can contribute multiple content bits
@@ -58,3 +60,5 @@
 #define SURF_ALPHASHADOW 0x10000 // do per-pixel light shadow casting in q3map
 #define SURF_NODLIGHT 0x20000    // don't dlight even if solid (solid lava, skies)
 #define SURF_DUST 0x40000        // leave a dust trail when walking on this surface
+
+#endif // SURFACEFLAGS_H

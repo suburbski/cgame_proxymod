@@ -29,7 +29,7 @@ static vmCvar_t pps_offset;
 
 static cvarTable_t hud_cvars[] = { { &hud, "mdd_hud", "1", CVAR_ARCHIVE },
                                    { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
-                                   { &pps_offset, "mdd_pps_offset", "957848", CVAR_ARCHIVE } };
+                                   { &pps_offset, "mdd_pps_offset", "0xe9d98", CVAR_ARCHIVE } };
 
 void init_hud(void)
 {

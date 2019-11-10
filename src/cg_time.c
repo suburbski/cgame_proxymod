@@ -6,7 +6,6 @@
 #include "cg_utils.h"
 #include "nade_tracking.h"
 #include "q_math.h"
-#include "surfaceflags.h"
 
 #define MAX_GB_TIME 250
 #define MAX_RL_TIME 15000
