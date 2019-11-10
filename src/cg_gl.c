@@ -49,6 +49,71 @@ static cvarTable_t gl_cvars[] = {
   { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE },
 };
 
+void init_gl(void)
+{
+  init_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
+  beam_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
+}
+
+static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color);
+
+void draw_gl(void)
+{
+  vec3_t        forward, muzzle;
+  entityState_t entity;
+  uint8_t       path_color[4];
+  uint8_t       preview_color[4];
+  vec4_t        color;
+
+  playerState_t const* const ps = getPs();
+  if (ps->weapon != WP_GRENADE_LAUNCHER) return;
+
+  update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
+
+  snapshot_t const* const snap = getSnap();
+
+  if (gl_path_preview_draw.integer)
+  {
+    ParseVec(gl_path_preview_rgba.string, color, 4);
+    for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
+
+    AngleVectors(ps->viewangles, forward, NULL, NULL);
+    VectorCopy(ps->origin, muzzle);
+    muzzle[2] += ps->viewheight;
+    VectorMA(muzzle, 14, forward, muzzle);
+    SnapVector(muzzle);
+
+    forward[2] += .2f;
+    VectorNormalize(forward);
+
+    entity.pos.trType = TR_GRAVITY;
+    entity.pos.trTime = snap->serverTime - 50;
+    VectorCopy(muzzle, entity.pos.trBase);
+    VectorScale(forward, 700, entity.pos.trDelta);
+    SnapVector(entity.pos.trDelta);
+
+    draw_nade_path(&entity.pos, cgs.time + 2500, preview_color);
+  }
+
+  if (!gl_path_draw.integer) return;
+
+  ParseVec(gl_path_rgba.string, color, 4);
+  for (uint8_t i = 0; i < 4; ++i) path_color[i] = color[i] * 255;
+
+  for (uint8_t i = 0; i < MAX_NADES; ++i)
+  {
+    if (nades[i].id >= 0 && nades[i].seen)
+    {
+      for (int j = 0; j < snap->numEntities; ++j)
+      {
+        entityState_t const* const entity = &snap->entities[j];
+        if (entity->number != nades[i].id) continue;
+        draw_nade_path(&entity->pos, nades[i].explode_time, path_color);
+      }
+    }
+  }
+}
+
 static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color)
 {
   refEntity_t beam;
@@ -118,69 +183,6 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
         BG_EvaluateTrajectory(&local_pos, cgs.time, beam.oldorigin);
       else
         VectorCopy(local_pos.trBase, beam.oldorigin);
-    }
-  }
-}
-
-void init_gl(void)
-{
-  init_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
-  beam_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
-}
-
-void draw_gl(void)
-{
-  vec3_t        forward, muzzle;
-  entityState_t entity;
-  uint8_t       path_color[4];
-  uint8_t       preview_color[4];
-  vec4_t        color;
-
-  playerState_t const* const ps = getPs();
-  if (ps->weapon != WP_GRENADE_LAUNCHER) return;
-
-  update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
-
-  snapshot_t const* const snap = getSnap();
-
-  if (gl_path_preview_draw.integer)
-  {
-    ParseVec(gl_path_preview_rgba.string, color, 4);
-    for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
-
-    AngleVectors(ps->viewangles, forward, NULL, NULL);
-    VectorCopy(ps->origin, muzzle);
-    muzzle[2] += ps->viewheight;
-    VectorMA(muzzle, 14, forward, muzzle);
-    SnapVector(muzzle);
-
-    forward[2] += .2f;
-    VectorNormalize(forward);
-
-    entity.pos.trType = TR_GRAVITY;
-    entity.pos.trTime = snap->serverTime - 50;
-    VectorCopy(muzzle, entity.pos.trBase);
-    VectorScale(forward, 700, entity.pos.trDelta);
-    SnapVector(entity.pos.trDelta);
-
-    draw_nade_path(&entity.pos, cgs.time + 2500, preview_color);
-  }
-
-  if (!gl_path_draw.integer) return;
-
-  ParseVec(gl_path_rgba.string, color, 4);
-  for (uint8_t i = 0; i < 4; ++i) path_color[i] = color[i] * 255;
-
-  for (uint8_t i = 0; i < MAX_NADES; ++i)
-  {
-    if (nades[i].id >= 0 && nades[i].seen)
-    {
-      for (int j = 0; j < snap->numEntities; ++j)
-      {
-        entityState_t const* const entity = &snap->entities[j];
-        if (entity->number != nades[i].id) continue;
-        draw_nade_path(&entity->pos, nades[i].explode_time, path_color);
-      }
     }
   }
 }
