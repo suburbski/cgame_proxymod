@@ -40,7 +40,7 @@ static cvarTable_t gl_trace_cvars[] = {
   { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 0.5 0 1", CVAR_ARCHIVE },
 };
 
-void draw_nade_path(trajectory_t* pos, int end_time, const unsigned char* color)
+static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color)
 {
   refEntity_t beam;
   trace_t     trace;
@@ -63,9 +63,10 @@ void draw_nade_path(trajectory_t* pos, int end_time, const unsigned char* color)
   else
     VectorCopy(pos->trBase, beam.oldorigin);
 
-  for (int leveltime = pos->trTime + 8; leveltime < end_time; leveltime += 8)
+  trajectory_t local_pos = *pos;
+  for (int leveltime = local_pos.trTime + 8; leveltime < end_time; leveltime += 8)
   {
-    BG_EvaluateTrajectory(pos, leveltime, origin);
+    BG_EvaluateTrajectory(&local_pos, leveltime, origin);
     g_syscall(CG_CM_BOXTRACE, &trace, currentOrigin, origin, NULL, NULL, NULL, MASK_SHOT);
     VectorCopy(trace.endpos, currentOrigin);
 
@@ -92,20 +93,20 @@ void draw_nade_path(trajectory_t* pos, int end_time, const unsigned char* color)
       int    hitTime;
 
       hitTime = leveltime - 8 + 8 * trace.fraction;
-      BG_EvaluateTrajectoryDelta(pos, hitTime, velocity);
+      BG_EvaluateTrajectoryDelta(&local_pos, hitTime, velocity);
       dot = DotProduct(velocity, trace.plane.normal);
-      VectorMA(velocity, -2 * dot, trace.plane.normal, pos->trDelta);
+      VectorMA(velocity, -2 * dot, trace.plane.normal, local_pos.trDelta);
 
-      VectorScale(pos->trDelta, 0.65, pos->trDelta);
+      VectorScale(local_pos.trDelta, 0.65, local_pos.trDelta);
 
       VectorAdd(currentOrigin, trace.plane.normal, currentOrigin);
-      VectorCopy(currentOrigin, pos->trBase);
-      pos->trTime  = leveltime;
-      sample_timer = 0;
-      if (cgs.time > pos->trTime)
-        BG_EvaluateTrajectory(pos, cgs.time, beam.oldorigin);
+      VectorCopy(currentOrigin, local_pos.trBase);
+      local_pos.trTime = leveltime;
+      sample_timer     = 0;
+      if (cgs.time > local_pos.trTime)
+        BG_EvaluateTrajectory(&local_pos, cgs.time, beam.oldorigin);
       else
-        VectorCopy(pos->trBase, beam.oldorigin);
+        VectorCopy(local_pos.trBase, beam.oldorigin);
     }
   }
 }
@@ -150,8 +151,8 @@ void draw_gl(void)
   sscanf(gl_path_preview_rgba.string, "%f %f %f %f", &color[0], &color[1], &color[2], &color[3]);
   for (int i = 0; i < 4; i++) preview_color[i] = color[i] * 255;
 
-  playerState_t* ps   = getPs();
-  snapshot_t*    snap = getSnap();
+  playerState_t const* const ps   = getPs();
+  snapshot_t const* const    snap = getSnap();
 
   if (ps->weapon == WP_GRENADE_LAUNCHER && gl_path_preview_draw.integer)
   {
@@ -181,7 +182,7 @@ void draw_gl(void)
     {
       for (int j = 0; j < snap->numEntities; j++)
       {
-        entityState_t* entity = &snap->entities[j];
+        entityState_t const* const entity = &snap->entities[j];
         if (entity->number != nades[i].id) continue;
         draw_nade_path(&entity->pos, nades[i].explode_time, path_color);
       }

@@ -75,9 +75,8 @@ enum
 
 static int8_t hud_jumpDelayControl(hud_jumpDelay_t* jumpHud)
 {
-  int8_t         inAir = 0, jump = 0, state = 0, lastState = 0;
-  uint32_t       now;
-  playerState_t* ps;
+  int8_t   inAir = 0, jump = 0, state = 0, lastState = 0;
+  uint32_t now;
   /*
    * To draw this hud we have to make a little state machine
    *
@@ -88,11 +87,11 @@ static int8_t hud_jumpDelayControl(hud_jumpDelay_t* jumpHud)
    * AIR_JUMPNORELEASE: The player is midair, without releasing the jump button
    */
 
-  now       = getSnap()->serverTime;
-  ps        = getPs();
-  inAir     = isInAir(ps);
-  jump      = isJumping(ps);
-  lastState = jumpHud->lastState;
+  now                           = getSnap()->serverTime;
+  playerState_t const* const ps = getPs();
+  inAir                         = isInAir(ps);
+  jump                          = isJumping(ps);
+  lastState                     = jumpHud->lastState;
 
   // determine current state
   switch (lastState)

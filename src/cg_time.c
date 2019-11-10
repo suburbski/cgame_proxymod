@@ -57,11 +57,9 @@ void init_time(void)
 
 void draw_time(void)
 {
-  vec4_t         outline_color;
-  vec4_t         item_color;
-  vec4_t         gb_color;
-  snapshot_t*    snap;
-  playerState_t* ps;
+  vec4_t outline_color;
+  vec4_t item_color;
+  vec4_t gb_color;
 
   update_timer_cvars();
 
@@ -82,8 +80,8 @@ void draw_time(void)
   // draw the outline
   draw_outline(outline_color);
 
-  snap = getSnap();
-  ps   = getPs();
+  snapshot_t const* const    snap = getSnap();
+  playerState_t const* const ps   = getPs();
 
   // gb stuff
   // todo: make gb timer off-able and use pps if available and cvar

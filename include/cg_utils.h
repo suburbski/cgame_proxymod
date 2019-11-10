@@ -23,8 +23,6 @@
 
 #include "cg_local.h"
 
-#define ARRAY_LEN(x) (sizeof(x) / sizeof(*(x)))
-
 #define PSF_USERINPUT_NONE 0
 #define PSF_USERINPUT_FORWARD 1
 #define PSF_USERINPUT_BACKWARD 2
@@ -49,12 +47,12 @@ extern vec4_t colorDkGrey;
 
 // strings
 char*       vaf(char* format, ...);
-const char* getConfigString(int32_t index);
+char const* getConfigString(int32_t index);
 
-snapshot_t*    getSnap(void);
-playerState_t* getPs(void);
-int8_t         isInAir(playerState_t* ps);
-int8_t         isJumping(playerState_t* ps);
-uint32_t       getTime(void);
+snapshot_t const*    getSnap(void);
+playerState_t const* getPs(void);
+int8_t               isInAir(playerState_t const* ps);
+int8_t               isJumping(playerState_t const* ps);
+uint32_t             getTime(void);
 
 #endif // CG_UTILS_H

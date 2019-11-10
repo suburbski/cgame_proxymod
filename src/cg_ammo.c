@@ -75,14 +75,13 @@ void draw_ammo(void)
 
   if (!mdd_hud_ammo_draw.integer) return;
 
-  uint32_t       y, i;
-  playerState_t* ps;
-  float          size;
-  uint16_t       hasWeapon;
-  uint16_t       ammo;
+  uint32_t y, i;
+  float    size;
+  uint16_t hasWeapon;
+  uint16_t ammo;
 
-  ps   = getPs();
-  size = ammo_.size;
+  playerState_t const* const ps = getPs();
+  size                          = ammo_.size;
 
   y = ammo_.yPos;
   for (i = 1; i < 9; i++)

@@ -51,7 +51,7 @@ char* vaf(char* format, ...)
   return str;
 }
 
-const char* getConfigString(int32_t index)
+char const* getConfigString(int32_t index)
 {
   if (index < 0 || index >= MAX_CONFIGSTRINGS)
   {
@@ -60,7 +60,7 @@ const char* getConfigString(int32_t index)
   return cgs.gameState.stringData + cgs.gameState.stringOffsets[index];
 }
 
-snapshot_t* getSnap(void)
+snapshot_t const* getSnap(void)
 {
   static snapshot_t tmp;
   uint32_t          curSnapNum;
@@ -72,15 +72,15 @@ snapshot_t* getSnap(void)
   return &tmp;
 }
 
-playerState_t* getPs(void)
+playerState_t const* getPs(void)
 {
-  snapshot_t* tmp;
+  snapshot_t const* tmp;
   tmp = getSnap();
 
   return &tmp->ps;
 }
 
-int8_t isInAir(playerState_t* ps)
+int8_t isInAir(playerState_t const* ps)
 {
   if (ps == NULL)
     return -1;
@@ -88,7 +88,7 @@ int8_t isInAir(playerState_t* ps)
     return (ps->groundEntityNum == ENTITYNUM_NONE) ? qtrue : qfalse;
 }
 
-int8_t isJumping(playerState_t* ps)
+int8_t isJumping(playerState_t const* ps)
 {
   if (ps == NULL)
     return -1;

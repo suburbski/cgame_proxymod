@@ -51,15 +51,13 @@ void init_rl(void)
 
 void draw_rl(void)
 {
-  snapshot_t*    snap;
-  playerState_t* ps;
-  refEntity_t    beam;
-  trace_t        beam_trace;
-  vec3_t         origin;
-  vec3_t         dest;
+  refEntity_t beam;
+  trace_t     beam_trace;
+  vec3_t      origin;
+  vec3_t      dest;
 
-  snap = getSnap();
-  ps   = getPs();
+  snapshot_t const* const    snap = getSnap();
+  playerState_t const* const ps   = getPs();
 
   update_rl_trace_cvars();
 
