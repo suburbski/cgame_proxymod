@@ -35,6 +35,13 @@ void ParseVec(char* data, float* vec, uint8_t size)
   }
 }
 
+int cvar_getInteger(char const* var_name)
+{
+  char buffer[MAX_CVAR_VALUE_STRING];
+  g_syscall(CG_CVAR_VARIABLESTRINGBUFFER, var_name, buffer, sizeof(buffer));
+  return atoi(buffer);
+}
+
 float cvar_getValue(char const* var_name)
 {
   char buffer[MAX_CVAR_VALUE_STRING];

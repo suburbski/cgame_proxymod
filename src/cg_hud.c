@@ -23,24 +23,22 @@
 #include "cg_cvar.h"
 #include "version.h"
 
-vmCvar_t mdd_cgameproxy_version;
-vmCvar_t mdd_hud_draw;
-vmCvar_t mdd_hud_opacity;
+static vmCvar_t hud;
+static vmCvar_t version;
+static vmCvar_t pps_offset;
 
-static cvarTable_t cvarTable[] = {
-  { &mdd_cgameproxy_version, "mdd_cgameproxy_version", VERSION, CVAR_USERINFO | CVAR_INIT },
-  { &mdd_hud_draw, "mdd_hud_draw", "1", CVAR_ARCHIVE },
-  { &mdd_hud_opacity, "mdd_hud_opacity", "0.5", CVAR_ARCHIVE }
-};
+static cvarTable_t hud_cvars[] = { { &hud, "mdd_hud", "1", CVAR_ARCHIVE },
+                                   { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
+                                   { &pps_offset, "mdd_pps_offset", "957848", CVAR_ARCHIVE } };
 
 void init_hud(void)
 {
-  init_cvars(cvarTable, ARRAY_LEN(cvarTable));
+  init_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 }
 
 uint8_t draw_hud(void)
 {
-  update_cvars(cvarTable, ARRAY_LEN(cvarTable));
+  update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
-  return mdd_hud_draw.integer;
+  return hud.integer;
 }

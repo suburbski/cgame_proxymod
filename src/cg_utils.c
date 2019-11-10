@@ -20,6 +20,9 @@
 */
 #include "cg_utils.h"
 
+#include "cg_cvar.h"
+#include "cg_vm.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -74,10 +77,14 @@ snapshot_t const* getSnap(void)
 
 playerState_t const* getPs(void)
 {
-  snapshot_t const* tmp;
-  tmp = getSnap();
-
-  return &tmp->ps;
+  if (!cvar_getInteger("g_synchronousClients"))
+  {
+    return (playerState_t const*)((intptr_t)g_VM.dataSegment + (intptr_t)cvar_getInteger("mdd_pps_offset"));
+  }
+  else
+  {
+    return &getSnap()->ps;
+  }
 }
 
 uint32_t getTime(void)
