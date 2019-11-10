@@ -1,43 +1,52 @@
 #include "cg_gl.h"
 
+#include "bg_public.h"
 #include "cg_cvar.h"
-#include "cg_local.h"
 #include "cg_utils.h"
 #include "nade_tracking.h"
 #include "q_math.h"
 
-#include <stdio.h>
+/*
+================
+BG_EvaluateTrajectory
 
-#define MASK_SHOT 0x6000001
-
-void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
+================
+*/
+void BG_EvaluateTrajectory(trajectory_t const* tr, int atTime, vec3_t result)
 {
   float deltaTime;
-  deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
+  deltaTime = (atTime - tr->trTime) * .001; // milliseconds to seconds
   VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
-  result[2] -= 0.5 * 800 * deltaTime * deltaTime;
+  result[2] -= .5f * DEFAULT_GRAVITY * deltaTime * deltaTime;
 }
 
-void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result)
+/*
+================
+BG_EvaluateTrajectoryDelta
+
+For determining velocity at a given time
+================
+*/
+void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int atTime, vec3_t result)
 {
   float deltaTime;
-  deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
+  deltaTime = (atTime - tr->trTime) * .001; // milliseconds to seconds
   VectorCopy(tr->trDelta, result);
-  result[2] -= 800 * deltaTime;
+  result[2] -= DEFAULT_GRAVITY * deltaTime;
 }
 
-qhandle_t beam_shader;
+static qhandle_t beam_shader;
 
 static vmCvar_t gl_path_draw;
 static vmCvar_t gl_path_rgba;
 static vmCvar_t gl_path_preview_draw;
 static vmCvar_t gl_path_preview_rgba;
 
-static cvarTable_t gl_trace_cvars[] = {
-  { &gl_path_draw, "mdd_gl_path_draw", "0", CVAR_ARCHIVE },
-  { &gl_path_rgba, "mdd_gl_path_rgba", "0.25 0.25 0.25 1", CVAR_ARCHIVE },
-  { &gl_path_preview_draw, "mdd_gl_path_preview_draw", "0", CVAR_ARCHIVE },
-  { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 0.5 0 1", CVAR_ARCHIVE },
+static cvarTable_t gl_cvars[] = {
+  { &gl_path_draw, "mdd_gl_path_draw", "1", CVAR_ARCHIVE },
+  { &gl_path_rgba, "mdd_gl_path_rgba", "0 1 0 1", CVAR_ARCHIVE },
+  { &gl_path_preview_draw, "mdd_gl_path_preview_draw", "1", CVAR_ARCHIVE },
+  { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE },
 };
 
 static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color)
@@ -80,7 +89,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
         vec3_t d, saved_origin;
         VectorCopy(beam.origin, saved_origin);
         VectorSubtract(beam.origin, beam.oldorigin, d);
-        VectorMA(beam.oldorigin, 0.5, d, beam.origin);
+        VectorMA(beam.oldorigin, .5f, d, beam.origin);
         g_syscall(CG_R_ADDREFENTITYTOSCENE, &beam);
         VectorCopy(saved_origin, beam.oldorigin);
       }
@@ -88,6 +97,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
 
     if (trace.fraction != 1)
     {
+      // CG_ReflectVelocity: reflect the velocity on the trace plane
       vec3_t velocity;
       float  dot;
       int    hitTime;
@@ -97,12 +107,13 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
       dot = DotProduct(velocity, trace.plane.normal);
       VectorMA(velocity, -2 * dot, trace.plane.normal, local_pos.trDelta);
 
-      VectorScale(local_pos.trDelta, 0.65, local_pos.trDelta);
+      VectorScale(local_pos.trDelta, .65f, local_pos.trDelta);
 
       VectorAdd(currentOrigin, trace.plane.normal, currentOrigin);
       VectorCopy(currentOrigin, local_pos.trBase);
       local_pos.trTime = leveltime;
-      sample_timer     = 0;
+
+      sample_timer = 0;
       if (cgs.time > local_pos.trTime)
         BG_EvaluateTrajectory(&local_pos, cgs.time, beam.oldorigin);
       else
@@ -111,27 +122,9 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
   }
 }
 
-void init_gl_trace_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(gl_trace_cvars); i++)
-  {
-    g_syscall(
-      CG_CVAR_REGISTER,
-      gl_trace_cvars[i].vmCvar,
-      gl_trace_cvars[i].cvarName,
-      gl_trace_cvars[i].defaultString,
-      gl_trace_cvars[i].cvarFlags);
-  }
-}
-
-void update_gl_trace_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(gl_trace_cvars); i++) g_syscall(CG_CVAR_UPDATE, gl_trace_cvars[i].vmCvar);
-}
-
 void init_gl(void)
 {
-  init_gl_trace_cvars();
+  init_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
   beam_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
 }
 
@@ -139,30 +132,29 @@ void draw_gl(void)
 {
   vec3_t        forward, muzzle;
   entityState_t entity;
-  unsigned char path_color[4];
-  unsigned char preview_color[4];
+  uint8_t       path_color[4];
+  uint8_t       preview_color[4];
   vec4_t        color;
 
-  update_gl_trace_cvars();
+  playerState_t const* const ps = getPs();
+  if (ps->weapon != WP_GRENADE_LAUNCHER) return;
 
-  sscanf(gl_path_rgba.string, "%f %f %f %f", &color[0], &color[1], &color[2], &color[3]);
-  for (int i = 0; i < 4; i++) path_color[i] = color[i] * 255;
+  update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
 
-  sscanf(gl_path_preview_rgba.string, "%f %f %f %f", &color[0], &color[1], &color[2], &color[3]);
-  for (int i = 0; i < 4; i++) preview_color[i] = color[i] * 255;
+  snapshot_t const* const snap = getSnap();
 
-  playerState_t const* const ps   = getPs();
-  snapshot_t const* const    snap = getSnap();
-
-  if (ps->weapon == WP_GRENADE_LAUNCHER && gl_path_preview_draw.integer)
+  if (gl_path_preview_draw.integer)
   {
+    ParseVec(gl_path_preview_rgba.string, color, 4);
+    for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
+
     AngleVectors(ps->viewangles, forward, NULL, NULL);
     VectorCopy(ps->origin, muzzle);
     muzzle[2] += ps->viewheight;
     VectorMA(muzzle, 14, forward, muzzle);
     SnapVector(muzzle);
 
-    forward[2] += 0.2;
+    forward[2] += .2f;
     VectorNormalize(forward);
 
     entity.pos.trType = TR_GRAVITY;
@@ -176,11 +168,14 @@ void draw_gl(void)
 
   if (!gl_path_draw.integer) return;
 
-  for (int i = 0; i < MAX_NADES; i++)
+  ParseVec(gl_path_rgba.string, color, 4);
+  for (uint8_t i = 0; i < 4; ++i) path_color[i] = color[i] * 255;
+
+  for (uint8_t i = 0; i < MAX_NADES; ++i)
   {
     if (nades[i].id >= 0 && nades[i].seen)
     {
-      for (int j = 0; j < snap->numEntities; j++)
+      for (int j = 0; j < snap->numEntities; ++j)
       {
         entityState_t const* const entity = &snap->entities[j];
         if (entity->number != nades[i].id) continue;
