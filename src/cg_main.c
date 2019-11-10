@@ -28,7 +28,6 @@
 #include "cg_hud.h"
 #include "cg_init.h"
 #include "cg_jump.h"
-#include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_time.h"
 #include "cg_trig.h"
@@ -104,7 +103,7 @@ __DLLEXPORT__ int32_t vmMain(
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     init_hud();
 
-    init_trig();
+    init_trig(); // Has to be before any CG_R_REGISTERMODEL.
 
     init_ammo();
     init_gl();
