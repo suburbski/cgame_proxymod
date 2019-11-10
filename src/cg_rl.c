@@ -1,13 +1,9 @@
 #include "cg_rl.h"
 
 #include "cg_cvar.h"
-#include "cg_draw.h"
-#include "cg_local.h"
 #include "cg_utils.h"
 #include "q_math.h"
 #include "surfaceflags.h"
-
-#include <stdio.h>
 
 #define MAX_RL_TIME 15000
 
@@ -17,22 +13,22 @@
 
 static qhandle_t line_shader;
 
-static vmCvar_t mark_draw;
-static vmCvar_t mark_shader;
-static vmCvar_t mark_size;
-static vmCvar_t line_draw;
-static vmCvar_t line_rgba;
+static vmCvar_t target_draw;
+static vmCvar_t target_shader;
+static vmCvar_t target_size;
+static vmCvar_t path_draw;
+static vmCvar_t path_rgba;
 
-static cvarTable_t rl_trace_cvars[] = { { &mark_draw, "mdd_rl_trace_mark_draw", "0", CVAR_ARCHIVE },
-                                        { &mark_shader, "mdd_rl_trace_mark_shader", "rlTraceMark", CVAR_ARCHIVE },
-                                        { &mark_size, "mdd_rl_trace_mark_size", "24", CVAR_ARCHIVE },
-                                        { &line_draw, "mdd_rl_trace_line_draw", "0", CVAR_ARCHIVE },
-                                        { &line_rgba, "mdd_rl_trace_line_rgba", "1 0 0 0", CVAR_ARCHIVE } };
+static cvarTable_t rl_cvars[] = { { &target_draw, "mdd_rl_target_draw", "0", CVAR_ARCHIVE },
+                                  { &target_shader, "mdd_rl_target_shader", "rlTraceMark", CVAR_ARCHIVE },
+                                  { &target_size, "mdd_rl_target_size", "24", CVAR_ARCHIVE },
+                                  { &path_draw, "mdd_rl_path_draw", "0", CVAR_ARCHIVE },
+                                  { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE } };
 
 void add_mark(
   qhandle_t    markShader,
-  const vec3_t origin,
-  const vec3_t dir,
+  vec3_t const origin,
+  vec3_t const dir,
   float        orientation,
   float        red,
   float        green,
@@ -40,17 +36,19 @@ void add_mark(
   float        alpha,
   qboolean     alphaFade,
   float        radius);
-static void init_rl_trace_cvars(void);
-static void update_rl_trace_cvars(void);
 
 void init_rl(void)
 {
-  init_rl_trace_cvars();
+  init_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
   line_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
 }
 
 void draw_rl(void)
 {
+  update_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
+
+  if (!target_draw.integer && !path_draw.integer) return;
+
   refEntity_t beam;
   trace_t     beam_trace;
   vec3_t      origin;
@@ -59,23 +57,19 @@ void draw_rl(void)
   snapshot_t const* const    snap = getSnap();
   playerState_t const* const ps   = getPs();
 
-  update_rl_trace_cvars();
-
-  if (!mark_draw.integer && !line_draw.integer) return;
-
   // todo: lerp trajectory stuff?
-  for (int i = 0; i < snap->numEntities; i++)
+  for (int32_t i = 0; i < snap->numEntities; ++i)
   {
     entityState_t entity = snap->entities[i];
     if (entity.eType == ET_MISSILE && entity.weapon == WP_ROCKET_LAUNCHER && entity.clientNum == ps->clientNum)
     {
-      VectorMA(entity.pos.trBase, (cgs.time - entity.pos.trTime) * 0.001, entity.pos.trDelta, origin);
-      VectorMA(entity.pos.trBase, MAX_RL_TIME * 0.001, entity.pos.trDelta, dest);
+      VectorMA(entity.pos.trBase, (cgs.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
+      VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);
       g_syscall(CG_CM_BOXTRACE, &beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
-      if (line_draw.integer)
+      if (path_draw.integer)
       {
         vec4_t color;
-        sscanf(line_rgba.string, "%f %f %f %f", &color[0], &color[1], &color[2], &color[3]);
+        ParseVec(path_rgba.string, color, 4);
 
         memset(&beam, 0, sizeof(beam));
         VectorCopy(origin, beam.oldorigin);
@@ -89,10 +83,10 @@ void draw_rl(void)
         beam.shaderRGBA[3] = color[3] * 255;
         g_syscall(CG_R_ADDREFENTITYTOSCENE, &beam);
       }
-      if (mark_draw.integer)
+      if (target_draw.integer)
       {
-        qhandle_t m_shader = g_syscall(CG_R_REGISTERSHADER, mark_shader.string);
-        add_mark(m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, mark_size.integer);
+        qhandle_t m_shader = g_syscall(CG_R_REGISTERSHADER, target_shader.string);
+        add_mark(m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer);
       }
     }
   }
@@ -101,8 +95,8 @@ void draw_rl(void)
 // ripped CG_ImpactMark
 void add_mark(
   qhandle_t    markShader,
-  const vec3_t origin,
-  const vec3_t dir,
+  vec3_t const origin,
+  vec3_t const dir,
   float        orientation,
   float        red,
   float        green,
@@ -127,7 +121,7 @@ void add_mark(
   RotatePointAroundVector(axis[2], axis[0], axis[1], orientation);
   CrossProduct(axis[0], axis[2], axis[1]);
 
-  texCoordScale = 0.5 * 1.0 / radius;
+  texCoordScale = .5f * 1.f / radius;
 
   // create the full polygon
   for (i = 0; i < 3; i++)
@@ -173,27 +167,11 @@ void add_mark(
       VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
 
       VectorSubtract(v->xyz, origin, delta);
-      v->st[0]           = 0.5 + DotProduct(delta, axis[1]) * texCoordScale;
-      v->st[1]           = 0.5 + DotProduct(delta, axis[2]) * texCoordScale;
+      v->st[0]           = .5f + DotProduct(delta, axis[1]) * texCoordScale;
+      v->st[1]           = .5f + DotProduct(delta, axis[2]) * texCoordScale;
       *(int*)v->modulate = *(int*)colors;
     }
 
     g_syscall(CG_R_ADDPOLYTOSCENE, markShader, mf->numPoints, verts);
   }
-}
-
-static void init_rl_trace_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(rl_trace_cvars); i++)
-    g_syscall(
-      CG_CVAR_REGISTER,
-      rl_trace_cvars[i].vmCvar,
-      rl_trace_cvars[i].cvarName,
-      rl_trace_cvars[i].defaultString,
-      rl_trace_cvars[i].cvarFlags);
-}
-
-static void update_rl_trace_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(rl_trace_cvars); i++) g_syscall(CG_CVAR_UPDATE, rl_trace_cvars[i].vmCvar);
 }
