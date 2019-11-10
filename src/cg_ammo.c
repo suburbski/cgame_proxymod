@@ -6,17 +6,19 @@
 
 static vmCvar_t ammo;
 static vmCvar_t ammo_graph_xywh;
+static vmCvar_t ammo_graph_gun;
 static vmCvar_t ammo_text_xh;
 static vmCvar_t ammo_text_rgba;
 
 static cvarTable_t ammo_cvars[] = { { &ammo, "mdd_ammo", "1", CVAR_ARCHIVE },
                                     { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE },
+                                    { &ammo_graph_gun, "mdd_ammo_graph_gun", "0", CVAR_ARCHIVE },
                                     { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE },
                                     { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE } };
 
 typedef struct
 {
-  qhandle_t graph_icons[8];
+  qhandle_t graph_icons[16];
 
   vec4_t graph_xywh;
   vec2_t text_xh;
@@ -30,14 +32,22 @@ void init_ammo(void)
 {
   init_cvars(ammo_cvars, ARRAY_LEN(ammo_cvars));
 
-  ammo_.graph_icons[0] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_machinegun");
-  ammo_.graph_icons[1] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_shotgun");
-  ammo_.graph_icons[2] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_grenade");
-  ammo_.graph_icons[3] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_rocket");
-  ammo_.graph_icons[4] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_lightning");
-  ammo_.graph_icons[5] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_railgun");
-  ammo_.graph_icons[6] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_plasma");
-  ammo_.graph_icons[7] = g_syscall(CG_R_REGISTERSHADER, "icons/icona_bfg");
+  ammo_.graph_icons[0]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_machinegun");
+  ammo_.graph_icons[1]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_shotgun");
+  ammo_.graph_icons[2]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_grenade");
+  ammo_.graph_icons[3]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_rocket");
+  ammo_.graph_icons[4]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_lightning");
+  ammo_.graph_icons[5]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_railgun");
+  ammo_.graph_icons[6]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_plasma");
+  ammo_.graph_icons[7]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_bfg");
+  ammo_.graph_icons[8]  = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_machinegun");
+  ammo_.graph_icons[9]  = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_shotgun");
+  ammo_.graph_icons[10] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_grenade");
+  ammo_.graph_icons[11] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_rocket");
+  ammo_.graph_icons[12] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_lightning");
+  ammo_.graph_icons[13] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_railgun");
+  ammo_.graph_icons[14] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_plasma");
+  ammo_.graph_icons[15] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_bfg");
 }
 
 void draw_ammo(void)
@@ -58,7 +68,12 @@ void draw_ammo(void)
 
     if (!ammo && !hasWeapon) continue;
 
-    CG_DrawPic(ammo_.graph_xywh[0], y, ammo_.graph_xywh[2], ammo_.graph_xywh[3], ammo_.graph_icons[i]);
+    CG_DrawPic(
+      ammo_.graph_xywh[0],
+      y,
+      ammo_.graph_xywh[2],
+      ammo_.graph_xywh[3],
+      ammo_.graph_icons[i + (ammo_graph_gun.integer ? 8 : 0)]);
 
     if (!hasWeapon) // Mark weapon as unavailable
     {
