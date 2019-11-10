@@ -43,7 +43,6 @@ static cvarTable_t timer_cvars[] = { { &timer_draw, "mdd_hud_timer_draw", "0", C
 // forward declarations for helpers
 static int  find_nade(int nade_id);
 static int  track_nade(int nade_id, int time);
-static void draw_outline(vec4_t color);
 static void draw_item(float progress, vec4_t color);
 static void init_timer_cvars(void);
 static void update_timer_cvars(void);
@@ -78,7 +77,13 @@ void draw_time(void)
   sscanf(timer_gb_rgba.string, "%f %f %f %f", &gb_color[0], &gb_color[1], &gb_color[2], &gb_color[3]);
 
   // draw the outline
-  draw_outline(outline_color);
+  CG_DrawRect(
+    timer_x.integer,
+    timer_y.integer,
+    timer_w.integer,
+    timer_h.integer,
+    1,
+    outline_color);
 
   snapshot_t const* const    snap = getSnap();
   playerState_t const* const ps   = getPs();
@@ -175,20 +180,6 @@ static int track_nade(int nade_id, int time)
 
   // no free space to track the nade
   return -1;
-}
-
-static void draw_outline(vec4_t color)
-{
-  int x = timer_x.integer;
-  int y = timer_y.integer;
-  int w = timer_w.integer;
-  int h = timer_h.integer;
-
-  g_syscall(CG_R_SETCOLOR, color);
-  CG_DrawAdjPic(x, y - 1, w, 1, cgs.media.gfxWhiteShader);
-  CG_DrawAdjPic(x, y + h, w, 1, cgs.media.gfxWhiteShader);
-  CG_DrawAdjPic(x + w, y - 1, 1, h + 2, cgs.media.gfxWhiteShader);
-  CG_DrawAdjPic(x - 1, y - 1, 1, h + 2, cgs.media.gfxWhiteShader);
 }
 
 static void draw_item(float progress, vec4_t color)

@@ -20,14 +20,105 @@
 */
 #include "cg_draw.h"
 
-// DELME
-void draw_compass(void);
-
-int PASSFLOAT(float x)
+static inline int PASSFLOAT(float x)
 {
-  float floatTemp;
-  floatTemp = x;
-  return *(int*)&floatTemp;
+  union
+  {
+    float f;
+    int   i;
+  } floatInt = { .f = x };
+  return floatInt.i;
+}
+
+static inline void
+  trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader)
+{
+  g_syscall(
+    CG_R_DRAWSTRETCHPIC,
+    PASSFLOAT(x),
+    PASSFLOAT(y),
+    PASSFLOAT(w),
+    PASSFLOAT(h),
+    PASSFLOAT(s1),
+    PASSFLOAT(t1),
+    PASSFLOAT(s2),
+    PASSFLOAT(t2),
+    hShader);
+}
+
+/*
+================
+CG_AdjustFrom640
+
+Adjusted for resolution and screen aspect ratio
+================
+*/
+void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
+{
+#if 0
+  // adjust for wide screens
+  if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
+    *x += 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * 640 / 480 ) );
+  }
+#endif
+  // scale for screen sizes
+  *x *= cgs.screenXScale;
+  *y *= cgs.screenYScale;
+  *w *= cgs.screenXScale;
+  *h *= cgs.screenYScale;
+}
+
+/*
+================
+CG_DrawSides
+
+Coords are virtual 640x480
+================
+*/
+void CG_DrawSides(float x, float y, float w, float h, float size)
+{
+  CG_AdjustFrom640(&x, &y, &w, &h);
+  size *= cgs.screenXScale;
+  trap_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  trap_R_DrawStretchPic(x + w - size, y, size, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+}
+
+void CG_DrawTopBottom(float x, float y, float w, float h, float size)
+{
+  CG_AdjustFrom640(&x, &y, &w, &h);
+  size *= cgs.screenXScale;
+  trap_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  trap_R_DrawStretchPic(x, y + h - size, w, size, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+}
+
+/*
+================
+UI_DrawRect
+
+Coordinates are 640*480 virtual values
+=================
+*/
+void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const color)
+{
+  g_syscall(CG_R_SETCOLOR, color);
+  CG_DrawTopBottom(x, y, w, h, size);
+  CG_DrawSides(x, y + size, w, h - size * 2, size);
+  g_syscall(CG_R_SETCOLOR, NULL);
+}
+
+void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
+{
+  g_syscall(
+    CG_R_DRAWSTRETCHPIC,
+    PASSFLOAT(x),
+    PASSFLOAT(y),
+    PASSFLOAT(width),
+    PASSFLOAT(height),
+    PASSFLOAT(0),
+    PASSFLOAT(0),
+    PASSFLOAT(1),
+    PASSFLOAT(1),
+    hShader);
 }
 
 void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShader)
@@ -46,42 +137,6 @@ void CG_DrawAdjPic(float x, float y, float width, float height, qhandle_t hShade
     hShader);
 }
 
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
-{
-  g_syscall(
-    CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(width),
-    PASSFLOAT(height),
-    PASSFLOAT(0),
-    PASSFLOAT(0),
-    PASSFLOAT(1),
-    PASSFLOAT(1),
-    hShader);
-}
-
-/*
- *
- * HUD
- *
- */
-
-void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
-{
-#if 0
-  // adjust for wide screens
-  if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-    *x += 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * 640 / 480 ) );
-  }
-#endif
-  // scale for screen sizes
-  *x *= cgs.screenXScale;
-  *y *= cgs.screenYScale;
-  *w *= cgs.screenXScale;
-  *h *= cgs.screenYScale;
-}
-
 void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj)
 {
   if (xAdj != NULL) *xAdj = ((cgs.glconfig.vidWidth) / 640.0) * (*xAdj);
@@ -93,11 +148,6 @@ void convertAdjustedToNative(float* xAdj, float* yAdj, float* wAdj, float* hAdj)
   if (hAdj != NULL) *hAdj = ((cgs.glconfig.vidHeight) / 480.0) * (*hAdj);
 
   return;
-}
-
-void convertNativeToAdjusted(float* x, float* y, float* w, float* h)
-{
-  ; // TODO: implement
 }
 
 void drawChar(int32_t x, int32_t y, int32_t width, int32_t height, uint8_t c)
