@@ -40,11 +40,11 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
 {
   switch (cmd)
   {
-  case CG_PRINT: // void trap_Printf( const char *fmt )
+  case CG_PRINT: // void trap_Printf( char const *fmt )
     g_syscall(cmd, ptr(0));
     return 0;
 
-  case CG_ERROR: // void trap_Error( const char *fmt )
+  case CG_ERROR: // void trap_Error( char const *fmt )
     g_syscall(cmd, ptr(0));
     return 0;
 
@@ -62,14 +62,14 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
     g_syscall(cmd, ptr(0), arg(1));
     return 0;
 
-  case CG_FS_FOPENFILE: // int32_t   trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode )
+  case CG_FS_FOPENFILE: // int32_t   trap_FS_FOpenFile( char const *qpath, fileHandle_t *f, fsMode_t mode )
     return g_syscall(cmd, ptr(0), ptr(1), arg(2));
 
   case CG_FS_READ: // void  trap_FS_Read( void *buffer, int32_t len, fileHandle_t f )
     g_syscall(cmd, ptr(0), arg(1), arg(2));
     return 0;
 
-  case CG_FS_WRITE: // void  trap_FS_Write( const void *buffer, int32_t len, fileHandle_t f )
+  case CG_FS_WRITE: // void  trap_FS_Write( void const *buffer, int32_t len, fileHandle_t f )
     g_syscall(cmd, ptr(0), arg(1), arg(2));
     return 0;
 
@@ -80,11 +80,11 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
   case CG_FS_SEEK: // int32_t trap_FS_Seek( fileHandle_t f, long offset, int32_t origin )
     return g_syscall(cmd, arg(0), arg(1), arg(2));
 
-  case CG_SENDCONSOLECOMMAND: // void  trap_SendConsoleCommand( int32_t exec_when, const char *text )
+  case CG_SENDCONSOLECOMMAND: // void  trap_SendConsoleCommand( int32_t exec_when, char const *text )
     g_syscall(cmd, ptr(0));
     return 0;
 
-  case CG_CVAR_REGISTER: // void  trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int32_t
+  case CG_CVAR_REGISTER: // void  trap_Cvar_Register( vmCvar_t *cvar, char const *var_name, char const *value, int32_t
                          // flags )
     g_syscall(cmd, ptr(0), ptr(1), ptr(2), arg(3));
     return 0;
@@ -93,16 +93,16 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
     g_syscall(cmd, ptr(0));
     return 0;
 
-  case CG_CVAR_SET: // void trap_Cvar_Set( const char *var_name, const char *value )
+  case CG_CVAR_SET: // void trap_Cvar_Set( char const *var_name, char const *value )
     g_syscall(cmd, ptr(0), ptr(1));
     return 0;
 
-  case CG_CVAR_VARIABLESTRINGBUFFER: // void trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int32_t
+  case CG_CVAR_VARIABLESTRINGBUFFER: // void trap_Cvar_VariableStringBuffer( char const *var_name, char *buffer, int32_t
                                      // bufsize )
     g_syscall(cmd, ptr(0), ptr(1), arg(2));
     return 0;
 
-  case CG_ADDCOMMAND: // void CL_AddCgameCommand( const char *cmdName )
+  case CG_ADDCOMMAND: // void CL_AddCgameCommand( char const *cmdName )
     g_syscall(cmd, ptr(0));
     return 0;
 
@@ -210,11 +210,10 @@ int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
     g_syscall(cmd, ptr(0), arg(1), arg(2), arg(3), arg(4));
     return 0;
   case CG_R_RENDERSCENE:
-    // no salvation for me
-    draw_rl();
-    // me too
-    draw_gl();
     draw_trig();
+    draw_gl();
+    draw_rl();
+
     g_syscall(cmd, ptr(0));
     return 0;
   case CG_R_SETCOLOR:
