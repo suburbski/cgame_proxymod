@@ -73,6 +73,7 @@ typedef struct
   int       cvarFlags;
 } cvarTable_t;
 
+void  ParseVec(char* data, float* vec, uint8_t size);
 float cvar_getValue(char const* var_name);
 
 void init_cvars(cvarTable_t const* cvars, size_t size);

@@ -24,6 +24,17 @@
 
 #include <stdlib.h>
 
+void ParseVec(char* data, float* vec, uint8_t size)
+{
+  if (!data) return;
+  memset(vec, 0, size * sizeof(vec[0]));
+
+  for (uint8_t i = 0; i < size; ++i)
+  {
+    vec[i] = strtof(data, &data);
+  }
+}
+
 float cvar_getValue(char const* var_name)
 {
   char buffer[MAX_CVAR_VALUE_STRING];

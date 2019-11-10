@@ -2,7 +2,6 @@
 
 #include "cg_cvar.h"
 #include "cg_draw.h"
-#include "cg_local.h"
 #include "cg_utils.h"
 #include "q_math.h"
 #include "surfaceflags.h"
@@ -11,47 +10,54 @@
 #include <stdlib.h>
 
 #define MAX_SUBMODELS 256
-#define MAX_TOKEN_CHARS 1024
 
-qhandle_t bboxShader;
-qhandle_t bboxShader_nocull;
+static vmCvar_t trig;
+static vmCvar_t trig_rgba;
 
-qboolean trigger[MAX_SUBMODELS];
+static cvarTable_t trig_cvars[] = { { &trig, "mdd_trig", "0", CVAR_ARCHIVE },
+                                    { &trig_rgba, "mdd_trig_rgba", "0 .5 0 1", CVAR_ARCHIVE } };
 
-static vmCvar_t trigger_draw;
+typedef struct
+{
+  qhandle_t bboxShader;
+  qhandle_t bboxShader_nocull;
 
-static cvarTable_t trigger_cvars[] = { { &trigger_draw, "mdd_triggers_draw", "0", CVAR_ARCHIVE } };
+  qboolean trigger[MAX_SUBMODELS];
+
+  vec4_t rgba;
+} trig_t;
+
+static trig_t trig_;
 
 static void parse_triggers(void);
-static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color);
-static void init_trigger_cvars(void);
-static void update_trigger_cvars(void);
+static void R_DrawBBox(vec3_t const origin, vec3_t const mins, vec3_t const maxs);
 
 void init_trig(void)
 {
-  init_trigger_cvars();
-  bboxShader        = g_syscall(CG_R_REGISTERSHADER, "bbox");
-  bboxShader_nocull = g_syscall(CG_R_REGISTERSHADER, "bbox_nocull");
-  memset(trigger, 0, sizeof(trigger));
+  init_cvars(trig_cvars, ARRAY_LEN(trig_cvars));
+  trig_.bboxShader        = g_syscall(CG_R_REGISTERSHADER, "bbox");
+  trig_.bboxShader_nocull = g_syscall(CG_R_REGISTERSHADER, "bbox_nocull");
+  memset(trig_.trigger, 0, sizeof(trig_.trigger));
   parse_triggers();
 }
 
 void draw_trig(void)
 {
-  update_trigger_cvars();
+  update_cvars(trig_cvars, ARRAY_LEN(trig_cvars));
 
-  if (!trigger_draw.integer) return;
+  if (!trig.integer) return;
 
-  int num_models = g_syscall(CG_CM_NUMINLINEMODELS);
-  for (int i = 0; i < num_models; i++)
+  ParseVec(trig_rgba.string, trig_.rgba, 4);
+
+  int const num_models = g_syscall(CG_CM_NUMINLINEMODELS);
+  for (int i = 0; i < num_models; ++i)
   {
-    if (trigger[i])
+    if (trig_.trigger[i])
     {
       vec3_t mins;
       vec3_t maxs;
-      vec4_t color = { 0, 128, 0, 255 };
       g_syscall(CG_R_MODELBOUNDS, i + 1, mins, maxs);
-      R_DrawBBox(vec3_origin, mins, maxs, color);
+      R_DrawBBox(vec3_origin, mins, maxs);
     }
   }
 }
@@ -88,22 +94,20 @@ static void parse_triggers(void)
       }
     }
 
-    if (is_trigger && model > 0) trigger[model] = qtrue; // why +1? idk
+    if (is_trigger && model > 0) trig_.trigger[model] = qtrue; // why +1? idk
   }
 }
 
 // ripped from breadsticks
-static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color)
+static void R_DrawBBox(vec3_t const origin, vec3_t const mins, vec3_t const maxs)
 {
-  int        i;
-  float      extx, exty, extz;
   polyVert_t verts[4];
   vec3_t     corners[8];
 
   // get the extents (size)
-  extx = maxs[0] - mins[0];
-  exty = maxs[1] - mins[1];
-  extz = maxs[2] - mins[2];
+  float const extx = maxs[0] - mins[0];
+  float const exty = maxs[1] - mins[1];
+  float const extz = maxs[2] - mins[2];
 
   // set the polygon's texture coordinates
   verts[0].st[0] = 0;
@@ -116,13 +120,13 @@ static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color)
   verts[3].st[1] = 0;
 
   // set the polygon's vertex colors
-  for (i = 0; i < 4; i++)
+  for (uint8_t i = 0; i < 4; ++i)
   {
     // memcpy( verts[i].modulate, color, sizeof(verts[i].modulate) );
-    verts[i].modulate[0] = color[0];
-    verts[i].modulate[1] = color[1];
-    verts[i].modulate[2] = color[2];
-    verts[i].modulate[3] = color[3];
+    verts[i].modulate[0] = trig_.rgba[0] * 255;
+    verts[i].modulate[1] = trig_.rgba[1] * 255;
+    verts[i].modulate[2] = trig_.rgba[2] * 255;
+    verts[i].modulate[3] = trig_.rgba[3] * 255;
   }
 
   VectorAdd(origin, maxs, corners[3]);
@@ -136,7 +140,7 @@ static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color)
   VectorCopy(corners[1], corners[0]);
   corners[0][0] += extx;
 
-  for (i = 0; i < 4; i++)
+  for (uint8_t i = 0; i < 4; ++i)
   {
     VectorCopy(corners[i], corners[i + 4]);
     corners[i + 4][2] -= extz;
@@ -147,56 +151,40 @@ static void R_DrawBBox(vec3_t origin, vec3_t mins, vec3_t maxs, vec4_t color)
   VectorCopy(corners[1], verts[1].xyz);
   VectorCopy(corners[2], verts[2].xyz);
   VectorCopy(corners[3], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader, 4, verts, 1);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader, 4, verts, 1);
 
   // bottom
   VectorCopy(corners[7], verts[0].xyz);
   VectorCopy(corners[6], verts[1].xyz);
   VectorCopy(corners[5], verts[2].xyz);
   VectorCopy(corners[4], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader, 4, verts, 1);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader, 4, verts, 1);
 
   // top side
   VectorCopy(corners[3], verts[0].xyz);
   VectorCopy(corners[2], verts[1].xyz);
   VectorCopy(corners[6], verts[2].xyz);
   VectorCopy(corners[7], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader_nocull, 4, verts, 1);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader_nocull, 4, verts, 1);
 
   // left side
   VectorCopy(corners[2], verts[0].xyz);
   VectorCopy(corners[1], verts[1].xyz);
   VectorCopy(corners[5], verts[2].xyz);
   VectorCopy(corners[6], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader_nocull, 4, verts, 1);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader_nocull, 4, verts, 1);
 
   // right side
   VectorCopy(corners[0], verts[0].xyz);
   VectorCopy(corners[3], verts[1].xyz);
   VectorCopy(corners[7], verts[2].xyz);
   VectorCopy(corners[4], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader_nocull, 4, verts, 1);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader_nocull, 4, verts, 1);
 
   // bottom side
   VectorCopy(corners[1], verts[0].xyz);
   VectorCopy(corners[0], verts[1].xyz);
   VectorCopy(corners[4], verts[2].xyz);
   VectorCopy(corners[5], verts[3].xyz);
-  g_syscall(CG_R_ADDPOLYTOSCENE, bboxShader_nocull, 4, verts, 1);
-}
-
-static void init_trigger_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(trigger_cvars); i++)
-    g_syscall(
-      CG_CVAR_REGISTER,
-      trigger_cvars[i].vmCvar,
-      trigger_cvars[i].cvarName,
-      trigger_cvars[i].defaultString,
-      trigger_cvars[i].cvarFlags);
-}
-
-static void update_trigger_cvars(void)
-{
-  for (int i = 0; i < ARRAY_LEN(trigger_cvars); i++) g_syscall(CG_CVAR_UPDATE, trigger_cvars[i].vmCvar);
+  g_syscall(CG_R_ADDPOLYTOSCENE, trig_.bboxShader_nocull, 4, verts, 1);
 }
