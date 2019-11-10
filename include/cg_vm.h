@@ -160,7 +160,7 @@ int32_t QDECL VM_Exec(
   int32_t arg9,
   int32_t arg10,
   int32_t arg11);
-qboolean VM_Create(vm_t* vm, const char* path, byte* oldmem);
+qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem);
 void     VM_Destroy(vm_t* vm);
 qboolean VM_Restart(vm_t* vm, qboolean savemem);
 void*    VM_ExplicitArgPtr(vm_t* vm, int32_t intValue);

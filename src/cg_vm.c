@@ -141,7 +141,7 @@ static void VM_Run(vm_t* vm)
         {
           // cdecl calling convention says caller (us) cleans stack
           // so we can stuff the args without worry of stack corruption
-          ret = ((pfn_t)param)(
+          ret = ((pfn_t)(intptr_t)param)(
             args[0],
             args[1],
             args[2],
@@ -286,7 +286,7 @@ static void VM_Run(vm_t* vm)
     // 1-byte
     case OP_LOAD1:
       if (opStack[0] >= vm->memorySize)
-        opStack[0] = *(byte*)(opStack[0]);
+        opStack[0] = *(byte*)(intptr_t)(opStack[0]);
       else
         opStack[0] = dataSegment[opStack[0] & dataSegmentMask];
 
@@ -295,7 +295,7 @@ static void VM_Run(vm_t* vm)
     // 2-byte
     case OP_LOAD2:
       if (opStack[0] >= vm->memorySize)
-        opStack[0] = *(uint16_t*)(opStack[0]);
+        opStack[0] = *(uint16_t*)(intptr_t)(opStack[0]);
       else
         opStack[0] = *(uint16_t*)&dataSegment[opStack[0] & dataSegmentMask];
 
@@ -304,7 +304,7 @@ static void VM_Run(vm_t* vm)
     // 4-byte
     case OP_LOAD4:
       if (opStack[0] >= vm->memorySize)
-        opStack[0] = *(int32_t*)(opStack[0]);
+        opStack[0] = *(int32_t*)(intptr_t)(opStack[0]);
       else
         opStack[0] = *(int32_t*)&dataSegment[opStack[0] & dataSegmentMask];
 
@@ -314,7 +314,7 @@ static void VM_Run(vm_t* vm)
     // 1-byte
     case OP_STORE1:
       if (opStack[1] >= vm->memorySize)
-        *(byte*)(opStack[1]) = (byte)(opStack[0] & 0xFF);
+        *(byte*)(intptr_t)(opStack[1]) = (byte)(opStack[0] & 0xFF);
       else
         dataSegment[opStack[1] & dataSegmentMask] = (byte)(opStack[0] & 0xFF);
 
@@ -323,7 +323,7 @@ static void VM_Run(vm_t* vm)
     // 2-byte
     case OP_STORE2:
       if (opStack[1] >= vm->memorySize)
-        *(uint16_t*)(opStack[1]) = (uint16_t)(opStack[0] & 0xFFFF);
+        *(uint16_t*)(intptr_t)(opStack[1]) = (uint16_t)(opStack[0] & 0xFFFF);
       else
         *(uint16_t*)&dataSegment[opStack[1] & dataSegmentMask] = (uint16_t)(opStack[0] & 0xFFFF);
 
@@ -332,7 +332,7 @@ static void VM_Run(vm_t* vm)
     // 4-byte
     case OP_STORE4:
       if (opStack[1] >= vm->memorySize)
-        *(int32_t*)(opStack[1]) = opStack[0];
+        *(int32_t*)(intptr_t)(opStack[1]) = opStack[0];
       else
         *(int32_t*)&dataSegment[opStack[1] & dataSegmentMask] = opStack[0];
 
@@ -568,11 +568,10 @@ int32_t QDECL VM_Exec(
 // vm = pointer to vm_t to load into
 // path = filename to load
 // oldmem = location to use for VM memory (default NULL)
-qboolean VM_Create(vm_t* vm, const char* path, byte* oldmem)
+qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
 {
   vmHeader_t*  header;
   byte*        vmBase;
-  int32_t      n;
   byte*        src;
   int32_t*     lsrc;
   int32_t*     dst;
@@ -672,7 +671,7 @@ qboolean VM_Create(vm_t* vm, const char* path, byte* oldmem)
   dst = vm->codeSegment;
 
   // loop through each instruction
-  for (n = 0; n < header->instructionCount; n++)
+  for (int32_t n = 0; n < header->instructionCount; ++n)
   {
     // get its opcode and move src to the parameter field
     op = (vmOps_t)*src++;
@@ -725,7 +724,7 @@ qboolean VM_Create(vm_t* vm, const char* path, byte* oldmem)
   dst  = (int32_t*)(vm->dataSegment);
 
   // loop through each 4-byte data block (even though data may be single bytes)
-  for (n = 0; n < header->dataLength / sizeof(int32_t); n++)
+  for (uint32_t n = 0; n < header->dataLength / sizeof(int32_t); ++n)
   {
     *dst = *lsrc++;
     // swap if need-be

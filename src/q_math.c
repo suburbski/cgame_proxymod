@@ -89,7 +89,7 @@ vec3_t bytedirs[NUMVERTEXNORMALS] = { { -0.525731f, 0.000000f, 0.850651f },   { 
 
 //==============================================================
 
-int VectorCompare(const vec3_t v1, const vec3_t v2)
+int VectorCompare(vec3_t const v1, vec3_t const v2)
 {
   if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2])
   {
@@ -98,17 +98,17 @@ int VectorCompare(const vec3_t v1, const vec3_t v2)
   return 1;
 }
 
-vec_t VectorLength(const vec3_t v)
+vec_t VectorLength(vec3_t const v)
 {
-  return (vec_t)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
-vec_t VectorLengthSquared(const vec3_t v)
+vec_t VectorLengthSquared(vec3_t const v)
 {
   return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
-vec_t Distance(const vec3_t p1, const vec3_t p2)
+vec_t Distance(vec3_t const p1, vec3_t const p2)
 {
   vec3_t v;
 
@@ -116,7 +116,7 @@ vec_t Distance(const vec3_t p1, const vec3_t p2)
   return VectorLength(v);
 }
 
-vec_t DistanceSquared(const vec3_t p1, const vec3_t p2)
+vec_t DistanceSquared(vec3_t const p1, vec3_t const p2)
 {
   vec3_t v;
 
@@ -144,7 +144,7 @@ void VectorInverse(vec3_t v)
   v[2] = -v[2];
 }
 
-void CrossProduct(const vec3_t v1, const vec3_t v2, vec3_t cross)
+void CrossProduct(vec3_t const v1, vec3_t const v2, vec3_t cross)
 {
   cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
   cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
@@ -180,7 +180,7 @@ signed short ClampShort(int i)
 }
 
 // this isn't a real cheap function to call!
-int DirToByte(vec3_t dir)
+int DirToByte(vec3_t const dir)
 {
   int   i, best;
   float d, bestd;
@@ -238,7 +238,7 @@ unsigned ColorBytes4(float r, float g, float b, float a)
   return i;
 }
 
-float NormalizeColor(const vec3_t in, vec3_t out)
+float NormalizeColor(vec3_t const in, vec3_t out)
 {
   float max;
 
@@ -273,7 +273,7 @@ Returns false if the triangle is degenrate.
 The normal will point out of the clock for clockwise ordered points
 =====================
 */
-qboolean PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c)
+qboolean PlaneFromPoints(vec4_t plane, vec3_t const a, vec3_t const b, vec3_t const c)
 {
   vec3_t d1, d2;
 
@@ -296,7 +296,7 @@ RotatePointAroundVector
 This is not implemented very well...
 ===============
 */
-void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
+void RotatePointAroundVector(vec3_t dst, vec3_t const dir, vec3_t const point, float degrees)
 {
   float  m[3][3];
   float  im[3][3];
@@ -336,13 +336,13 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
   im[2][1] = m[1][2];
 
   memset(zrot, 0, sizeof(zrot));
-  zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.0F;
+  zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.f;
 
   rad        = DEG2RAD(degrees);
-  zrot[0][0] = cos(rad);
-  zrot[0][1] = sin(rad);
-  zrot[1][0] = -sin(rad);
-  zrot[1][1] = cos(rad);
+  zrot[0][0] = cosf(rad);
+  zrot[0][1] = sinf(rad);
+  zrot[1][0] = -sinf(rad);
+  zrot[1][1] = cosf(rad);
 
   MatrixMultiply(m, zrot, tmpmat);
   MatrixMultiply(tmpmat, im, rot);
@@ -376,7 +376,7 @@ void RotateAroundDirection(vec3_t axis[3], float yaw)
   CrossProduct(axis[0], axis[1], axis[2]);
 }
 
-void vectoangles(const vec3_t value1, vec3_t angles)
+void vectoangles(vec3_t const value1, vec3_t angles)
 {
   float forward;
   float yaw, pitch;
@@ -397,7 +397,7 @@ void vectoangles(const vec3_t value1, vec3_t angles)
   {
     if (value1[0])
     {
-      yaw = (atan2(value1[1], value1[0]) * 180 / M_PI);
+      yaw = (atan2f(value1[1], value1[0]) * 180 / M_PI);
     }
     else if (value1[1] > 0)
     {
@@ -412,8 +412,8 @@ void vectoangles(const vec3_t value1, vec3_t angles)
       yaw += 360;
     }
 
-    forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
-    pitch   = (atan2(value1[2], forward) * 180 / M_PI);
+    forward = sqrtf(value1[0] * value1[0] + value1[1] * value1[1]);
+    pitch   = (atan2f(value1[2], forward) * 180 / M_PI);
     if (pitch < 0)
     {
       pitch += 360;
@@ -430,7 +430,7 @@ void vectoangles(const vec3_t value1, vec3_t angles)
 AnglesToAxis
 =================
 */
-void AnglesToAxis(const vec3_t angles, vec3_t axis[3])
+void AnglesToAxis(vec3_t const angles, vec3_t axis[3])
 {
   vec3_t right;
 
@@ -459,7 +459,7 @@ void AxisCopy(vec3_t in[3], vec3_t out[3])
   VectorCopy(in[2], out[2]);
 }
 
-void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
+void ProjectPointOnPlane(vec3_t dst, vec3_t const p, vec3_t const normal)
 {
   float  d;
   vec3_t n;
@@ -488,7 +488,7 @@ Given a normalized forward vector, create two
 other perpendicular vectors
 ================
 */
-void MakeNormalVectors(const vec3_t forward, vec3_t right, vec3_t up)
+void MakeNormalVectors(vec3_t const forward, vec3_t right, vec3_t up)
 {
   float d;
 
@@ -504,7 +504,7 @@ void MakeNormalVectors(const vec3_t forward, vec3_t right, vec3_t up)
   CrossProduct(right, forward, up);
 }
 
-void VectorRotate(vec3_t in, vec3_t matrix[3], vec3_t out)
+void VectorRotate(vec3_t const in, vec3_t matrix[3], vec3_t out)
 {
   out[0] = DotProduct(in, matrix[0]);
   out[1] = DotProduct(in, matrix[1]);
@@ -521,9 +521,9 @@ float Q_rsqrt(float number)
 {
   long        i;
   float       x2, y;
-  const float threehalfs = 1.5F;
+  float const threehalfs = 1.5f;
 
-  x2 = number * 0.5F;
+  x2 = number * .5f;
   y  = number;
   i  = *(long*)&y;            // evil floating point bit level hacking
   i  = 0x5f3759df - (i >> 1); // what the fuck?
@@ -590,7 +590,7 @@ float AngleSubtract(float a1, float a2)
   return a;
 }
 
-void AnglesSubtract(vec3_t v1, vec3_t v2, vec3_t v3)
+void AnglesSubtract(vec3_t const v1, vec3_t const v2, vec3_t v3)
 {
   v3[0] = AngleSubtract(v1[0], v2[0]);
   v3[1] = AngleSubtract(v1[1], v2[1]);
@@ -599,7 +599,7 @@ void AnglesSubtract(vec3_t v1, vec3_t v2, vec3_t v3)
 
 float AngleMod(float a)
 {
-  a = (360.0 / 65536) * ((int)(a * (65536 / 360.0)) & 65535);
+  a = (360.f / 65536) * ((int)(a * (65536 / 360.f)) & 65535);
   return a;
 }
 
@@ -612,7 +612,7 @@ returns angle normalized to the range [0 <= angle < 360]
 */
 float AngleNormalize360(float angle)
 {
-  return (360.0 / 65536) * ((int)(angle * (65536 / 360.0)) & 65535);
+  return (360.f / 65536) * ((int)(angle * (65536 / 360.f)) & 65535);
 }
 
 /*
@@ -625,9 +625,9 @@ returns angle normalized to the range [-180 < angle <= 180]
 float AngleNormalize180(float angle)
 {
   angle = AngleNormalize360(angle);
-  if (angle > 180.0)
+  if (angle > 180.f)
   {
-    angle -= 360.0;
+    angle -= 360.f;
   }
   return angle;
 }
@@ -711,7 +711,7 @@ int BoxOnPlaneSide2 (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 
 #  if defined __LCC__ || defined C_ONLY || !id386 || defined __VECTORC
 
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
+int BoxOnPlaneSide(vec3_t const emins, vec3_t const emaxs, struct cplane_s* p)
 {
   float dist1, dist2;
   int   sides;
@@ -773,7 +773,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
 #  else
 #    pragma warning(disable : 4035)
 
-__declspec(naked) int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
+__declspec(naked) int BoxOnPlaneSide(vec3_t const emins, vec3_t const emaxs, struct cplane_s* p)
 {
   static int bops_initialized;
   static int Ljmptab[8];
@@ -1012,7 +1012,7 @@ Lerror:
 RadiusFromBounds
 =================
 */
-float RadiusFromBounds(const vec3_t mins, const vec3_t maxs)
+float RadiusFromBounds(vec3_t const mins, vec3_t const maxs)
 {
   int    i;
   vec3_t corner;
@@ -1020,8 +1020,8 @@ float RadiusFromBounds(const vec3_t mins, const vec3_t maxs)
 
   for (i = 0; i < 3; i++)
   {
-    a         = fabs(mins[i]);
-    b         = fabs(maxs[i]);
+    a         = fabsf(mins[i]);
+    b         = fabsf(maxs[i]);
     corner[i] = a > b ? a : b;
   }
 
@@ -1034,7 +1034,7 @@ void ClearBounds(vec3_t mins, vec3_t maxs)
   maxs[0] = maxs[1] = maxs[2] = -99999;
 }
 
-void AddPointToBounds(const vec3_t v, vec3_t mins, vec3_t maxs)
+void AddPointToBounds(vec3_t const v, vec3_t mins, vec3_t maxs)
 {
   if (v[0] < mins[0])
   {
@@ -1069,7 +1069,7 @@ vec_t VectorNormalize(vec3_t v)
   float length, ilength;
 
   length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-  length = sqrt(length);
+  length = sqrtf(length);
 
   if (length)
   {
@@ -1082,12 +1082,12 @@ vec_t VectorNormalize(vec3_t v)
   return length;
 }
 
-vec_t VectorNormalize2(const vec3_t v, vec3_t out)
+vec_t VectorNormalize2(vec3_t const v, vec3_t out)
 {
   float length, ilength;
 
   length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-  length = sqrt(length);
+  length = sqrtf(length);
 
   if (length)
   {
@@ -1110,47 +1110,47 @@ vec_t VectorNormalize2(const vec3_t v, vec3_t out)
   return length;
 }
 
-void _VectorMA(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc)
+void _VectorMA(vec3_t const veca, float scale, vec3_t const vecb, vec3_t vecc)
 {
   vecc[0] = veca[0] + scale * vecb[0];
   vecc[1] = veca[1] + scale * vecb[1];
   vecc[2] = veca[2] + scale * vecb[2];
 }
 
-vec_t _DotProduct(const vec3_t v1, const vec3_t v2)
+vec_t _DotProduct(vec3_t const v1, vec3_t const v2)
 {
   return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-void _VectorSubtract(const vec3_t veca, const vec3_t vecb, vec3_t out)
+void _VectorSubtract(vec3_t const veca, vec3_t const vecb, vec3_t out)
 {
   out[0] = veca[0] - vecb[0];
   out[1] = veca[1] - vecb[1];
   out[2] = veca[2] - vecb[2];
 }
 
-void _VectorAdd(const vec3_t veca, const vec3_t vecb, vec3_t out)
+void _VectorAdd(vec3_t const veca, vec3_t const vecb, vec3_t out)
 {
   out[0] = veca[0] + vecb[0];
   out[1] = veca[1] + vecb[1];
   out[2] = veca[2] + vecb[2];
 }
 
-void _VectorCopy(const vec3_t in, vec3_t out)
+void _VectorCopy(vec3_t const in, vec3_t out)
 {
   out[0] = in[0];
   out[1] = in[1];
   out[2] = in[2];
 }
 
-void _VectorScale(const vec3_t in, vec_t scale, vec3_t out)
+void _VectorScale(vec3_t const in, vec_t scale, vec3_t out)
 {
   out[0] = in[0] * scale;
   out[1] = in[1] * scale;
   out[2] = in[2] * scale;
 }
 
-void Vector4Scale(const vec4_t in, vec_t scale, vec4_t out)
+void Vector4Scale(vec4_t const in, vec_t scale, vec4_t out)
 {
   out[0] = in[0] * scale;
   out[1] = in[1] * scale;
@@ -1206,21 +1206,21 @@ void MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3])
   out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] + in1[2][2] * in2[2][2];
 }
 
-void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
+void AngleVectors(vec3_t const angles, vec3_t forward, vec3_t right, vec3_t up)
 {
   float        angle;
   static float sr, sp, sy, cr, cp, cy;
   // static to help MS compiler fp bugs
 
   angle = angles[YAW] * (M_PI * 2 / 360);
-  sy    = sin(angle);
-  cy    = cos(angle);
+  sy    = sinf(angle);
+  cy    = cosf(angle);
   angle = angles[PITCH] * (M_PI * 2 / 360);
-  sp    = sin(angle);
-  cp    = cos(angle);
+  sp    = sinf(angle);
+  cp    = cosf(angle);
   angle = angles[ROLL] * (M_PI * 2 / 360);
-  sr    = sin(angle);
-  cr    = cos(angle);
+  sr    = sinf(angle);
+  cr    = cosf(angle);
 
   if (forward)
   {
@@ -1245,11 +1245,11 @@ void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 /*
 ** assumes "src" is normalized
 */
-void PerpendicularVector(vec3_t dst, const vec3_t src)
+void PerpendicularVector(vec3_t dst, vec3_t const src)
 {
   int    pos;
   int    i;
-  float  minelem = 1.0F;
+  float  minelem = 1.f;
   vec3_t tempvec;
 
   /*
@@ -1257,14 +1257,14 @@ void PerpendicularVector(vec3_t dst, const vec3_t src)
   */
   for (pos = 0, i = 0; i < 3; i++)
   {
-    if (fabs(src[i]) < minelem)
+    if (fabsf(src[i]) < minelem)
     {
       pos     = i;
-      minelem = fabs(src[i]);
+      minelem = fabsf(src[i]);
     }
   }
-  tempvec[0] = tempvec[1] = tempvec[2] = 0.0F;
-  tempvec[pos]                         = 1.0F;
+  tempvec[0] = tempvec[1] = tempvec[2] = 0.f;
+  tempvec[pos]                         = 1.f;
 
   /*
   ** project the point onto the plane defined by src
