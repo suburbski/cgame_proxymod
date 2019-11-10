@@ -48,6 +48,17 @@ void CG_DrawText(
   vec4_t const color,
   qboolean     alignRight,
   qboolean     shadow);
+
+void CG_Draw3DModel(
+  float        x,
+  float        y,
+  float        w,
+  float        h,
+  qhandle_t    model,
+  qhandle_t    skin,
+  vec3_t const origin,
+  vec3_t const angles);
+
 int8_t getColor(uint8_t color, float opacity, vec4_t c);
 
 #endif // CG_DRAW_H

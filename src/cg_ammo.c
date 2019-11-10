@@ -3,22 +3,28 @@
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_utils.h"
+#include "q_math.h"
 
 static vmCvar_t ammo;
 static vmCvar_t ammo_graph_xywh;
 static vmCvar_t ammo_graph_gun;
+static vmCvar_t ammo_graph_3d;
 static vmCvar_t ammo_text_xh;
 static vmCvar_t ammo_text_rgba;
 
 static cvarTable_t ammo_cvars[] = { { &ammo, "mdd_ammo", "1", CVAR_ARCHIVE },
                                     { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE },
                                     { &ammo_graph_gun, "mdd_ammo_graph_gun", "0", CVAR_ARCHIVE },
+                                    { &ammo_graph_3d, "mdd_ammo_graph_3d", "0", CVAR_ARCHIVE },
                                     { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE },
                                     { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE } };
 
 typedef struct
 {
   qhandle_t graph_icons[16];
+  qhandle_t graph_models[16];
+  vec3_t    graph_model_origin;
+  vec3_t    graph_model_angles;
 
   vec4_t graph_xywh;
   vec2_t text_xh;
@@ -48,6 +54,27 @@ void init_ammo(void)
   ammo_.graph_icons[13] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_railgun");
   ammo_.graph_icons[14] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_plasma");
   ammo_.graph_icons[15] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_bfg");
+
+  ammo_.graph_models[0]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/machinegunam.md3");
+  ammo_.graph_models[1]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/shotgunam.md3");
+  ammo_.graph_models[2]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/grenadeam.md3");
+  ammo_.graph_models[3]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/rocketam.md3");
+  ammo_.graph_models[4]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/lightningam.md3");
+  ammo_.graph_models[5]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/railgunam.md3");
+  ammo_.graph_models[6]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/plasmaam.md3");
+  ammo_.graph_models[7]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/bfgam.md3");
+  ammo_.graph_models[8]  = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/machinegun/machinegun.md3");
+  ammo_.graph_models[9]  = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/shotgun/shotgun.md3");
+  ammo_.graph_models[10] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/grenadel/grenadel.md3");
+  ammo_.graph_models[11] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/rocketl/rocketl.md3");
+  ammo_.graph_models[12] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/lightning/lightning.md3");
+  ammo_.graph_models[13] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/railgun/railgun.md3");
+  ammo_.graph_models[14] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/plasma/plasma.md3");
+  ammo_.graph_models[15] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/bfg/bfg.md3");
+
+  memset(ammo_.graph_model_origin, 0, 3 * sizeof(vec_t));
+  ammo_.graph_model_origin[0] = 70.f;
+  memset(ammo_.graph_model_angles, 0, 3 * sizeof(vec_t));
 }
 
 void draw_ammo(void)
@@ -68,12 +95,28 @@ void draw_ammo(void)
 
     if (!ammo && !hasWeapon) continue;
 
-    CG_DrawPic(
-      ammo_.graph_xywh[0],
-      y,
-      ammo_.graph_xywh[2],
-      ammo_.graph_xywh[3],
-      ammo_.graph_icons[i + (ammo_graph_gun.integer ? 8 : 0)]);
+    if (!ammo_graph_3d.integer)
+    {
+      CG_DrawPic(
+        ammo_.graph_xywh[0],
+        y,
+        ammo_.graph_xywh[2],
+        ammo_.graph_xywh[3],
+        ammo_.graph_icons[i + (ammo_graph_gun.integer ? 8 : 0)]);
+    }
+    else
+    {
+      ammo_.graph_model_angles[YAW] = 90.f + 20.f * sinf(getSnap()->serverTime / 1000.f);
+      CG_Draw3DModel(
+        ammo_.graph_xywh[0],
+        y,
+        ammo_.graph_xywh[2],
+        ammo_.graph_xywh[3],
+        ammo_.graph_models[i + (ammo_graph_gun.integer ? 8 : 0)],
+        0,
+        ammo_.graph_model_origin,
+        ammo_.graph_model_angles);
+    }
 
     if (!hasWeapon) // Mark weapon as unavailable
     {

@@ -21,6 +21,10 @@
 #include "cg_draw.h"
 
 #include "cg_utils.h"
+#include "q_math.h"
+
+#define RF_NOSHADOW 0x0040      // don't add stencil shadows
+#define RDF_NOWORLDMODEL 0x0001 // used for player configuration screen
 
 static inline int PASSFLOAT(float x)
 {
@@ -239,6 +243,54 @@ void CG_DrawText(
     }
   }
   g_syscall(CG_R_SETCOLOR, NULL);
+}
+
+void CG_Draw3DModel(
+  float        x,
+  float        y,
+  float        w,
+  float        h,
+  qhandle_t    model,
+  qhandle_t    skin,
+  vec3_t const origin,
+  vec3_t const angles)
+{
+  refdef_t    refdef;
+  refEntity_t ent;
+
+  // if ( !cg_draw3dIcons.integer || !cg_drawIcons.integer ) {
+  //  return;
+  // }
+
+  CG_AdjustFrom640(&x, &y, &w, &h);
+
+  memset(&refdef, 0, sizeof(refdef));
+
+  memset(&ent, 0, sizeof(ent));
+  AnglesToAxis(angles, ent.axis);
+  VectorCopy(origin, ent.origin);
+  ent.hModel     = model;
+  ent.customSkin = skin;
+  ent.renderfx   = RF_NOSHADOW; // no stencil shadows
+
+  refdef.rdflags = RDF_NOWORLDMODEL;
+
+  AxisClear(refdef.viewaxis);
+
+  refdef.fov_x = 30;
+  refdef.fov_y = 30;
+
+  refdef.x      = x;
+  refdef.y      = y;
+  refdef.width  = w;
+  refdef.height = h;
+
+  refdef.time = 0; // getSnap()->serverTime;
+  // refdef.time = cg.time;
+
+  g_syscall(CG_R_CLEARSCENE);
+  g_syscall(CG_R_ADDREFENTITYTOSCENE, &ent);
+  g_syscall(CG_R_RENDERSCENE, &refdef);
 }
 
 int8_t getColor(uint8_t color, float opacity, vec4_t c)
