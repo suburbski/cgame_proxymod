@@ -3,10 +3,6 @@
 // q_math.c -- stateless support routines that are included in each code module
 #include "q_math.h"
 
-#include "cg_local.h"
-
-#include <math.h>
-
 vec3_t vec3_origin = { 0, 0, 0 };
 
 vec3_t bytedirs[NUMVERTEXNORMALS] = { { -0.525731f, 0.000000f, 0.850651f },   { -0.442863f, 0.238856f, 0.864188f },

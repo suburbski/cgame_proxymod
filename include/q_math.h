@@ -1,4 +1,10 @@
+#ifndef Q_MATH_H
+#define Q_MATH_H
+
 #include "cg_local.h"
+
+#include <math.h>
+
 /* This file was automatically generated.  Do not edit! */
 #define NUMVERTEXNORMALS 162
 #define DEG2RAD(a) (((a)*M_PI) / 180.0F)
@@ -67,3 +73,5 @@ vec_t Distance(const vec3_t p1, const vec3_t p2);
 vec_t VectorLengthSquared(const vec3_t v);
 vec_t VectorLength(const vec3_t v);
 int   VectorCompare(const vec3_t v1, const vec3_t v2);
+
+#endif // Q_MATH_H
