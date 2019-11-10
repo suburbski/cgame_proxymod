@@ -20,10 +20,10 @@
 */
 #include "cg_init.h"
 
+#include "bg_public.h"
 #include "cg_utils.h"
 #include "version.h"
 
-#include <math.h>
 #include <stdlib.h>
 
 syscall_t          g_syscall = NULL;
@@ -36,6 +36,8 @@ static void init_gfx(int32_t clientNum);
 
 void cg_init(int32_t cmd, int32_t clientNum)
 {
+  (void)cmd;
+
   g_syscall(CG_PRINT, vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
   initVM();
 
@@ -50,12 +52,12 @@ static void init_gfx(int32_t clientNum)
   cgs.clientNum = clientNum;
 
   g_syscall(CG_GETGLCONFIG, &cgs.glconfig); // rendering configuration
-  cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
-  cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
+  cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
+  cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
 
   g_syscall(CG_GETGAMESTATE, &cgs.gameState);
 
-  cgs.levelStartTime = atof(getConfigString(21)); // levelStartTime
+  cgs.levelStartTime = atoi(getConfigString(CS_LEVEL_START_TIME));
 
   cgs.media.gfxDeferSymbol     = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/defer");
   cgs.media.gfxCharsetShader   = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/bigchars");
