@@ -21,14 +21,7 @@
 #ifndef CG_DRAW_H
 #define CG_DRAW_H
 
-#include "cg_local.h"
-
-typedef enum
-{
-  STEREO_CENTER,
-  STEREO_LEFT,
-  STEREO_RIGHT
-} stereoFrame_t;
+#include "q_shared.h"
 
 void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
 void CG_FillRect(float x, float y, float w, float h, vec4_t const color);

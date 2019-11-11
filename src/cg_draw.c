@@ -20,8 +20,7 @@
 */
 #include "cg_draw.h"
 
-#include "cg_utils.h"
-#include "q_math.h"
+#include "cg_local.h"
 
 #define RF_NOSHADOW 0x0040      // don't add stencil shadows
 #define RDF_NOWORLDMODEL 0x0001 // used for player configuration screen
