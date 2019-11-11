@@ -119,7 +119,8 @@ __DLLEXPORT__ int32_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback )
-    if (draw_hud())
+    // First check if we have models, otherwise CM_ClipHandleToModel will fail.
+    if (trap_CM_NumInlineModels() && draw_hud())
     {
       draw_ammo();
       draw_jump();
