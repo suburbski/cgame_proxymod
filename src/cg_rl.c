@@ -64,6 +64,7 @@ void draw_rl(void)
     entityState_t entity = snap->entities[i];
     if (entity.eType == ET_MISSILE && entity.weapon == WP_ROCKET_LAUNCHER && entity.clientNum == ps->clientNum)
     {
+      // BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
       VectorMA(entity.pos.trBase, (cgs.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
       VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);
       trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
@@ -106,6 +107,8 @@ void add_mark(
   qboolean     alphaFade,
   float        radius)
 {
+  (void)alphaFade;
+
   vec3_t         axis[3];
   float          texCoordScale;
   vec3_t         originalPoints[4];
@@ -136,7 +139,7 @@ void add_mark(
   // get the fragments
   VectorScale(dir, -20, projection);
   numFragments = trap_CM_MarkFragments(
-    4, (void*)originalPoints, projection, MAX_MARK_POINTS, markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
+    4, (vec3_t const*)originalPoints, projection, MAX_MARK_POINTS, markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
 
   colors[0] = red * 255;
   colors[1] = green * 255;
