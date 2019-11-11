@@ -1,4 +1,4 @@
-#include "cg_time.h"
+#include "cg_timer.h"
 
 #include "bg_public.h"
 #include "cg_cvar.h"

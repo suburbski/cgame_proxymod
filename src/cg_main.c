@@ -30,7 +30,7 @@
 #include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_rl.h"
-#include "cg_time.h"
+#include "cg_timer.h"
 #include "cg_trig.h"
 
 cgs_t cgs;
