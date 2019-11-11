@@ -22,6 +22,7 @@
 
 #include "cg_local.h"
 
+#include <ctype.h>
 #include <stdlib.h>
 
 void ParseVec(char* data, float* vec, uint8_t size)
@@ -39,7 +40,23 @@ int32_t cvar_getInteger(char const* var_name)
 {
   char buffer[MAX_CVAR_VALUE_STRING];
   trap_Cvar_VariableStringBuffer(var_name, buffer, sizeof(buffer));
-  return strtol(buffer, NULL, 0);
+  char const* s    = buffer;
+  int8_t      sign = 1;
+  while (isspace(*s)) ++s;
+  if (*s == '-')
+  {
+    sign = -1;
+    ++s;
+  }
+  else if (*s == '+')
+  {
+    ++s;
+  }
+  if (*s == '0' && (s[1] == 'b' || s[1] == 'B'))
+  {
+    return sign * strtol(s + 2, NULL, 2);
+  }
+  return sign * strtol(s, NULL, 0);
 }
 
 float cvar_getValue(char const* var_name)
