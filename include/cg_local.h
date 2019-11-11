@@ -358,16 +358,6 @@ typedef struct
   byte   modulate[4];
 } polyVert_t;
 
-// usercmd_t is sent to the server each client frame
-typedef struct usercmd_s
-{
-  int32_t     serverTime;
-  int32_t     angles[3];
-  int32_t     buttons;
-  byte        weapon; // weapon
-  signed char forwardmove, rightmove, upmove;
-} usercmd_t;
-
 // player_state->stats[] indexes
 // NOTE: may not have more than 16
 typedef enum
@@ -398,28 +388,5 @@ typedef enum
 
   WP_NUM_WEAPONS
 } weapon_t;
-
-// trace stuff
-typedef struct cplane_s
-{
-  vec3_t normal;
-  float  dist;
-  byte   type;     // for fast side tests: 0,1,2 = axial, 3 = nonaxial
-  byte   signbits; // signx + (signy<<1) + (signz<<2), used as lookup during collision
-  byte   pad[2];
-} cplane_t;
-
-// a trace is returned when a box is swept through the world
-typedef struct
-{
-  qboolean allsolid;     // if true, plane is not valid
-  qboolean startsolid;   // if true, the initial point was in a solid area
-  float    fraction;     // time completed, 1.0 = didn't hit anything
-  vec3_t   endpos;       // final position
-  cplane_t plane;        // surface normal at impact, transformed to world space
-  int      surfaceFlags; // surface hit
-  int      contents;     // contents on other side of surface hit
-  int      entityNum;    // entity the contacted surface is a part of
-} trace_t;
 
 #endif // CG_LOCAL_H
