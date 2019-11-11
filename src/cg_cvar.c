@@ -20,7 +20,7 @@
 */
 #include "cg_cvar.h"
 
-#include "cg_utils.h"
+#include "cg_public.h"
 
 #include <stdlib.h>
 

@@ -1,7 +1,7 @@
 #ifndef Q_MATH_H
 #define Q_MATH_H
 
-#include "cg_local.h"
+#include "q_shared.h"
 
 #include <math.h>
 

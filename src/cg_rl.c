@@ -2,6 +2,7 @@
 
 #include "bg_public.h"
 #include "cg_cvar.h"
+#include "cg_local.h"
 #include "cg_utils.h"
 #include "q_math.h"
 
