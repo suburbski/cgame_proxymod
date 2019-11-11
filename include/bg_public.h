@@ -113,6 +113,34 @@ typedef enum
 #define MASK_OPAQUE (CONTENTS_SOLID | CONTENTS_SLIME | CONTENTS_LAVA)
 #define MASK_SHOT (CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE)
 
+//
+// entityState_t->eType
+//
+typedef enum
+{
+  ET_GENERAL,
+  ET_PLAYER,
+  ET_ITEM,
+  ET_MISSILE,
+  ET_MOVER,
+  ET_BREAKABLE,
+  ET_BEAM,
+  ET_PORTAL,
+  ET_SPEAKER,
+  ET_PUSH_TRIGGER,
+  ET_TELEPORT_TRIGGER,
+  ET_PHYSICS_TRIGGER,
+  ET_INVISIBLE,
+  ET_GRAPPLE, // grapple hooked on wall
+  ET_SPAWNPOINT,
+  ET_SPECTATOR,
+  ET_TEAM,
+
+  ET_EVENTS // any of the EV_* events can be added freestanding
+            // by setting eType to ET_EVENTS + eventNum
+            // this avoids having to set eFlags and eventNum
+} entityType_t;
+
 void BG_EvaluateTrajectory(trajectory_t const* tr, int32_t atTime, vec3_t result);
 void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t result);
 
