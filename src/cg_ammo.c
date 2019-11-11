@@ -8,17 +8,24 @@
 
 static vmCvar_t ammo;
 static vmCvar_t ammo_graph_xywh;
-static vmCvar_t ammo_graph_gun;
-static vmCvar_t ammo_graph_3d;
 static vmCvar_t ammo_text_xh;
 static vmCvar_t ammo_text_rgba;
 
-static cvarTable_t ammo_cvars[] = { { &ammo, "mdd_ammo", "1", CVAR_ARCHIVE },
+static cvarTable_t ammo_cvars[] = { { &ammo, "mdd_ammo", "0b0001", CVAR_ARCHIVE },
                                     { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE },
-                                    { &ammo_graph_gun, "mdd_ammo_graph_gun", "0", CVAR_ARCHIVE },
-                                    { &ammo_graph_3d, "mdd_ammo_graph_3d", "0", CVAR_ARCHIVE },
                                     { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE },
                                     { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE } };
+
+// mdd_ammo 0b X X X X
+//             | | | |
+//             | | | + - draw
+//             | | + - - no weapon -> no draw
+//             | + - - - gun
+//             + - - - - 3D
+#define AMMO_DRAW 1
+#define AMMO_NOWEAPNODRAW 2
+#define AMMO_GUN 4
+#define AMMO_3D 8
 
 typedef struct
 {
@@ -81,8 +88,9 @@ void init_ammo(void)
 void draw_ammo(void)
 {
   update_cvars(ammo_cvars, ARRAY_LEN(ammo_cvars));
+  ammo.integer = cvar_getInteger("mdd_ammo");
 
-  if (!ammo.integer) return;
+  if (!(ammo.integer & AMMO_DRAW)) return;
 
   ParseVec(ammo_graph_xywh.string, ammo_.graph_xywh, 4);
   ParseVec(ammo_text_rgba.string, ammo_.text_rgba, 4);
@@ -91,19 +99,19 @@ void draw_ammo(void)
   playerState_t const* const ps = getPs();
   for (uint8_t i = 0; i < 8; ++i)
   {
-    uint16_t const ammo      = ps->ammo[i + 2];
+    uint16_t const ammoLeft  = ps->ammo[i + 2];
     qboolean const hasWeapon = ps->stats[STAT_WEAPONS] & (1 << (i + 2));
 
-    if (!ammo && !hasWeapon) continue;
+    if (!hasWeapon && (ammo.integer & AMMO_NOWEAPNODRAW || !ammoLeft)) continue;
 
-    if (!ammo_graph_3d.integer)
+    if (!(ammo.integer & AMMO_3D))
     {
       CG_DrawPic(
         ammo_.graph_xywh[0],
         y,
         ammo_.graph_xywh[2],
         ammo_.graph_xywh[3],
-        ammo_.graph_icons[i + (ammo_graph_gun.integer ? 8 : 0)]);
+        ammo_.graph_icons[i + (ammo.integer & AMMO_GUN ? 8 : 0)]);
     }
     else
     {
@@ -113,7 +121,7 @@ void draw_ammo(void)
         y,
         ammo_.graph_xywh[2],
         ammo_.graph_xywh[3],
-        ammo_.graph_models[i + (ammo_graph_gun.integer ? 8 : 0)],
+        ammo_.graph_models[i + (ammo.integer & AMMO_GUN ? 8 : 0)],
         0,
         ammo_.graph_model_origin,
         ammo_.graph_model_angles);
@@ -131,7 +139,7 @@ void draw_ammo(void)
                  : ammo_.graph_xywh[0] + ammo_.graph_xywh[2] + ammo_.text_xh[0],
       y + ammo_.graph_xywh[3] / 2.f - .5f * ammo_.text_xh[1],
       ammo_.text_xh[1],
-      vaf("%i", ammo),
+      vaf("%i", ammoLeft),
       ammo_.text_rgba,
       alignRight,
       qtrue /*shadow*/);

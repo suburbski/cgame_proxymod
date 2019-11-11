@@ -13,8 +13,6 @@ The proxymod can be configured via the console using the "mdd_" prefix.
 
     mdd_ammo
     mdd_ammo_graph_xywh
-    mdd_ammo_graph_gun
-    mdd_ammo_graph_3d
     mdd_ammo_text_xh
     mdd_ammo_text_rgba
 
