@@ -1,8 +1,8 @@
-#ifndef CG_TIME_H
-#define CG_TIME_H
+#ifndef CG_TIMER_H
+#define CG_TIMER_H
 
-void init_time(void);
+void init_timer(void);
 
-void draw_time(void);
+void draw_timer(void);
 
-#endif // CG_TIME_H
+#endif // CG_TIMER_H

@@ -41,13 +41,13 @@ The proxymod can be configured via the console using the "mdd_" prefix.
 
     mdd_sound_local_only
 
-    mdd_time
-    mdd_time_xywh
-    mdd_time_item_w
-    mdd_time_item_rgba
-    mdd_time_gb_rgba
-    mdd_time_outline_w
-    mdd_time_outline_rgba
+    mdd_timer
+    mdd_timer_xywh
+    mdd_timer_item_w
+    mdd_timer_item_rgba
+    mdd_timer_gb_rgba
+    mdd_timer_outline_w
+    mdd_timer_outline_rgba
 
     mdd_trig
     mdd_trig_rgba

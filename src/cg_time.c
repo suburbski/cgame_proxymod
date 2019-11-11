@@ -14,25 +14,25 @@
 
 nade_info_t nades[MAX_NADES];
 
-static vmCvar_t time;
-static vmCvar_t time_xywh;
-static vmCvar_t time_item_w;
-static vmCvar_t time_item_rgba;
-static vmCvar_t time_gb_rgba;
-static vmCvar_t time_outline_w;
-static vmCvar_t time_outline_rgba;
+static vmCvar_t timer;
+static vmCvar_t timer_xywh;
+static vmCvar_t timer_item_w;
+static vmCvar_t timer_item_rgba;
+static vmCvar_t timer_gb_rgba;
+static vmCvar_t timer_outline_w;
+static vmCvar_t timer_outline_rgba;
 
-static cvarTable_t time_cvars[] = { { &time, "mdd_time", "1", CVAR_ARCHIVE },
-                                    { &time_xywh, "mdd_time_xywh", "275 275 100 16", CVAR_ARCHIVE },
-                                    { &time_item_w, "mdd_time_item_w", "3", CVAR_ARCHIVE },
-                                    { &time_item_rgba, "mdd_time_item_rgba", "1 1 0 1", CVAR_ARCHIVE },
-                                    { &time_gb_rgba, "mdd_time_gb_rgba", "1 0 0 1", CVAR_ARCHIVE },
-                                    { &time_outline_w, "mdd_time_outline_w", "1", CVAR_ARCHIVE },
-                                    { &time_outline_rgba, "mdd_time_outline_rgba", "1 1 1 1", CVAR_ARCHIVE } };
+static cvarTable_t timer_cvars[] = { { &timer, "mdd_time", "1", CVAR_ARCHIVE },
+                                     { &timer_xywh, "mdd_timer_xywh", "275 275 100 16", CVAR_ARCHIVE },
+                                     { &timer_item_w, "mdd_timer_item_w", "3", CVAR_ARCHIVE },
+                                     { &timer_item_rgba, "mdd_timer_item_rgba", "1 1 0 1", CVAR_ARCHIVE },
+                                     { &timer_gb_rgba, "mdd_timer_gb_rgba", "1 0 0 1", CVAR_ARCHIVE },
+                                     { &timer_outline_w, "mdd_timer_outline_w", "1", CVAR_ARCHIVE },
+                                     { &timer_outline_rgba, "mdd_timer_outline_rgba", "1 1 1 1", CVAR_ARCHIVE } };
 
-void init_time(void)
+void init_timer(void)
 {
-  init_cvars(time_cvars, ARRAY_LEN(time_cvars));
+  init_cvars(timer_cvars, ARRAY_LEN(timer_cvars));
 
   for (uint8_t i = 0; i < MAX_NADES; ++i) nades[i].id = -1;
 }
@@ -44,9 +44,9 @@ typedef struct
   vec4_t graph_outline_rgba;
   vec4_t graph_item_rgba;
   vec4_t graph_gb_rgba;
-} time_t;
+} timer_t;
 
-static time_t time_;
+static timer_t timer_;
 
 // XPC32: Also some of the quadratic loops can be simplified in the nade timer and gl trace code
 //        Because of entity state tracking
@@ -56,26 +56,26 @@ static int  find_nade(int nade_id);
 static int  track_nade(int nade_id, int time);
 static void draw_item(float progress, vec4_t const color);
 
-void draw_time(void)
+void draw_timer(void)
 {
-  update_cvars(time_cvars, ARRAY_LEN(time_cvars));
+  update_cvars(timer_cvars, ARRAY_LEN(timer_cvars));
 
-  if (!time.integer) return;
+  if (!timer.integer) return;
 
-  ParseVec(time_xywh.string, time_.graph_xywh, 4);
+  ParseVec(timer_xywh.string, timer_.graph_xywh, 4);
 
-  ParseVec(time_outline_rgba.string, time_.graph_outline_rgba, 4);
-  ParseVec(time_item_rgba.string, time_.graph_item_rgba, 4);
-  ParseVec(time_gb_rgba.string, time_.graph_gb_rgba, 4);
+  ParseVec(timer_outline_rgba.string, timer_.graph_outline_rgba, 4);
+  ParseVec(timer_item_rgba.string, timer_.graph_item_rgba, 4);
+  ParseVec(timer_gb_rgba.string, timer_.graph_gb_rgba, 4);
 
   // draw the outline
   CG_DrawRect(
-    time_.graph_xywh[0],
-    time_.graph_xywh[1],
-    time_.graph_xywh[2],
-    time_.graph_xywh[3],
-    time_outline_w.value,
-    time_.graph_outline_rgba);
+    timer_.graph_xywh[0],
+    timer_.graph_xywh[1],
+    timer_.graph_xywh[2],
+    timer_.graph_xywh[3],
+    timer_outline_w.value,
+    timer_.graph_outline_rgba);
 
   snapshot_t const* const    snap = getSnap();
   playerState_t const* const ps   = getPs();
@@ -84,7 +84,7 @@ void draw_time(void)
   // todo: make gb timer off-able and use pps if available and cvar
   if (ps->pm_flags & PMF_TIME_KNOCKBACK && ps->groundEntityNum != ENTITYNUM_NONE && !(ps->pm_flags & PMF_RESPAWNED))
   {
-    draw_item(1.f - (float)ps->pm_time / MAX_GB_TIME, time_.graph_gb_rgba);
+    draw_item(1.f - (float)ps->pm_time / MAX_GB_TIME, timer_.graph_gb_rgba);
   }
 
   // cull exploded nades to make space
@@ -125,7 +125,7 @@ void draw_time(void)
       // trace doesn't need to be recomputed each time
       trap_CM_BoxTrace(&t, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
       float total_time = Distance(entity.pos.trBase, t.endpos) / VectorLength(entity.pos.trDelta);
-      draw_item(elapsed_time / total_time, time_.graph_item_rgba);
+      draw_item(elapsed_time / total_time, timer_.graph_item_rgba);
     }
   }
 
@@ -141,7 +141,7 @@ void draw_time(void)
     else
     {
       float progress = 1.f - (float)(nades[i].explode_time - snap->serverTime) / NADE_EXPLODE_TIME;
-      draw_item(progress, time_.graph_item_rgba);
+      draw_item(progress, timer_.graph_item_rgba);
     }
   }
 }
@@ -176,9 +176,9 @@ static int track_nade(int nade_id, int time)
 static inline void draw_item(float progress, vec4_t const color)
 {
   CG_FillRect(
-    time_.graph_xywh[0] + (time_.graph_xywh[2] - time_item_w.value) * progress,
-    time_.graph_xywh[1],
-    time_item_w.value,
-    time_.graph_xywh[3],
+    timer_.graph_xywh[0] + (timer_.graph_xywh[2] - timer_item_w.value) * progress,
+    timer_.graph_xywh[1],
+    timer_item_w.value,
+    timer_.graph_xywh[3],
     color);
 }

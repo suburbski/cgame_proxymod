@@ -110,7 +110,7 @@ __DLLEXPORT__ int32_t vmMain(
     init_gl();
     init_jump();
     init_rl();
-    init_time();
+    init_timer();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -124,7 +124,7 @@ __DLLEXPORT__ int32_t vmMain(
     {
       draw_ammo();
       draw_jump();
-      draw_time();
+      draw_timer();
     }
     break;
 
