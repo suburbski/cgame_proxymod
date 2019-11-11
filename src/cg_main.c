@@ -20,20 +20,24 @@
 */
 #include "cg_main.h"
 
+#include "bg_public.h"
 #include "cg_ammo.h"
-#include "cg_consolecmds.h"
 #include "cg_draw.h"
 #include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_hud.h"
-#include "cg_init.h"
 #include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_timer.h"
 #include "cg_trig.h"
+#include "version.h"
+
+#include <stdlib.h>
 
 cgs_t cgs;
+
+static void CG_Init(int32_t clientNum);
 
 /* CLIENT to VM */
 __DLLEXPORT__ int32_t vmMain(
@@ -57,7 +61,7 @@ __DLLEXPORT__ int32_t vmMain(
   switch (cmd)
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
-    cg_init(cmd, arg2);
+    CG_Init(arg2);
     init_entityStates();
     CG_InitConsoleCommands();
     break;
@@ -168,3 +172,37 @@ char const* CG_ConfigString(int32_t index)
 }
 
 //==================================================================
+
+/*
+=================
+CG_Init
+
+Called after every level change or subsystem restart
+Will perform callbacks to make the loading info screen update.
+=================
+*/
+static void CG_Init(int32_t clientNum)
+{
+  trap_Print(vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
+  initVM();
+
+  // g_syscall( CG_MEMSET, ...)
+  memset(&cgs, 0, sizeof(cgs));
+
+  cgs.clientNum = clientNum;
+
+  trap_GetGlconfig(&cgs.glconfig); // rendering configuration
+  cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
+  cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
+
+  trap_GetGameState(&cgs.gameState);
+
+  cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
+
+  cgs.media.gfxDeferSymbol     = trap_R_RegisterShader("gfx/2d/defer");
+  cgs.media.gfxCharsetShader   = trap_R_RegisterShader("gfx/2d/bigchars");
+  cgs.media.gfxWhiteShader     = trap_R_RegisterShader("white");
+  cgs.media.gfxCharsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
+  cgs.media.gfxCharsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
+  cgs.media.gfxCharsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
+}

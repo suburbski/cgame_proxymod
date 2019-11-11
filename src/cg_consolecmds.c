@@ -19,8 +19,6 @@
   ==============================
   Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
-#include "cg_consolecmds.h"
-
 #include "cg_local.h"
 #include "cg_vm.h"
 

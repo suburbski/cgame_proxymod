@@ -161,6 +161,12 @@ extern cgs_t cgs;
 //
 char const* CG_ConfigString(int32_t index);
 
+//
+// cg_consolecmds.c
+//
+qboolean CG_ConsoleCommand(void);
+void     CG_InitConsoleCommands(void);
+
 //===============================================
 
 //
