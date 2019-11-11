@@ -54,15 +54,6 @@ char* vaf(char* format, ...)
   return str;
 }
 
-char const* getConfigString(int32_t index)
-{
-  if (index < 0 || index >= MAX_CONFIGSTRINGS)
-  {
-    g_syscall(CG_ERROR, vaf("CG_ConfigString: bad index: %i", index));
-  }
-  return cgs.gameState.stringData + cgs.gameState.stringOffsets[index];
-}
-
 snapshot_t const* getSnap(void)
 {
   static snapshot_t tmp;

@@ -338,7 +338,11 @@ typedef struct
 } cgs_t;
 
 extern cgs_t cgs;
-const char*  CG_ConfigString(int32_t index);
+
+//
+// cg_main.c
+//
+char const* CG_ConfigString(int32_t index);
 
 #define PROP_GAP_WIDTH 3
 #define PROP_SPACE_WIDTH 8

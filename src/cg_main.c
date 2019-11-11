@@ -148,3 +148,21 @@ __DLLEXPORT__ int32_t vmMain(
 
   return ret;
 }
+
+//===========================================================================
+
+/*
+=================
+CG_ConfigString
+=================
+*/
+char const* CG_ConfigString(int32_t index)
+{
+  if (index < 0 || index >= MAX_CONFIGSTRINGS)
+  {
+    g_syscall(CG_ERROR, vaf("CG_ConfigString: bad index: %i", index));
+  }
+  return cgs.gameState.stringData + cgs.gameState.stringOffsets[index];
+}
+
+//==================================================================

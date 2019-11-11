@@ -21,7 +21,6 @@
 #include "cg_init.h"
 
 #include "bg_public.h"
-#include "cg_utils.h"
 #include "version.h"
 
 #include <stdlib.h>
@@ -57,7 +56,7 @@ static void init_gfx(int32_t clientNum)
 
   g_syscall(CG_GETGAMESTATE, &cgs.gameState);
 
-  cgs.levelStartTime = atoi(getConfigString(CS_LEVEL_START_TIME));
+  cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
 
   cgs.media.gfxDeferSymbol     = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/defer");
   cgs.media.gfxCharsetShader   = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/bigchars");

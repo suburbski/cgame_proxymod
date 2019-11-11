@@ -46,8 +46,7 @@ extern vec4_t colorMdGrey;
 extern vec4_t colorDkGrey;
 
 // strings
-char*       vaf(char* format, ...);
-char const* getConfigString(int32_t index);
+char* vaf(char* format, ...);
 
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);
