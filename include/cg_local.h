@@ -23,6 +23,27 @@
 
 #include "q_shared.h"
 
+/* cg_vm.c */
+int32_t callVM(
+  int32_t cmd,
+  int32_t arg0,
+  int32_t arg1,
+  int32_t arg2,
+  int32_t arg3,
+  int32_t arg4,
+  int32_t arg5,
+  int32_t arg6,
+  int32_t arg7,
+  int32_t arg8,
+  int32_t arg9,
+  int32_t arg10,
+  int32_t arg11);
+int32_t callVM_Destroy(void);
+int32_t setVMPtr(int32_t arg0);
+int32_t initVM(void);
+
+//======================================================================
+
 // mode parm for FS_FOpenFile
 typedef enum
 {
@@ -60,29 +81,6 @@ typedef enum
             // this avoids having to set eFlags and eventNum
 } entityType_t;
 
-/* cg_vm.c */
-int32_t callVM(
-  int32_t cmd,
-  int32_t arg0,
-  int32_t arg1,
-  int32_t arg2,
-  int32_t arg3,
-  int32_t arg4,
-  int32_t arg5,
-  int32_t arg6,
-  int32_t arg7,
-  int32_t arg8,
-  int32_t arg9,
-  int32_t arg10,
-  int32_t arg11);
-int32_t callVM_Destroy(void);
-int32_t setVMPtr(int32_t arg0);
-int32_t initVM(void);
-
-/* cg_modules */
-int32_t loadModules(void);
-
-#define MAX_STRING_CHARS 1024 // max length of a string passed to Cmd_TokenizeString
 #define MAX_CONFIGSTRINGS 1024
 #define MAX_GAMESTATE_CHARS 16000
 #define BIG_INFO_STRING 8192 // used for system info key only
