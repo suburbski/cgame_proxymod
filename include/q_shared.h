@@ -269,7 +269,10 @@ void AxisCopy(vec3_t in[3], vec3_t out[3]);
 float AngleNormalize360(float angle);
 float AngleNormalize180(float angle);
 
+void RotatePointAroundVector(vec3_t dst, vec3_t const dir, vec3_t const point, float degrees);
+
 void AngleVectors(vec3_t const angles, vec3_t forward, vec3_t right, vec3_t up);
+void PerpendicularVector(vec3_t dst, vec3_t const src);
 
 //=============================================
 
