@@ -23,6 +23,7 @@
 
 #include "cg_public.h"
 
+// TODO: remove this
 #define PSF_USERINPUT_NONE 0
 #define PSF_USERINPUT_FORWARD 1
 #define PSF_USERINPUT_BACKWARD 2
@@ -33,8 +34,8 @@
 #define PSF_USERINPUT_ATTACK 256
 #define PSF_USERINPUT_WALK 512
 
+uint32_t             getTime(void);
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);
-uint32_t             getTime(void);
 
 #endif // CG_UTILS_H

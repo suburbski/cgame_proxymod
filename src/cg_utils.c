@@ -23,6 +23,11 @@
 #include "cg_cvar.h"
 #include "cg_vm.h"
 
+uint32_t getTime(void)
+{
+  return g_syscall(CG_MILLISECONDS);
+}
+
 snapshot_t const* getSnap(void)
 {
   static snapshot_t tmp;
@@ -37,17 +42,6 @@ snapshot_t const* getSnap(void)
 
 playerState_t const* getPs(void)
 {
-  if (!cvar_getInteger("g_synchronousClients"))
-  {
-    return (playerState_t const*)((intptr_t)g_VM.dataSegment + (intptr_t)cvar_getInteger("mdd_pps_offset"));
-  }
-  else
-  {
-    return &getSnap()->ps;
-  }
-}
-
-uint32_t getTime(void)
-{
-  return g_syscall(CG_MILLISECONDS);
+  if (cvar_getInteger("g_synchronousClients")) return &getSnap()->ps;
+  return (playerState_t const*)VM_ArgPtr(cvar_getInteger("mdd_pps_offset"));
 }
