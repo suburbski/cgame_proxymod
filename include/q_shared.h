@@ -34,6 +34,7 @@ static inline char* vaf(char* format, ...)
 #  define __DLLEXPORT__
 #endif
 
+#include <math.h>
 #include <stdint.h>
 
 /* Mod stuff */
@@ -203,6 +204,69 @@ extern vec3_t axisDefault[3];
     v[1] = ((int32_t)(v[1]));                                                                                          \
     v[2] = ((int32_t)(v[2]));                                                                                          \
   }
+
+static inline int32_t VectorCompare(vec3_t const v1, vec3_t const v2)
+{
+  if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2])
+  {
+    return 0;
+  }
+  return 1;
+}
+
+static inline vec_t VectorLength(vec3_t const v)
+{
+  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+}
+
+static inline vec_t VectorLength2(vec2_t const v)
+{
+  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1]);
+}
+
+static inline vec_t VectorLengthSquared(vec3_t const v)
+{
+  return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+}
+
+static inline vec_t VectorLengthSquared2(vec2_t const v)
+{
+  return (v[0] * v[0] + v[1] * v[1]);
+}
+
+static inline vec_t Distance(vec3_t const p1, vec3_t const p2)
+{
+  vec3_t v;
+  VectorSubtract(p2, p1, v);
+  return VectorLength(v);
+}
+
+static inline vec_t DistanceSquared(vec3_t const p1, vec3_t const p2)
+{
+  vec3_t v;
+  VectorSubtract(p2, p1, v);
+  return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+}
+
+static inline void CrossProduct(vec3_t const v1, vec3_t const v2, vec3_t cross)
+{
+  cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
+  cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
+  cross[2] = v1[0] * v2[1] - v1[1] * v2[0];
+}
+
+vec_t VectorNormalize(vec3_t v); // returns vector length
+vec_t VectorNormalize2(vec3_t const v, vec3_t out);
+
+void AnglesToAxis(vec3_t const angles, vec3_t axis[3]);
+
+void AxisClear(vec3_t axis[3]);
+void AxisCopy(vec3_t in[3], vec3_t out[3]);
+
+float AngleNormalize360(float angle);
+float AngleNormalize180(float angle);
+
+void AngleVectors(vec3_t const angles, vec3_t forward, vec3_t right, vec3_t up);
 
 //=============================================
 

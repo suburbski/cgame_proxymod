@@ -107,70 +107,6 @@ vec3_t bytedirs[NUMVERTEXNORMALS] = { { -0.525731f, 0.000000f, 0.850651f },   { 
 
 //==============================================================
 
-int VectorCompare(vec3_t const v1, vec3_t const v2)
-{
-  if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2])
-  {
-    return 0;
-  }
-  return 1;
-}
-
-vec_t VectorLength(vec3_t const v)
-{
-  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-}
-
-vec_t VectorLengthSquared(vec3_t const v)
-{
-  return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-}
-
-vec_t Distance(vec3_t const p1, vec3_t const p2)
-{
-  vec3_t v;
-
-  VectorSubtract(p2, p1, v);
-  return VectorLength(v);
-}
-
-vec_t DistanceSquared(vec3_t const p1, vec3_t const p2)
-{
-  vec3_t v;
-
-  VectorSubtract(p2, p1, v);
-  return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-}
-
-// fast vector normalize routine that does not check to make sure
-// that length != 0, nor does it return length, uses rsqrt approximation
-void VectorNormalizeFast(vec3_t v)
-{
-  float ilength;
-
-  ilength = Q_rsqrt(DotProduct(v, v));
-
-  v[0] *= ilength;
-  v[1] *= ilength;
-  v[2] *= ilength;
-}
-
-void VectorInverse(vec3_t v)
-{
-  v[0] = -v[0];
-  v[1] = -v[1];
-  v[2] = -v[2];
-}
-
-void CrossProduct(vec3_t const v1, vec3_t const v2, vec3_t cross)
-{
-  cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
-  cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
-  cross[2] = v1[0] * v2[1] - v1[1] * v2[0];
-}
-
-//=======================================================
-
 signed char ClampChar(int i)
 {
   if (i < -128)
@@ -392,55 +328,6 @@ void RotateAroundDirection(vec3_t axis[3], float yaw)
 
   // cross to get axis[2]
   CrossProduct(axis[0], axis[1], axis[2]);
-}
-
-void vectoangles(vec3_t const value1, vec3_t angles)
-{
-  float forward;
-  float yaw, pitch;
-
-  if (value1[1] == 0 && value1[0] == 0)
-  {
-    yaw = 0;
-    if (value1[2] > 0)
-    {
-      pitch = 90;
-    }
-    else
-    {
-      pitch = 270;
-    }
-  }
-  else
-  {
-    if (value1[0])
-    {
-      yaw = (atan2f(value1[1], value1[0]) * 180 / M_PI);
-    }
-    else if (value1[1] > 0)
-    {
-      yaw = 90;
-    }
-    else
-    {
-      yaw = 270;
-    }
-    if (yaw < 0)
-    {
-      yaw += 360;
-    }
-
-    forward = sqrtf(value1[0] * value1[0] + value1[1] * value1[1]);
-    pitch   = (atan2f(value1[2], forward) * 180 / M_PI);
-    if (pitch < 0)
-    {
-      pitch += 360;
-    }
-  }
-
-  angles[PITCH] = -pitch;
-  angles[YAW]   = yaw;
-  angles[ROLL]  = 0;
 }
 
 /*
