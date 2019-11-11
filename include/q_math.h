@@ -6,26 +6,18 @@
 #include <math.h>
 
 /* This file was automatically generated.  Do not edit! */
-#define NUMVERTEXNORMALS 162
-#define DEG2RAD(a) ((a) * (M_PI / 180.f))
-#define RAD2DEG(a) ((a) * (180.f / M_PI))
-#define DEG2SHORT(a) ((a) * (32768.f / 180.f))
-#define SHORT2DEG(a) ((a) * (180.f / 32768.f))
-#define RAD2SHORT(a) ((a) * (32768.f / M_PI))
-#define SHORT2RAD(a) ((a) * (M_PI / 32768.f))
-extern vec3_t vec3_origin;
-int           Q_log2(int val);
-void          Vector4Scale(vec4_t const in, vec_t scale, vec4_t out);
-void          _VectorScale(vec3_t const in, vec_t scale, vec3_t out);
-void          _VectorCopy(vec3_t const in, vec3_t out);
-void          _VectorAdd(vec3_t const veca, vec3_t const vecb, vec3_t out);
-void          _VectorSubtract(vec3_t const veca, vec3_t const vecb, vec3_t out);
-vec_t         _DotProduct(vec3_t const v1, vec3_t const v2);
-void          _VectorMA(vec3_t const veca, float scale, vec3_t const vecb, vec3_t vecc);
-vec_t         VectorNormalize2(vec3_t const v, vec3_t out);
-void          AddPointToBounds(vec3_t const v, vec3_t mins, vec3_t maxs);
-void          ClearBounds(vec3_t mins, vec3_t maxs);
-float         RadiusFromBounds(vec3_t const mins, vec3_t const maxs);
+int         Q_log2(int val);
+void        Vector4Scale(vec4_t const in, vec_t scale, vec4_t out);
+void        _VectorScale(vec3_t const in, vec_t scale, vec3_t out);
+void        _VectorCopy(vec3_t const in, vec3_t out);
+void        _VectorAdd(vec3_t const veca, vec3_t const vecb, vec3_t out);
+void        _VectorSubtract(vec3_t const veca, vec3_t const vecb, vec3_t out);
+vec_t       _DotProduct(vec3_t const v1, vec3_t const v2);
+void        _VectorMA(vec3_t const veca, float scale, vec3_t const vecb, vec3_t vecc);
+vec_t       VectorNormalize2(vec3_t const v, vec3_t out);
+void        AddPointToBounds(vec3_t const v, vec3_t mins, vec3_t maxs);
+void        ClearBounds(vec3_t mins, vec3_t maxs);
+float       RadiusFromBounds(vec3_t const mins, vec3_t const maxs);
 #if defined __LCC__ || defined C_ONLY || !id386 ||                                                                     \
   defined __VECTORC && !((defined __linux__ || __FreeBSD__) && (defined __i386__) && (!defined C_ONLY)) // rb010123
 int       BoxOnPlaneSide(vec3_t const emins, vec3_t const emaxs, struct cplane_s* p);

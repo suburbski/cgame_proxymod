@@ -33,21 +33,6 @@
 #define PSF_USERINPUT_ATTACK 256
 #define PSF_USERINPUT_WALK 512
 
-extern vec4_t colorBlack;
-extern vec4_t colorRed;
-extern vec4_t colorGreen;
-extern vec4_t colorBlue;
-extern vec4_t colorYellow;
-extern vec4_t colorMagenta;
-extern vec4_t colorCyan;
-extern vec4_t colorWhite;
-extern vec4_t colorLtGrey;
-extern vec4_t colorMdGrey;
-extern vec4_t colorDkGrey;
-
-// strings
-char* vaf(char* format, ...);
-
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);
 uint32_t             getTime(void);

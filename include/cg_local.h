@@ -60,9 +60,6 @@ typedef enum
             // this avoids having to set eFlags and eventNum
 } entityType_t;
 
-/* cg_utils.c */
-char* vaf(char* format, ...);
-
 /* cg_vm.c */
 int32_t callVM(
   int32_t cmd,
@@ -446,50 +443,5 @@ typedef struct
     v[1] = ((int32_t)(v[1]));                                                                                          \
     v[2] = ((int32_t)(v[2]));                                                                                          \
   }
-
-// all drawing is done to a 640*480 virtual screen size
-// and will be automatically scaled to the real resolution
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
-#define TINYCHAR_WIDTH (SMALLCHAR_WIDTH)
-#define TINYCHAR_HEIGHT (SMALLCHAR_HEIGHT / 2)
-
-#define SMALLCHAR_WIDTH 8
-#define SMALLCHAR_HEIGHT 16
-
-#define BIGCHAR_WIDTH 16
-#define BIGCHAR_HEIGHT 16
-
-#define GIANTCHAR_WIDTH 32
-#define GIANTCHAR_HEIGHT 48
-
-#define Q_COLOR_ESCAPE '^'
-#define Q_IsColorString(p) (p && *(p) == Q_COLOR_ESCAPE && *((p) + 1) && *((p) + 1) != Q_COLOR_ESCAPE)
-
-#define COLOR_BLACK '0'
-#define COLOR_RED '1'
-#define COLOR_GREEN '2'
-#define COLOR_YELLOW '3'
-#define COLOR_BLUE '4'
-#define COLOR_CYAN '5'
-#define COLOR_MAGENTA '6'
-#define COLOR_WHITE '7'
-#define COLOR_ORANGE '8'
-#define COLOR_MDGREY '9'
-#define ColorIndex(c) ((((c) - '0') & 15) % 10)
-
-#define S_COLOR_BLACK "^0"
-#define S_COLOR_RED "^1"
-#define S_COLOR_GREEN "^2"
-#define S_COLOR_YELLOW "^3"
-#define S_COLOR_BLUE "^4"
-#define S_COLOR_CYAN "^5"
-#define S_COLOR_MAGENTA "^6"
-#define S_COLOR_WHITE "^7"
-#define S_COLOR_ORANGE "^8"
-#define S_COLOR_MDGREY "^9"
-
-extern vec4_t g_color_table[8];
 
 #endif // CG_LOCAL_H

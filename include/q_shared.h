@@ -1,6 +1,25 @@
 #ifndef Q_SHARED_H
 #define Q_SHARED_H
 
+#include <stdarg.h>
+#include <stdio.h>
+
+#ifdef _WIN32
+#  define vsnprintf _vsnprintf
+#endif
+
+static inline char* vaf(char* format, ...)
+{
+  va_list     argptr;
+  static char str[1024];
+
+  va_start(argptr, format);
+  vsnprintf(str, 1024, format, argptr);
+  va_end(argptr);
+
+  return str;
+}
+
 #ifdef WIN32
 #  include <Windows.h>
 #  pragma warning(disable : 4996)
@@ -85,6 +104,74 @@ typedef int32_t fixed16_t;
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846f // matches value in gcc v2 math.h
 #endif
+
+#define NUMVERTEXNORMALS 162
+extern vec3_t bytedirs[NUMVERTEXNORMALS];
+
+// all drawing is done to a 640*480 virtual screen size
+// and will be automatically scaled to the real resolution
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+
+#define TINYCHAR_WIDTH (SMALLCHAR_WIDTH)
+#define TINYCHAR_HEIGHT (SMALLCHAR_HEIGHT / 2)
+
+#define SMALLCHAR_WIDTH 8
+#define SMALLCHAR_HEIGHT 16
+
+#define BIGCHAR_WIDTH 16
+#define BIGCHAR_HEIGHT 16
+
+#define GIANTCHAR_WIDTH 32
+#define GIANTCHAR_HEIGHT 48
+
+extern vec4_t colorBlack;
+extern vec4_t colorRed;
+extern vec4_t colorGreen;
+extern vec4_t colorBlue;
+extern vec4_t colorYellow;
+extern vec4_t colorMagenta;
+extern vec4_t colorCyan;
+extern vec4_t colorWhite;
+extern vec4_t colorLtGrey;
+extern vec4_t colorMdGrey;
+extern vec4_t colorDkGrey;
+
+#define Q_COLOR_ESCAPE '^'
+#define Q_IsColorString(p) (p && *(p) == Q_COLOR_ESCAPE && *((p) + 1) && *((p) + 1) != Q_COLOR_ESCAPE)
+
+#define COLOR_BLACK '0'
+#define COLOR_RED '1'
+#define COLOR_GREEN '2'
+#define COLOR_YELLOW '3'
+#define COLOR_BLUE '4'
+#define COLOR_CYAN '5'
+#define COLOR_MAGENTA '6'
+#define COLOR_WHITE '7'
+#define COLOR_ORANGE '8'
+#define COLOR_MDGREY '9'
+#define ColorIndex(c) ((((c) - '0') & 15) % 10)
+
+#define S_COLOR_BLACK "^0"
+#define S_COLOR_RED "^1"
+#define S_COLOR_GREEN "^2"
+#define S_COLOR_YELLOW "^3"
+#define S_COLOR_BLUE "^4"
+#define S_COLOR_CYAN "^5"
+#define S_COLOR_MAGENTA "^6"
+#define S_COLOR_WHITE "^7"
+#define S_COLOR_ORANGE "^8"
+#define S_COLOR_MDGREY "^9"
+
+extern vec4_t g_color_table[8];
+
+#define DEG2RAD(a) ((a) * (M_PI / 180.f))
+#define RAD2DEG(a) ((a) * (180.f / M_PI))
+#define RAD2SHORT(a) ((a) * (32768.f / M_PI))
+#define SHORT2RAD(a) ((a) * (M_PI / 32768.f))
+
+extern vec3_t vec3_origin;
+extern vec3_t axisDefault[3];
 
 //=============================================
 
