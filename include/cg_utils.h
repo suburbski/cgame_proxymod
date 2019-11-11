@@ -21,7 +21,7 @@
 #ifndef CG_UTILS_H
 #define CG_UTILS_H
 
-#include "cg_local.h"
+#include "cg_public.h"
 
 #define PSF_USERINPUT_NONE 0
 #define PSF_USERINPUT_FORWARD 1

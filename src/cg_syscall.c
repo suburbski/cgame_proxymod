@@ -20,7 +20,7 @@
 */
 #include "cg_entity.h"
 #include "cg_gl.h"
-#include "cg_local.h"
+#include "cg_public.h"
 #include "cg_rl.h"
 #include "cg_trig.h"
 

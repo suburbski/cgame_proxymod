@@ -22,6 +22,8 @@
 */
 #include "cg_vm.h"
 
+#include "cg_public.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 

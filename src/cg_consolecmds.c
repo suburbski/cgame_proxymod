@@ -21,6 +21,7 @@
 */
 #include "cg_consolecmds.h"
 
+#include "cg_public.h"
 #include "cg_vm.h"
 
 #include <stdlib.h>

@@ -28,6 +28,7 @@
 #include "cg_hud.h"
 #include "cg_init.h"
 #include "cg_jump.h"
+#include "cg_public.h"
 #include "cg_rl.h"
 #include "cg_time.h"
 #include "cg_trig.h"

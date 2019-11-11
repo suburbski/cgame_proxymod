@@ -21,6 +21,7 @@
 #include "cg_init.h"
 
 #include "bg_public.h"
+#include "cg_public.h"
 #include "version.h"
 
 #include <stdlib.h>
