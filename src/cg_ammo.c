@@ -3,8 +3,8 @@
 #include "bg_public.h"
 #include "cg_cvar.h"
 #include "cg_draw.h"
+#include "cg_local.h"
 #include "cg_utils.h"
-#include "q_math.h"
 
 static vmCvar_t ammo;
 static vmCvar_t ammo_graph_xywh;
@@ -39,39 +39,39 @@ void init_ammo(void)
 {
   init_cvars(ammo_cvars, ARRAY_LEN(ammo_cvars));
 
-  ammo_.graph_icons[0]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_machinegun");
-  ammo_.graph_icons[1]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_shotgun");
-  ammo_.graph_icons[2]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_grenade");
-  ammo_.graph_icons[3]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_rocket");
-  ammo_.graph_icons[4]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_lightning");
-  ammo_.graph_icons[5]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_railgun");
-  ammo_.graph_icons[6]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_plasma");
-  ammo_.graph_icons[7]  = g_syscall(CG_R_REGISTERSHADER, "icons/icona_bfg");
-  ammo_.graph_icons[8]  = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_machinegun");
-  ammo_.graph_icons[9]  = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_shotgun");
-  ammo_.graph_icons[10] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_grenade");
-  ammo_.graph_icons[11] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_rocket");
-  ammo_.graph_icons[12] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_lightning");
-  ammo_.graph_icons[13] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_railgun");
-  ammo_.graph_icons[14] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_plasma");
-  ammo_.graph_icons[15] = g_syscall(CG_R_REGISTERSHADER, "icons/iconw_bfg");
+  ammo_.graph_icons[0]  = trap_R_RegisterShader("icons/icona_machinegun");
+  ammo_.graph_icons[1]  = trap_R_RegisterShader("icons/icona_shotgun");
+  ammo_.graph_icons[2]  = trap_R_RegisterShader("icons/icona_grenade");
+  ammo_.graph_icons[3]  = trap_R_RegisterShader("icons/icona_rocket");
+  ammo_.graph_icons[4]  = trap_R_RegisterShader("icons/icona_lightning");
+  ammo_.graph_icons[5]  = trap_R_RegisterShader("icons/icona_railgun");
+  ammo_.graph_icons[6]  = trap_R_RegisterShader("icons/icona_plasma");
+  ammo_.graph_icons[7]  = trap_R_RegisterShader("icons/icona_bfg");
+  ammo_.graph_icons[8]  = trap_R_RegisterShader("icons/iconw_machinegun");
+  ammo_.graph_icons[9]  = trap_R_RegisterShader("icons/iconw_shotgun");
+  ammo_.graph_icons[10] = trap_R_RegisterShader("icons/iconw_grenade");
+  ammo_.graph_icons[11] = trap_R_RegisterShader("icons/iconw_rocket");
+  ammo_.graph_icons[12] = trap_R_RegisterShader("icons/iconw_lightning");
+  ammo_.graph_icons[13] = trap_R_RegisterShader("icons/iconw_railgun");
+  ammo_.graph_icons[14] = trap_R_RegisterShader("icons/iconw_plasma");
+  ammo_.graph_icons[15] = trap_R_RegisterShader("icons/iconw_bfg");
 
-  ammo_.graph_models[0]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/machinegunam.md3");
-  ammo_.graph_models[1]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/shotgunam.md3");
-  ammo_.graph_models[2]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/grenadeam.md3");
-  ammo_.graph_models[3]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/rocketam.md3");
-  ammo_.graph_models[4]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/lightningam.md3");
-  ammo_.graph_models[5]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/railgunam.md3");
-  ammo_.graph_models[6]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/plasmaam.md3");
-  ammo_.graph_models[7]  = g_syscall(CG_R_REGISTERMODEL, "models/powerups/ammo/bfgam.md3");
-  ammo_.graph_models[8]  = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/machinegun/machinegun.md3");
-  ammo_.graph_models[9]  = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/shotgun/shotgun.md3");
-  ammo_.graph_models[10] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/grenadel/grenadel.md3");
-  ammo_.graph_models[11] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/rocketl/rocketl.md3");
-  ammo_.graph_models[12] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/lightning/lightning.md3");
-  ammo_.graph_models[13] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/railgun/railgun.md3");
-  ammo_.graph_models[14] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/plasma/plasma.md3");
-  ammo_.graph_models[15] = g_syscall(CG_R_REGISTERMODEL, "models/weapons2/bfg/bfg.md3");
+  ammo_.graph_models[0]  = trap_R_RegisterModel("models/powerups/ammo/machinegunam.md3");
+  ammo_.graph_models[1]  = trap_R_RegisterModel("models/powerups/ammo/shotgunam.md3");
+  ammo_.graph_models[2]  = trap_R_RegisterModel("models/powerups/ammo/grenadeam.md3");
+  ammo_.graph_models[3]  = trap_R_RegisterModel("models/powerups/ammo/rocketam.md3");
+  ammo_.graph_models[4]  = trap_R_RegisterModel("models/powerups/ammo/lightningam.md3");
+  ammo_.graph_models[5]  = trap_R_RegisterModel("models/powerups/ammo/railgunam.md3");
+  ammo_.graph_models[6]  = trap_R_RegisterModel("models/powerups/ammo/plasmaam.md3");
+  ammo_.graph_models[7]  = trap_R_RegisterModel("models/powerups/ammo/bfgam.md3");
+  ammo_.graph_models[8]  = trap_R_RegisterModel("models/weapons2/machinegun/machinegun.md3");
+  ammo_.graph_models[9]  = trap_R_RegisterModel("models/weapons2/shotgun/shotgun.md3");
+  ammo_.graph_models[10] = trap_R_RegisterModel("models/weapons2/grenadel/grenadel.md3");
+  ammo_.graph_models[11] = trap_R_RegisterModel("models/weapons2/rocketl/rocketl.md3");
+  ammo_.graph_models[12] = trap_R_RegisterModel("models/weapons2/lightning/lightning.md3");
+  ammo_.graph_models[13] = trap_R_RegisterModel("models/weapons2/railgun/railgun.md3");
+  ammo_.graph_models[14] = trap_R_RegisterModel("models/weapons2/plasma/plasma.md3");
+  ammo_.graph_models[15] = trap_R_RegisterModel("models/weapons2/bfg/bfg.md3");
 
   memset(ammo_.graph_model_origin, 0, 3 * sizeof(vec_t));
   ammo_.graph_model_origin[0] = 70.f;

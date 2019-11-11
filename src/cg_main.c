@@ -28,7 +28,7 @@
 #include "cg_hud.h"
 #include "cg_init.h"
 #include "cg_jump.h"
-#include "cg_public.h"
+#include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_time.h"
 #include "cg_trig.h"
@@ -161,7 +161,7 @@ char const* CG_ConfigString(int32_t index)
 {
   if (index < 0 || index >= MAX_CONFIGSTRINGS)
   {
-    g_syscall(CG_ERROR, vaf("CG_ConfigString: bad index: %i", index));
+    trap_Error(vaf("CG_ConfigString: bad index: %i", index));
   }
   return cgs.gameState.stringData + cgs.gameState.stringOffsets[index];
 }

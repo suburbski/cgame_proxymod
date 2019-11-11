@@ -21,22 +21,16 @@
 #include "cg_utils.h"
 
 #include "cg_cvar.h"
+#include "cg_local.h"
 #include "cg_vm.h"
-
-uint32_t getTime(void)
-{
-  return g_syscall(CG_MILLISECONDS);
-}
 
 snapshot_t const* getSnap(void)
 {
   static snapshot_t tmp;
-  uint32_t          curSnapNum;
-  uint32_t          servertime;
-
-  g_syscall(CG_GETCURRENTSNAPSHOTNUMBER, &curSnapNum, &servertime);
-  g_syscall(CG_GETSNAPSHOT, curSnapNum, &tmp);
-
+  int32_t           curSnapNum;
+  int32_t           servertime;
+  trap_GetCurrentSnapshotNumber(&curSnapNum, &servertime);
+  trap_GetSnapshot(curSnapNum, &tmp);
   return &tmp;
 }
 

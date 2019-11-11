@@ -3,9 +3,9 @@
 #include "bg_public.h"
 #include "cg_cvar.h"
 #include "cg_draw.h"
+#include "cg_local.h"
 #include "cg_utils.h"
 #include "nade_tracking.h"
-#include "q_math.h"
 
 #define MAX_GB_TIME 250
 #define MAX_RL_TIME 15000
@@ -123,7 +123,7 @@ void draw_time(void)
 
       // a rocket dest should never change (ignoring movers)
       // trace doesn't need to be recomputed each time
-      g_syscall(CG_CM_BOXTRACE, &t, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
+      trap_CM_BoxTrace(&t, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
       float total_time = Distance(entity.pos.trBase, t.endpos) / VectorLength(entity.pos.trDelta);
       draw_item(elapsed_time / total_time, time_.graph_item_rgba);
     }

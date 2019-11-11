@@ -20,7 +20,7 @@
 */
 #include "cg_cvar.h"
 
-#include "cg_public.h"
+#include "cg_local.h"
 
 #include <stdlib.h>
 
@@ -38,14 +38,14 @@ void ParseVec(char* data, float* vec, uint8_t size)
 int32_t cvar_getInteger(char const* var_name)
 {
   char buffer[MAX_CVAR_VALUE_STRING];
-  g_syscall(CG_CVAR_VARIABLESTRINGBUFFER, var_name, buffer, sizeof(buffer));
+  trap_Cvar_VariableStringBuffer(var_name, buffer, sizeof(buffer));
   return strtol(buffer, NULL, 0);
 }
 
 float cvar_getValue(char const* var_name)
 {
   char buffer[MAX_CVAR_VALUE_STRING];
-  g_syscall(CG_CVAR_VARIABLESTRINGBUFFER, var_name, buffer, sizeof(buffer));
+  trap_Cvar_VariableStringBuffer(var_name, buffer, sizeof(buffer));
   return strtof(buffer, NULL);
 }
 
@@ -53,7 +53,7 @@ void init_cvars(cvarTable_t const* cvars, size_t size)
 {
   for (uint32_t i = 0; i < size; ++i)
   {
-    g_syscall(CG_CVAR_REGISTER, cvars[i].vmCvar, cvars[i].cvarName, cvars[i].defaultString, cvars[i].cvarFlags);
+    trap_Cvar_Register(cvars[i].vmCvar, cvars[i].cvarName, cvars[i].defaultString, cvars[i].cvarFlags);
   }
 }
 
@@ -61,6 +61,6 @@ void update_cvars(cvarTable_t const* cvars, size_t size)
 {
   for (uint32_t i = 0; i < size; ++i)
   {
-    g_syscall(CG_CVAR_UPDATE, cvars[i].vmCvar);
+    trap_Cvar_Update(cvars[i].vmCvar);
   }
 }

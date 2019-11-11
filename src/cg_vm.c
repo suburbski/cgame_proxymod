@@ -22,10 +22,13 @@
 */
 #include "cg_vm.h"
 
-#include "cg_public.h"
+#include "cg_local.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+
+typedef uint32_t (
+  *pfn_t)(int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
 
 /* VM_Run, VM_Exec, VM_Create, VM_Destroy, and VM_Restart
  * originally from Q3Fusion (http://www.sourceforge.net/projects/q3fusion/)
@@ -356,7 +359,7 @@ static void VM_Run(vm_t* vm)
 
       if (param & 3)
       {
-        g_syscall(CG_ERROR, "[QMMVM] VM_Run: OP_BLOCK_COPY not dword aligned");
+        trap_Error("[QMMVM] VM_Run: OP_BLOCK_COPY not dword aligned");
       }
 
       // FIXME: assume pointers don't overlap?
@@ -585,7 +588,7 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   if (!vm || !path || !path[0]) return qfalse;
 
   // open VM file (use engine calls so we can easily read into .pk3)
-  vm->fileSize = g_syscall(CG_FS_FOPENFILE, path, &fvm, FS_READ);
+  vm->fileSize = trap_FS_FOpenFile(path, &fvm, FS_READ);
   // allocate memory block the size of the file
   vmBase = (byte*)malloc(vm->fileSize);
 
@@ -597,8 +600,8 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   }
 
   // read VM file into memory block
-  g_syscall(CG_FS_READ, vmBase, vm->fileSize, fvm);
-  g_syscall(CG_FS_FCLOSEFILE, fvm);
+  trap_FS_Read(vmBase, vm->fileSize, fvm);
+  trap_FS_FCloseFile(fvm);
 
   header = (vmHeader_t*)vmBase;
 
@@ -788,11 +791,13 @@ qboolean VM_Restart(vm_t* vm, qboolean savemem)
 
 void* VM_ArgPtr(int32_t intValue)
 {
+  // TODO: assert if intValue < g_VM.dataSegmentMask
   return (void*)(g_VM.dataSegment + (intValue & g_VM.dataSegmentMask));
 }
 
 void* VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue)
 {
+  // TODO: assert if intValue < vm->dataSegmentMask
   return (void*)(vm->dataSegment + (intValue & vm->dataSegmentMask));
 }
 
@@ -900,7 +905,7 @@ int32_t initVM(void)
   // or we can fake it, and sell it to the Fox Network
   if (!VM_Create(&g_VM, vmpath, NULL))
   {
-    g_syscall(CG_ERROR, vaf("FATAL ERROR: Unable to load VM \"%s\"\n", vmpath));
+    trap_Error(vaf("FATAL ERROR: Unable to load VM \"%s\"\n", vmpath));
     return qfalse;
   }
   strncpy(vmbase, vaf("%u", g_VM.dataSegment), sizeof(vmbase));

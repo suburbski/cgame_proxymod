@@ -34,7 +34,6 @@
 #define PSF_USERINPUT_ATTACK 256
 #define PSF_USERINPUT_WALK 512
 
-uint32_t             getTime(void);
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);
 

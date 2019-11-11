@@ -22,16 +22,9 @@
 
 #include "bg_public.h"
 #include "cg_local.h"
-#include "cg_public.h"
 #include "version.h"
 
 #include <stdlib.h>
-
-syscall_t          g_syscall = NULL;
-__DLLEXPORT__ void dllEntry(syscall_t psyscall)
-{
-  g_syscall = psyscall;
-}
 
 static void init_gfx(int32_t clientNum);
 
@@ -39,7 +32,7 @@ void cg_init(int32_t cmd, int32_t clientNum)
 {
   (void)cmd;
 
-  g_syscall(CG_PRINT, vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
+  trap_Print(vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
   initVM();
 
   // g_syscall( CG_MEMSET, ...)
@@ -52,18 +45,18 @@ static void init_gfx(int32_t clientNum)
 {
   cgs.clientNum = clientNum;
 
-  g_syscall(CG_GETGLCONFIG, &cgs.glconfig); // rendering configuration
+  trap_GetGlconfig(&cgs.glconfig); // rendering configuration
   cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
   cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
 
-  g_syscall(CG_GETGAMESTATE, &cgs.gameState);
+  trap_GetGameState(&cgs.gameState);
 
   cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
 
-  cgs.media.gfxDeferSymbol     = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/defer");
-  cgs.media.gfxCharsetShader   = g_syscall(CG_R_REGISTERSHADER, "gfx/2d/bigchars");
-  cgs.media.gfxWhiteShader     = g_syscall(CG_R_REGISTERSHADER, "white");
-  cgs.media.gfxCharsetProp     = g_syscall(CG_R_REGISTERSHADER, "menu/art/font1_prop.tga");
-  cgs.media.gfxCharsetPropGlow = g_syscall(CG_R_REGISTERSHADER, "menu/art/font1_prop_glo.tga");
-  cgs.media.gfxCharsetPropB    = g_syscall(CG_R_REGISTERSHADER, "menu/art/font2_prop.tga");
+  cgs.media.gfxDeferSymbol     = trap_R_RegisterShader("gfx/2d/defer");
+  cgs.media.gfxCharsetShader   = trap_R_RegisterShader("gfx/2d/bigchars");
+  cgs.media.gfxWhiteShader     = trap_R_RegisterShader("white");
+  cgs.media.gfxCharsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
+  cgs.media.gfxCharsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
+  cgs.media.gfxCharsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
 }

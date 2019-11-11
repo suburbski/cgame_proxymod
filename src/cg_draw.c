@@ -26,32 +26,6 @@
 #define RF_NOSHADOW 0x0040      // don't add stencil shadows
 #define RDF_NOWORLDMODEL 0x0001 // used for player configuration screen
 
-static inline int PASSFLOAT(float x)
-{
-  union
-  {
-    float f;
-    int   i;
-  } floatInt = { .f = x };
-  return floatInt.i;
-}
-
-static inline void
-  trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader)
-{
-  g_syscall(
-    CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(w),
-    PASSFLOAT(h),
-    PASSFLOAT(s1),
-    PASSFLOAT(t1),
-    PASSFLOAT(s2),
-    PASSFLOAT(t2),
-    hShader);
-}
-
 /*
 ================
 CG_AdjustFrom640
@@ -83,10 +57,10 @@ Coordinates are 640*480 virtual values
 */
 void CG_FillRect(float x, float y, float w, float h, vec4_t const color)
 {
-  g_syscall(CG_R_SETCOLOR, color);
+  trap_R_SetColor(color);
   CG_AdjustFrom640(&x, &y, &w, &h);
   trap_R_DrawStretchPic(x, y, w, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
-  g_syscall(CG_R_SETCOLOR, NULL);
+  trap_R_SetColor(NULL);
 }
 
 /*
@@ -121,10 +95,10 @@ Coordinates are 640*480 virtual values
 */
 void CG_DrawRect(float x, float y, float w, float h, float size, vec4_t const color)
 {
-  g_syscall(CG_R_SETCOLOR, color);
+  trap_R_SetColor(color);
   CG_DrawTopBottom(x, y, w, h, size);
   CG_DrawSides(x, y + size, w, h - size * 2, size);
-  g_syscall(CG_R_SETCOLOR, NULL);
+  trap_R_SetColor(NULL);
 }
 
 /*
@@ -176,7 +150,7 @@ void CG_DrawText(
   // draw the drop shadow
   if (shadow)
   {
-    g_syscall(CG_R_SETCOLOR, colorBlack);
+    trap_R_SetColor(colorBlack);
     if (alignRight)
     {
       for (int32_t i = len - 1; i >= 0; --i)
@@ -196,7 +170,7 @@ void CG_DrawText(
   }
 
   tmpX = x;
-  g_syscall(CG_R_SETCOLOR, color);
+  trap_R_SetColor(color);
   if (alignRight)
   {
     for (int32_t i = len - 1; i >= 0; --i)
@@ -213,7 +187,7 @@ void CG_DrawText(
       tmpX += sizePx;
     }
   }
-  g_syscall(CG_R_SETCOLOR, NULL);
+  trap_R_SetColor(NULL);
 }
 
 void CG_Draw3DModel(
@@ -259,7 +233,7 @@ void CG_Draw3DModel(
   refdef.time = 0; // getSnap()->serverTime;
   // refdef.time = cg.time;
 
-  g_syscall(CG_R_CLEARSCENE);
-  g_syscall(CG_R_ADDREFENTITYTOSCENE, &ent);
-  g_syscall(CG_R_RENDERSCENE, &refdef);
+  trap_R_ClearScene();
+  trap_R_AddRefEntityToScene(&ent);
+  trap_R_RenderScene(&refdef);
 }

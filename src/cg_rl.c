@@ -41,7 +41,7 @@ void add_mark(
 void init_rl(void)
 {
   init_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
-  line_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
+  line_shader = trap_R_RegisterShader("railCore");
 }
 
 void draw_rl(void)
@@ -66,7 +66,7 @@ void draw_rl(void)
     {
       VectorMA(entity.pos.trBase, (cgs.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
       VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);
-      g_syscall(CG_CM_BOXTRACE, &beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
+      trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
       if (path_draw.integer)
       {
         vec4_t color;
@@ -82,11 +82,11 @@ void draw_rl(void)
         beam.shaderRGBA[1] = color[1] * 255;
         beam.shaderRGBA[2] = color[2] * 255;
         beam.shaderRGBA[3] = color[3] * 255;
-        g_syscall(CG_R_ADDREFENTITYTOSCENE, &beam);
+        trap_R_AddRefEntityToScene(&beam);
       }
       if (target_draw.integer)
       {
-        qhandle_t m_shader = g_syscall(CG_R_REGISTERSHADER, target_shader.string);
+        qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
         add_mark(m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer);
       }
     }
@@ -135,15 +135,8 @@ void add_mark(
 
   // get the fragments
   VectorScale(dir, -20, projection);
-  numFragments = g_syscall(
-    CG_CM_MARKFRAGMENTS,
-    4,
-    (void*)originalPoints,
-    projection,
-    MAX_MARK_POINTS,
-    markPoints[0],
-    MAX_MARK_FRAGMENTS,
-    markFragments);
+  numFragments = trap_CM_MarkFragments(
+    4, (void*)originalPoints, projection, MAX_MARK_POINTS, markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
 
   colors[0] = red * 255;
   colors[1] = green * 255;
@@ -168,11 +161,11 @@ void add_mark(
       VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
 
       VectorSubtract(v->xyz, origin, delta);
-      v->st[0]           = .5f + DotProduct(delta, axis[1]) * texCoordScale;
-      v->st[1]           = .5f + DotProduct(delta, axis[2]) * texCoordScale;
-      *(int*)v->modulate = *(int*)colors;
+      v->st[0]               = .5f + DotProduct(delta, axis[1]) * texCoordScale;
+      v->st[1]               = .5f + DotProduct(delta, axis[2]) * texCoordScale;
+      *(int32_t*)v->modulate = *(int32_t*)colors;
     }
 
-    g_syscall(CG_R_ADDPOLYTOSCENE, markShader, mf->numPoints, verts);
+    trap_R_AddPolyToScene(markShader, mf->numPoints, verts);
   }
 }

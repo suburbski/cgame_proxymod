@@ -21,7 +21,7 @@
 */
 #include "cg_consolecmds.h"
 
-#include "cg_public.h"
+#include "cg_local.h"
 #include "cg_vm.h"
 
 #include <stdlib.h>
@@ -49,7 +49,7 @@ Cmd_Argc() / Cmd_Argv()
 qboolean CG_ConsoleCommand(void)
 {
   char cmd[MAX_STRING_CHARS];
-  g_syscall(CG_ARGV, 0, cmd, sizeof(cmd));
+  trap_Argv(0, cmd, sizeof(cmd));
 
   for (uint8_t i = 0; i < ARRAY_LEN(commands); ++i)
   {
@@ -75,22 +75,21 @@ void CG_InitConsoleCommands(void)
 {
   for (uint8_t i = 0; i < ARRAY_LEN(commands); ++i)
   {
-    g_syscall(CG_ADDCOMMAND, commands[i].cmd);
+    trap_AddCommand(commands[i].cmd);
   }
 }
 
 static void CG_PointsTo_f(void)
 {
-  if (g_syscall(CG_ARGC) != 2)
+  if (trap_Argc() != 2)
   {
-    g_syscall(CG_PRINT, "usage: p <pointer>\n");
+    trap_Print("usage: p <pointer>\n");
     return;
   }
 
   char cmd[MAX_STRING_CHARS];
-  g_syscall(CG_ARGV, 1, cmd, sizeof(cmd));
+  trap_Argv(1, cmd, sizeof(cmd));
 
   long const offset = strtol(cmd, NULL, 0);
-  // TODO: assert if offset > g_VM.dataSegmentMask
-  g_syscall(CG_PRINT, vaf("%s -> 0x%lx\n", cmd, *(int32_t*)((intptr_t)g_VM.dataSegment + (intptr_t)offset)));
+  trap_Print(vaf("%s -> 0x%lx\n", cmd, *(int32_t*)VM_ArgPtr(offset)));
 }

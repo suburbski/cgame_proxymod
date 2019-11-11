@@ -42,14 +42,6 @@ static inline char* vaf(char* format, ...)
 #define DEFAULT_VMPATH "vm/cgame.qvm"
 #define GAME "Q3A"
 
-typedef int32_t(QDECL* syscall_t)(uint32_t, ...);
-typedef uint32_t (
-  *pfn_t)(int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
-typedef void (*Function)(void);
-extern syscall_t g_syscall;
-
-//=================================================
-
 //=============================================================
 
 typedef uint8_t byte;
@@ -59,6 +51,13 @@ typedef enum
   qfalse,
   qtrue
 } qboolean;
+
+typedef union
+{
+  float    f;
+  int32_t  i;
+  uint32_t ui;
+} floatint_t;
 
 typedef uint32_t qhandle_t;
 typedef int32_t  sfxHandle_t;
@@ -78,6 +77,10 @@ typedef int32_t  clipHandle_t;
 #define MAX_STRING_CHARS 1024  // max length of a string passed to Cmd_TokenizeString
 #define MAX_STRING_TOKENS 1024 // max tokens resulting from Cmd_TokenizeString
 #define MAX_TOKEN_CHARS 1024   // max length of an individual token
+
+#define BIG_INFO_STRING 8192 // used for system info key only
+
+#define MAX_QPATH 64 // max length of a quake game pathname
 
 //
 // these aren't needed by any of the VMs.  put in another header?
@@ -270,6 +273,35 @@ void AngleVectors(vec3_t const angles, vec3_t forward, vec3_t right, vec3_t up);
 
 //=============================================
 
+#define MAX_TOKENLENGTH 1024
+
+typedef struct pc_token_s
+{
+  int32_t type;
+  int32_t subtype;
+  int32_t intvalue;
+  float   floatvalue;
+  char    string[MAX_TOKENLENGTH];
+} pc_token_t;
+
+// mode parm for FS_FOpenFile
+typedef enum
+{
+  FS_READ,
+  FS_WRITE,
+  FS_APPEND,
+  FS_APPEND_SYNC
+} fsMode_t;
+
+typedef enum
+{
+  FS_SEEK_CUR,
+  FS_SEEK_END,
+  FS_SEEK_SET
+} fsOrigin_t;
+
+//=============================================
+
 // portable case insensitive compare
 int Q_stricmp(char const* s1, char const* s2);
 int Q_strncmp(char const* s1, char const* s2, int n);
@@ -401,6 +433,13 @@ typedef struct
 
 // trace->entityNum can also be 0 to (MAX_GENTITIES-1)
 // or ENTITYNUM_NONE, ENTITYNUM_WORLD
+
+// markfragments are returned by CM_MarkFragments()
+typedef struct
+{
+  int32_t firstPoint;
+  int32_t numPoints;
+} markFragment_t;
 
 /*
 ========================================================================
@@ -626,5 +665,36 @@ typedef struct entityState_s
 
   int32_t generic1;
 } entityState_t;
+
+// font support
+
+#define GLYPH_START 0
+#define GLYPH_END 255
+#define GLYPH_CHARSTART 32
+#define GLYPH_CHAREND 127
+#define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
+typedef struct
+{
+  int32_t   height;      // number of scan lines
+  int32_t   top;         // top of glyph in buffer
+  int32_t   bottom;      // bottom of glyph in buffer
+  int32_t   pitch;       // width for copying
+  int32_t   xSkip;       // x adjustment
+  int32_t   imageWidth;  // width of actual image
+  int32_t   imageHeight; // height of actual image
+  float     s;           // x offset in image where glyph starts
+  float     t;           // y offset in image where glyph starts
+  float     s2;
+  float     t2;
+  qhandle_t glyph; // handle to the shader with the glyph
+  char      shaderName[32];
+} glyphInfo_t;
+
+typedef struct
+{
+  glyphInfo_t glyphs[GLYPHS_PER_FONT];
+  float       glyphScale;
+  char        name[MAX_QPATH];
+} fontInfo_t;
 
 #endif // Q_SHARED_H

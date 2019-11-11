@@ -5,7 +5,6 @@
 #include "cg_local.h"
 #include "cg_utils.h"
 #include "nade_tracking.h"
-#include "q_math.h"
 
 static vmCvar_t gl_path_draw;
 static vmCvar_t gl_path_rgba;
@@ -24,7 +23,7 @@ static qhandle_t beam_shader;
 void init_gl(void)
 {
   init_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
-  beam_shader = g_syscall(CG_R_REGISTERSHADER, "railCore");
+  beam_shader = trap_R_RegisterShader("railCore");
 }
 
 static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color);
@@ -113,7 +112,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
   for (int leveltime = local_pos.trTime + 8; leveltime < end_time; leveltime += 8)
   {
     BG_EvaluateTrajectory(&local_pos, leveltime, origin);
-    g_syscall(CG_CM_BOXTRACE, &trace, currentOrigin, origin, NULL, NULL, NULL, MASK_SHOT);
+    trap_CM_BoxTrace(&trace, currentOrigin, origin, NULL, NULL, 0, MASK_SHOT);
     VectorCopy(trace.endpos, currentOrigin);
 
     sample_timer -= 8;
@@ -127,7 +126,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
         VectorCopy(beam.origin, saved_origin);
         VectorSubtract(beam.origin, beam.oldorigin, d);
         VectorMA(beam.oldorigin, .5f, d, beam.origin);
-        g_syscall(CG_R_ADDREFENTITYTOSCENE, &beam);
+        trap_R_AddRefEntityToScene(&beam);
         VectorCopy(saved_origin, beam.oldorigin);
       }
     }

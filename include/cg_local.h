@@ -21,7 +21,9 @@
 #ifndef CG_LOCAL_H
 #define CG_LOCAL_H
 
+#include "cg_public.h"
 #include "q_shared.h"
+#include "tr_types.h"
 
 /* cg_vm.c */
 int32_t callVM(
@@ -44,25 +46,8 @@ int32_t initVM(void);
 
 //======================================================================
 
-// mode parm for FS_FOpenFile
-typedef enum
-{
-  FS_READ,
-  FS_WRITE,
-  FS_APPEND,
-  FS_APPEND_SYNC
-} fsMode_t;
-
-typedef enum
-{
-  FS_SEEK_CUR,
-  FS_SEEK_END,
-  FS_SEEK_SET
-} fsOrigin_t;
-
 #define MAX_CONFIGSTRINGS 1024
 #define MAX_GAMESTATE_CHARS 16000
-#define BIG_INFO_STRING 8192 // used for system info key only
 
 typedef struct
 {
@@ -176,6 +161,122 @@ extern cgs_t cgs;
 //
 char const* CG_ConfigString(int32_t index);
 
+//===============================================
+
+//
+// system traps
+// These functions are how the cgame communicates with the main game system
+//
+
+// print message on the local console
+void trap_Print(char const* fmt);
+
+// abort the game
+void trap_Error(char const* fmt);
+
+// milliseconds should only be used for performance tuning, never
+// for anything game related.  Get time from the CG_DrawActiveFrame parameter
+int32_t trap_Milliseconds(void);
+
+// console variable interaction
+void trap_Cvar_Register(vmCvar_t* vmCvar, char const* varName, char const* defaultValue, int32_t flags);
+void trap_Cvar_Update(vmCvar_t* vmCvar);
+void trap_Cvar_Set(char const* var_name, char const* value);
+void trap_Cvar_VariableStringBuffer(char const* var_name, char* buffer, int32_t bufsize);
+
+// ServerCommand and ConsoleCommand parameter access
+int32_t trap_Argc(void);
+void    trap_Argv(int32_t n, char* buffer, int32_t bufferLength);
+void    trap_Args(char* buffer, int32_t bufferLength);
+
+// filesystem access
+// returns length of file
+int32_t trap_FS_FOpenFile(char const* qpath, fileHandle_t* f, fsMode_t mode);
+void    trap_FS_Read(void* buffer, int32_t len, fileHandle_t f);
+void    trap_FS_Write(void const* buffer, int32_t len, fileHandle_t f);
+void    trap_FS_FCloseFile(fileHandle_t f);
+int32_t trap_FS_Seek(fileHandle_t f, long offset, int32_t origin); // fsOrigin_t
+
+// register a command name so the console can perform command completion.
+// FIXME: replace this with a normal console command "defineCommand"?
+void trap_AddCommand(char const* cmdName);
+void trap_RemoveCommand(char const* cmdName);
+
+// model collision
+int32_t trap_CM_NumInlineModels(void);
+int32_t trap_CM_PointContents(vec3_t const p, clipHandle_t model);
+void    trap_CM_BoxTrace(
+     trace_t*     results,
+     vec3_t const start,
+     vec3_t const end,
+     vec3_t const mins,
+     vec3_t const maxs,
+     clipHandle_t model,
+     int32_t      brushmask);
+
+// Returns the projection of a polygon onto the solid brushes in the world
+int32_t trap_CM_MarkFragments(
+  int32_t         numPoints,
+  vec3_t const*   points,
+  vec3_t const    projection,
+  int32_t         maxPoints,
+  vec3_t          pointBuffer,
+  int32_t         maxFragments,
+  markFragment_t* fragmentBuffer);
+
+// all media should be registered during level startup to prevent
+// hitches during gameplay
+qhandle_t trap_R_RegisterModel(char const* name);       // returns rgb axis if not found
+qhandle_t trap_R_RegisterSkin(char const* name);        // returns all white if not found
+qhandle_t trap_R_RegisterShader(char const* name);      // returns all white if not found
+qhandle_t trap_R_RegisterShaderNoMip(char const* name); // returns all white if not found
+
+// a scene is built up by calls to R_ClearScene and the various R_Add functions.
+// Nothing is drawn until R_RenderScene is called.
+void trap_R_ClearScene(void);
+void trap_R_AddRefEntityToScene(refEntity_t const* re);
+
+// polys are intended for simple wall marks, not really for doing
+// significant construction
+void    trap_R_AddPolyToScene(qhandle_t hShader, int32_t numVerts, polyVert_t const* verts);
+void    trap_R_AddPolysToScene(qhandle_t hShader, int32_t numVerts, polyVert_t const* verts, int32_t numPolys);
+void    trap_R_AddLightToScene(vec3_t const org, float intensity, float r, float g, float b);
+void    trap_R_AddAdditiveLightToScene(vec3_t const org, float intensity, float r, float g, float b);
+int32_t trap_R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
+void    trap_R_RenderScene(refdef_t const* fd);
+void    trap_R_SetColor(float const* rgba); // NULL = 1,1,1,1
+void    trap_R_DrawStretchPic(
+     float     x,
+     float     y,
+     float     w,
+     float     h,
+     float     s1,
+     float     t1,
+     float     s2,
+     float     t2,
+     qhandle_t hShader);
+void trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs);
+
+// The glconfig_t will not change during the life of a cgame.
+// If it needs to change, the entire cgame will be restarted, because
+// all the qhandle_t are then invalid.
+void trap_GetGlconfig(glconfig_t* glconfig);
+
+// the gamestate should be grabbed at startup, and whenever a
+// configstring changes
+void trap_GetGameState(gameState_t* gamestate);
+
+// cgame will poll each frame to see if a newer snapshot has arrived
+// that it is interested in.  The time is returned seperately so that
+// snapshot latency can be calculated.
+void trap_GetCurrentSnapshotNumber(int32_t* snapshotNumber, int32_t* serverTime);
+
+// a snapshot get can fail if the snapshot (or the entties it holds) is so
+// old that it has fallen out of the client system queue
+qboolean trap_GetSnapshot(int32_t snapshotNumber, snapshot_t* snapshot);
+
+qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize);
+
 #define PROP_GAP_WIDTH 3
 #define PROP_SPACE_WIDTH 8
 #define PROP_HEIGHT 27
@@ -196,125 +297,6 @@ char const* CG_ConfigString(int32_t index);
 #define UI_INVERSE 0x00002000
 #define UI_PULSE 0x00004000
 
-// markfragments are returned by CM_MarkFragments()
-typedef struct
-{
-  int32_t firstPoint;
-  int32_t numPoints;
-} markFragment_t;
-
-#define MAX_QPATH 64 // max length of a quake game pathname
-#define GLYPH_START 0
-#define GLYPH_END 255
-#define GLYPH_CHARSTART 32
-#define GLYPH_CHAREND 127
-#define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
-typedef struct
-{
-  int32_t   height;      // number of scan lines
-  int32_t   top;         // top of glyph in buffer
-  int32_t   bottom;      // bottom of glyph in buffer
-  int32_t   pitch;       // width for copying
-  int32_t   xSkip;       // x adjustment
-  int32_t   imageWidth;  // width of actual image
-  int32_t   imageHeight; // height of actual image
-  float     s;           // x offset in image where glyph starts
-  float     t;           // y offset in image where glyph starts
-  float     s2;
-  float     t2;
-  qhandle_t glyph; // handle to the shader with the glyph
-  char      shaderName[32];
-} glyphInfo_t;
-
-typedef struct
-{
-  glyphInfo_t glyphs[GLYPHS_PER_FONT];
-  float       glyphScale;
-  char        name[MAX_QPATH];
-} fontInfo_t;
-
-typedef enum
-{
-  RT_MODEL,
-  RT_POLY,
-  RT_SPRITE,
-  RT_BEAM,
-  RT_RAIL_CORE,
-  RT_RAIL_RINGS,
-  RT_LIGHTNING,
-  RT_PORTALSURFACE, // doesn't draw anything, just info for portals
-
-  RT_MAX_REF_ENTITY_TYPE
-} refEntityType_t;
-
-typedef struct
-{
-  refEntityType_t reType;
-  int32_t         renderfx;
-
-  qhandle_t hModel; // opaque type outside refresh
-
-  // most recent data
-  vec3_t lightingOrigin; // so multi-part models can be lit identically (RF_LIGHTING_ORIGIN)
-  float  shadowPlane;    // projection shadows go here, stencils go slightly lower
-
-  vec3_t   axis[3];           // rotation vectors
-  qboolean nonNormalizedAxes; // axis are not normalized, i.e. they have scale
-  float    origin[3];         // also used as MODEL_BEAM's "from"
-  int32_t  frame;             // also used as MODEL_BEAM's diameter
-
-  // previous data for frame interpolation
-  float   oldorigin[3]; // also used as MODEL_BEAM's "to"
-  int32_t oldframe;
-  float   backlerp; // 0.0 = current, 1.0 = old
-
-  // texturing
-  int32_t   skinNum;      // inline skin index
-  qhandle_t customSkin;   // NULL for default skin
-  qhandle_t customShader; // use one image for the entire thing
-
-  // misc
-  byte  shaderRGBA[4];     // colors used by rgbgen entity shaders
-  float shaderTexCoord[2]; // texture coordinates used by tcMod entity modifiers
-  float shaderTime;        // subtracted from refdef time to control effect start times
-
-  // extra sprite information
-  float radius;
-  float rotation;
-} refEntity_t;
-
-#define MAX_TOKENLENGTH 1024
-
-typedef struct pc_token_s
-{
-  int32_t type;
-  int32_t subtype;
-  int32_t intvalue;
-  float   floatvalue;
-  char    string[MAX_TOKENLENGTH];
-} pc_token_t;
-
-#define MAX_RENDER_STRINGS 8
-#define MAX_RENDER_STRING_LENGTH 32
-typedef struct
-{
-  int32_t x, y, width, height;
-  float   fov_x, fov_y;
-  vec3_t  vieworg;
-  vec3_t  viewaxis[3]; // transformation matrix
-
-  // time in milliseconds for shader effects and other time dependent rendering issues
-  int32_t time;
-
-  int32_t rdflags; // RDF_NOWORLDMODEL, etc
-
-  // 1 bits will prevent the associated area from rendering at all
-  byte areamask[MAX_MAP_AREA_BYTES];
-
-  // text messages for deform text shaders
-  char text[MAX_RENDER_STRINGS][MAX_RENDER_STRING_LENGTH];
-} refdef_t;
-
 typedef struct qtime_s
 {
   int32_t tm_sec;   /* seconds after the minute - [0,59] */
@@ -327,12 +309,5 @@ typedef struct qtime_s
   int32_t tm_yday;  /* days since January 1 - [0,365] */
   int32_t tm_isdst; /* daylight savings time flag */
 } qtime_t;
-
-typedef struct
-{
-  vec3_t xyz;
-  float  st[2];
-  byte   modulate[4];
-} polyVert_t;
 
 #endif // CG_LOCAL_H
