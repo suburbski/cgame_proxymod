@@ -1,8 +1,7 @@
 #ifndef BG_PUBLIC_H
 #define BG_PUBLIC_H
 
-#include "cg_local.h"
-#include "surfaceflags.h"
+#include "q_shared.h"
 
 #define DEFAULT_GRAVITY 800
 
@@ -38,6 +37,72 @@
 #define PMF_INVULEXPAND 16384 // invulnerability sphere set to full size
 
 #define PMF_ALL_TIMES (PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK)
+
+//===================================================================================
+
+// player_state->stats[] indexes
+// NOTE: may not have more than 16
+typedef enum
+{
+  STAT_HEALTH,
+  STAT_HOLDABLE_ITEM,
+#ifdef MISSIONPACK
+  STAT_PERSISTANT_POWERUP,
+#endif
+  STAT_WEAPONS, // 16 bit fields
+  STAT_ARMOR,
+  STAT_DEAD_YAW,      // look this direction when dead (FIXME: get rid of?)
+  STAT_CLIENTS_READY, // bit mask of clients wishing to exit the intermission (FIXME: configstring?)
+  STAT_MAX_HEALTH     // health / armor limit, changable by handicap
+} statIndex_t;
+
+// NOTE: may not have more than 16
+typedef enum
+{
+  PW_NONE,
+
+  PW_QUAD,
+  PW_BATTLESUIT,
+  PW_HASTE,
+  PW_INVIS,
+  PW_REGEN,
+  PW_FLIGHT,
+
+  PW_REDFLAG,
+  PW_BLUEFLAG,
+  PW_NEUTRALFLAG,
+
+  PW_SCOUT,
+  PW_GUARD,
+  PW_DOUBLER,
+  PW_AMMOREGEN,
+  PW_INVULNERABILITY,
+
+  PW_NUM_POWERUPS
+} powerup_t;
+
+typedef enum
+{
+  WP_NONE,
+
+  WP_GAUNTLET,
+  WP_MACHINEGUN,
+  WP_SHOTGUN,
+  WP_GRENADE_LAUNCHER,
+  WP_ROCKET_LAUNCHER,
+  WP_LIGHTNING,
+  WP_RAILGUN,
+  WP_PLASMAGUN,
+  WP_BFG,
+  WP_GRAPPLING_HOOK,
+#ifdef MISSIONPACK
+  WP_NAILGUN,
+  WP_PROX_LAUNCHER,
+  WP_CHAINGUN,
+#endif
+
+  WP_NUM_WEAPONS
+} weapon_t;
 
 // content masks
 #define MASK_ALL (-1)

@@ -358,35 +358,4 @@ typedef struct
   byte   modulate[4];
 } polyVert_t;
 
-// player_state->stats[] indexes
-// NOTE: may not have more than 16
-typedef enum
-{
-  STAT_HEALTH,
-  STAT_HOLDABLE_ITEM,
-  STAT_WEAPONS, // 16 bit fields
-  STAT_ARMOR,
-  STAT_DEAD_YAW,      // look this direction when dead (FIXME: get rid of?)
-  STAT_CLIENTS_READY, // bit mask of clients wishing to exit the intermission (FIXME: configstring?)
-  STAT_MAX_HEALTH     // health / armor limit, changable by handicap
-} statIndex_t;
-
-typedef enum
-{
-  WP_NONE,
-
-  WP_GAUNTLET,
-  WP_MACHINEGUN,
-  WP_SHOTGUN,
-  WP_GRENADE_LAUNCHER,
-  WP_ROCKET_LAUNCHER,
-  WP_LIGHTNING,
-  WP_RAILGUN,
-  WP_PLASMAGUN,
-  WP_BFG,
-  WP_GRAPPLING_HOOK,
-
-  WP_NUM_WEAPONS
-} weapon_t;
-
 #endif // CG_LOCAL_H

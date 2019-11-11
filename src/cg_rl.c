@@ -1,9 +1,9 @@
 #include "cg_rl.h"
 
+#include "bg_public.h"
 #include "cg_cvar.h"
 #include "cg_utils.h"
 #include "q_math.h"
-#include "surfaceflags.h"
 
 #define MAX_RL_TIME 15000
 

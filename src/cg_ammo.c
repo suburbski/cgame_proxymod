@@ -1,5 +1,6 @@
 #include "cg_ammo.h"
 
+#include "bg_public.h"
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_utils.h"
