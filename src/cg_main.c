@@ -64,7 +64,6 @@ __DLLEXPORT__ int32_t vmMain(
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     CG_Init(arg2);
     init_entityStates();
-    CG_InitConsoleCommands();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -185,25 +184,34 @@ Will perform callbacks to make the loading info screen update.
 static void CG_Init(int32_t clientNum)
 {
   trap_Print(vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
-  initVM();
 
-  // g_syscall( CG_MEMSET, ...)
+  // clear everything
   memset(&cgs, 0, sizeof(cgs));
+  memset(&cg, 0, sizeof(cg));
 
   cg.clientNum = clientNum;
 
-  trap_GetGlconfig(&cgs.glconfig); // rendering configuration
-  cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
-  cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
-
-  trap_GetGameState(&cgs.gameState);
-
-  cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
-
-  cgs.media.deferShader     = trap_R_RegisterShader("gfx/2d/defer");
+  // load a few needed things before we do any screen updates
   cgs.media.charsetShader   = trap_R_RegisterShader("gfx/2d/bigchars");
   cgs.media.whiteShader     = trap_R_RegisterShader("white");
   cgs.media.charsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
   cgs.media.charsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
   cgs.media.charsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
+
+  CG_InitConsoleCommands();
+
+  // get the rendering configuration from the client system
+  trap_GetGlconfig(&cgs.glconfig); // rendering configuration
+  cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
+  cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
+
+  // get the gamestate from the client system
+  trap_GetGameState(&cgs.gameState);
+
+  cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
+
+  // CG_RegisterGraphics
+  cgs.media.deferShader = trap_R_RegisterShaderNoMip("gfx/2d/defer");
+
+  initVM();
 }
