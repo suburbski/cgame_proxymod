@@ -58,7 +58,7 @@ void CG_FillRect(float x, float y, float w, float h, vec4_t const color)
 {
   trap_R_SetColor(color);
   CG_AdjustFrom640(&x, &y, &w, &h);
-  trap_R_DrawStretchPic(x, y, w, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  trap_R_DrawStretchPic(x, y, w, h, 0, 0, 0, 0, cgs.media.whiteShader);
   trap_R_SetColor(NULL);
 }
 
@@ -73,16 +73,16 @@ void CG_DrawSides(float x, float y, float w, float h, float size)
 {
   CG_AdjustFrom640(&x, &y, &w, &h);
   size *= cgs.screenXScale;
-  trap_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
-  trap_R_DrawStretchPic(x + w - size, y, size, h, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  trap_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
+  trap_R_DrawStretchPic(x + w - size, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
 }
 
 void CG_DrawTopBottom(float x, float y, float w, float h, float size)
 {
   CG_AdjustFrom640(&x, &y, &w, &h);
   size *= cgs.screenXScale;
-  trap_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
-  trap_R_DrawStretchPic(x, y + h - size, w, size, 0, 0, 0, 0, cgs.media.gfxWhiteShader);
+  trap_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, cgs.media.whiteShader);
+  trap_R_DrawStretchPic(x, y + h - size, w, size, 0, 0, 0, 0, cgs.media.whiteShader);
 }
 
 /*
@@ -129,7 +129,7 @@ void CG_DrawChar(float x, float y, float w, float h, uint8_t ch)
   float const size = .0625;
 
   CG_AdjustFrom640(&x, &y, &w, &h);
-  trap_R_DrawStretchPic(x, y, w, h, fcol, frow, fcol + size, frow + size, cgs.media.gfxCharsetShader);
+  trap_R_DrawStretchPic(x, y, w, h, fcol, frow, fcol + size, frow + size, cgs.media.charsetShader);
 }
 
 void CG_DrawText(

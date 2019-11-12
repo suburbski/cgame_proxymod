@@ -116,7 +116,7 @@ void draw_timer(void)
       trace_t     t;
       vec3_t      origin;
       vec3_t      dest;
-      float const elapsed_time = (cgs.time - entity.pos.trTime) * .001f;
+      float const elapsed_time = (cg.time - entity.pos.trTime) * .001f;
 
       VectorMA(entity.pos.trBase, elapsed_time, entity.pos.trDelta, origin);
       VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);

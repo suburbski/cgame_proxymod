@@ -129,7 +129,7 @@ void draw_ammo(void)
 
     if (!hasWeapon) // Mark weapon as unavailable
     {
-      CG_DrawPic(ammo_.graph_xywh[0], y, ammo_.graph_xywh[2], ammo_.graph_xywh[3], cgs.media.gfxDeferSymbol);
+      CG_DrawPic(ammo_.graph_xywh[0], y, ammo_.graph_xywh[2], ammo_.graph_xywh[3], cgs.media.deferShader);
     }
 
     ParseVec(ammo_text_xh.string, ammo_.text_xh, 2);

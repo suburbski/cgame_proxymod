@@ -35,6 +35,7 @@
 
 #include <stdlib.h>
 
+cg_t  cg;
 cgs_t cgs;
 
 static void CG_Init(int32_t clientNum);
@@ -71,7 +72,7 @@ __DLLEXPORT__ int32_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback );
-    cgs.time = arg0;         // servertime
+    cg.time = arg0;          // servertime
     update_entityStates();
     break;
 
@@ -189,7 +190,7 @@ static void CG_Init(int32_t clientNum)
   // g_syscall( CG_MEMSET, ...)
   memset(&cgs, 0, sizeof(cgs));
 
-  cgs.clientNum = clientNum;
+  cg.clientNum = clientNum;
 
   trap_GetGlconfig(&cgs.glconfig); // rendering configuration
   cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
@@ -199,10 +200,10 @@ static void CG_Init(int32_t clientNum)
 
   cgs.levelStartTime = atoi(CG_ConfigString(CS_LEVEL_START_TIME));
 
-  cgs.media.gfxDeferSymbol     = trap_R_RegisterShader("gfx/2d/defer");
-  cgs.media.gfxCharsetShader   = trap_R_RegisterShader("gfx/2d/bigchars");
-  cgs.media.gfxWhiteShader     = trap_R_RegisterShader("white");
-  cgs.media.gfxCharsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
-  cgs.media.gfxCharsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
-  cgs.media.gfxCharsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
+  cgs.media.deferShader     = trap_R_RegisterShader("gfx/2d/defer");
+  cgs.media.charsetShader   = trap_R_RegisterShader("gfx/2d/bigchars");
+  cgs.media.whiteShader     = trap_R_RegisterShader("white");
+  cgs.media.charsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
+  cgs.media.charsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
+  cgs.media.charsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
 }

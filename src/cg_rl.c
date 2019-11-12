@@ -64,7 +64,7 @@ void draw_rl(void)
     if (entity.eType == ET_MISSILE && entity.weapon == WP_ROCKET_LAUNCHER && entity.clientNum == ps->clientNum)
     {
       // BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
-      VectorMA(entity.pos.trBase, (cgs.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
+      VectorMA(entity.pos.trBase, (cg.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
       VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);
       trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
       if (path_draw.integer)

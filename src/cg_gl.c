@@ -63,7 +63,7 @@ void draw_gl(void)
     VectorScale(forward, 700, entity.pos.trDelta);
     SnapVector(entity.pos.trDelta);
 
-    draw_nade_path(&entity.pos, cgs.time + 2500, preview_color);
+    draw_nade_path(&entity.pos, cg.time + 2500, preview_color);
   }
 
   if (!gl_path_draw.integer) return;
@@ -103,8 +103,8 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
   memcpy(beam.shaderRGBA, color, sizeof(beam.shaderRGBA));
 
   VectorCopy(pos->trBase, currentOrigin);
-  if (cgs.time > pos->trTime)
-    BG_EvaluateTrajectory(pos, cgs.time, beam.oldorigin);
+  if (cg.time > pos->trTime)
+    BG_EvaluateTrajectory(pos, cg.time, beam.oldorigin);
   else
     VectorCopy(pos->trBase, beam.oldorigin);
 
@@ -120,7 +120,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
     {
       sample_timer = 32;
       VectorCopy(origin, beam.origin);
-      if (leveltime >= cgs.time)
+      if (leveltime >= cg.time)
       {
         vec3_t d, saved_origin;
         VectorCopy(beam.origin, saved_origin);
@@ -150,8 +150,8 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
       local_pos.trTime = leveltime;
 
       sample_timer = 0;
-      if (cgs.time > local_pos.trTime)
-        BG_EvaluateTrajectory(&local_pos, cgs.time, beam.oldorigin);
+      if (cg.time > local_pos.trTime)
+        BG_EvaluateTrajectory(&local_pos, cg.time, beam.oldorigin);
       else
         VectorCopy(local_pos.trBase, beam.oldorigin);
     }

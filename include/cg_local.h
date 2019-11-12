@@ -56,35 +56,56 @@ typedef struct
   int32_t dataCount;
 } gameState_t;
 
+//======================================================================
+
+// all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
+// occurs, and they will have visible effects for #define STEP_TIME or whatever msec after
+
+#define MAX_PREDICTED_EVENTS 16
+
 typedef struct
 {
-  /* GFX Handles */
-  qhandle_t gfxDeferSymbol;
-  qhandle_t gfxWhiteShader;
-  qhandle_t gfxCharsetShader;
-  qhandle_t gfxCharsetProp;
-  qhandle_t gfxCharsetPropGlow;
-  qhandle_t gfxCharsetPropB;
+  // incomplete
+  int32_t clientNum;
+
+  int32_t time; // this is the time value that the client
+                // is rendering at.
+} cg_t;
+
+// all of the model, shader, and sound references that are
+// loaded at gamestate time are stored in cgMedia_t
+// Other media that can be tied to clients, weapons, or items are
+// stored in the clientInfo_t, itemInfo_t, weaponInfo_t, and powerupInfo_t
+typedef struct
+{
+  // incomplete
+  qhandle_t charsetShader;
+  qhandle_t charsetProp;
+  qhandle_t charsetPropGlow;
+  qhandle_t charsetPropB;
+  qhandle_t whiteShader;
+
+  qhandle_t deferShader;
 } cgMedia_t;
 
 typedef struct
 {
-  /* from cgs_t */
-  gameState_t gameState; // gamestate from server
-  glconfig_t  glconfig;  // rendering configuration
-  int32_t     clientNum;
+  // incomplete
+  gameState_t gameState;    // gamestate from server
+  glconfig_t  glconfig;     // rendering configuration
   float       screenXScale; // derived from glconfig
   float       screenYScale;
-  int32_t     levelStartTime;
   float       screenXBias;
 
-  /* from cg */
-  int32_t time;
+  int32_t levelStartTime;
 
   cgMedia_t media;
 } cgs_t;
 
+//==============================================================================
+
 extern cgs_t cgs;
+extern cg_t  cg;
 
 //
 // cg_main.c
