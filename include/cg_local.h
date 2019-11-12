@@ -234,37 +234,4 @@ qboolean trap_GetSnapshot(int32_t snapshotNumber, snapshot_t* snapshot);
 
 qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize);
 
-#define PROP_GAP_WIDTH 3
-#define PROP_SPACE_WIDTH 8
-#define PROP_HEIGHT 27
-#define PROP_SMALL_SIZE_SCALE 0.75
-
-#define BLINK_DIVISOR 200
-#define PULSE_DIVISOR 75
-
-#define UI_LEFT 0x00000000 // default
-#define UI_CENTER 0x00000001
-#define UI_RIGHT 0x00000002
-#define UI_FORMATMASK 0x00000007
-#define UI_SMALLFONT 0x00000010
-#define UI_BIGFONT 0x00000020 // default
-#define UI_GIANTFONT 0x00000040
-#define UI_DROPSHADOW 0x00000800
-#define UI_BLINK 0x00001000
-#define UI_INVERSE 0x00002000
-#define UI_PULSE 0x00004000
-
-typedef struct qtime_s
-{
-  int32_t tm_sec;   /* seconds after the minute - [0,59] */
-  int32_t tm_min;   /* minutes after the hour - [0,59] */
-  int32_t tm_hour;  /* hours since midnight - [0,23] */
-  int32_t tm_mday;  /* day of the month - [1,31] */
-  int32_t tm_mon;   /* months since January - [0,11] */
-  int32_t tm_year;  /* years since 1900 */
-  int32_t tm_wday;  /* days since Sunday - [0,6] */
-  int32_t tm_yday;  /* days since January 1 - [0,365] */
-  int32_t tm_isdst; /* daylight savings time flag */
-} qtime_t;
-
 #endif // CG_LOCAL_H
