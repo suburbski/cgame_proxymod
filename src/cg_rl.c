@@ -7,10 +7,6 @@
 
 #define MAX_RL_TIME 15000
 
-#define MAX_MARK_FRAGMENTS 128
-#define MAX_MARK_POINTS 384
-#define MAX_VERTS_ON_POLY 10
-
 static qhandle_t line_shader;
 
 static vmCvar_t target_draw;
@@ -24,18 +20,6 @@ static cvarTable_t rl_cvars[] = { { &target_draw, "mdd_rl_target_draw", "0", CVA
                                   { &target_size, "mdd_rl_target_size", "24", CVAR_ARCHIVE },
                                   { &path_draw, "mdd_rl_path_draw", "0", CVAR_ARCHIVE },
                                   { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE } };
-
-void add_mark(
-  qhandle_t    markShader,
-  vec3_t const origin,
-  vec3_t const dir,
-  float        orientation,
-  float        red,
-  float        green,
-  float        blue,
-  float        alpha,
-  qboolean     alphaFade,
-  float        radius);
 
 void init_rl(void)
 {
@@ -87,87 +71,9 @@ void draw_rl(void)
       if (target_draw.integer)
       {
         qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
-        add_mark(m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer);
+        CG_ImpactMark(
+          m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer, qtrue);
       }
     }
-  }
-}
-
-// ripped CG_ImpactMark
-void add_mark(
-  qhandle_t    markShader,
-  vec3_t const origin,
-  vec3_t const dir,
-  float        orientation,
-  float        red,
-  float        green,
-  float        blue,
-  float        alpha,
-  qboolean     alphaFade,
-  float        radius)
-{
-  (void)alphaFade;
-
-  vec3_t         axis[3];
-  float          texCoordScale;
-  vec3_t         originalPoints[4];
-  byte           colors[4];
-  int            i, j;
-  int            numFragments;
-  markFragment_t markFragments[MAX_MARK_FRAGMENTS], *mf;
-  vec3_t         markPoints[MAX_MARK_POINTS];
-  vec3_t         projection;
-
-  // create the texture axis
-  VectorNormalize2(dir, axis[0]);
-  PerpendicularVector(axis[1], axis[0]);
-  RotatePointAroundVector(axis[2], axis[0], axis[1], orientation);
-  CrossProduct(axis[0], axis[2], axis[1]);
-
-  texCoordScale = .5f * 1.f / radius;
-
-  // create the full polygon
-  for (i = 0; i < 3; i++)
-  {
-    originalPoints[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
-    originalPoints[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
-    originalPoints[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
-    originalPoints[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
-  }
-
-  // get the fragments
-  VectorScale(dir, -20, projection);
-  numFragments = trap_CM_MarkFragments(
-    4, (vec3_t const*)originalPoints, projection, MAX_MARK_POINTS, markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
-
-  colors[0] = red * 255;
-  colors[1] = green * 255;
-  colors[2] = blue * 255;
-  colors[3] = alpha * 255;
-
-  for (i = 0, mf = markFragments; i < numFragments; i++, mf++)
-  {
-    polyVert_t* v;
-    polyVert_t  verts[MAX_VERTS_ON_POLY];
-
-    // we have an upper limit on the complexity of polygons
-    // that we store persistantly
-    if (mf->numPoints > MAX_VERTS_ON_POLY)
-    {
-      mf->numPoints = MAX_VERTS_ON_POLY;
-    }
-    for (j = 0, v = verts; j < mf->numPoints; j++, v++)
-    {
-      vec3_t delta;
-
-      VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
-
-      VectorSubtract(v->xyz, origin, delta);
-      v->st[0]               = .5f + DotProduct(delta, axis[1]) * texCoordScale;
-      v->st[1]               = .5f + DotProduct(delta, axis[2]) * texCoordScale;
-      *(int32_t*)v->modulate = *(int32_t*)colors;
-    }
-
-    trap_R_AddPolyToScene(markShader, mf->numPoints, verts);
   }
 }

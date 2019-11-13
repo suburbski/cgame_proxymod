@@ -44,6 +44,9 @@ int32_t callVM_Destroy(void);
 int32_t setVMPtr(int32_t arg0);
 int32_t initVM(void);
 
+#define MAX_VERTS_ON_POLY 10
+#define MAX_MARK_POLYS 256
+
 //======================================================================
 
 #define MAX_CONFIGSTRINGS 1024
@@ -111,6 +114,22 @@ extern cg_t  cg;
 // cg_main.c
 //
 char const* CG_ConfigString(int32_t index);
+
+//
+// cg_marks.c
+//
+void CG_ImpactMark(
+  qhandle_t    markShader,
+  vec3_t const origin,
+  vec3_t const dir,
+  float        orientation,
+  float        r,
+  float        g,
+  float        b,
+  float        a,
+  qboolean     alphaFade,
+  float        radius,
+  qboolean     temporary);
 
 //
 // cg_consolecmds.c
