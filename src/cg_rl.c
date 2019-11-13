@@ -4,6 +4,7 @@
 #include "cg_cvar.h"
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "g_local.h"
 
 #define MAX_RL_TIME 15000
 
@@ -45,6 +46,19 @@ void draw_rl(void)
 
   snapshot_t const* const    snap = getSnap();
   playerState_t const* const ps   = getPs();
+
+  if (target_draw.integer && ps->weapon == WP_ROCKET_LAUNCHER)
+  {
+    entityState_t entity;
+    BG_PlayerStateToEntityState(ps, &entity, qtrue);
+    FireWeapon(ps, &entity);
+    BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
+    BG_EvaluateTrajectory(&entity.pos, entity.pos.trTime + MAX_RL_TIME, dest);
+    trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
+    qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
+    CG_ImpactMark(
+      m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer, qtrue);
+  }
 
   // todo: lerp trajectory stuff?
   for (int32_t i = 0; i < snap->numEntities; ++i)
