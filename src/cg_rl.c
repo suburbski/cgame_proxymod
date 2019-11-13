@@ -7,8 +7,6 @@
 
 #define MAX_RL_TIME 15000
 
-static qhandle_t line_shader;
-
 static vmCvar_t target_draw;
 static vmCvar_t target_shader;
 static vmCvar_t target_size;
@@ -21,10 +19,17 @@ static cvarTable_t rl_cvars[] = { { &target_draw, "mdd_rl_target_draw", "0", CVA
                                   { &path_draw, "mdd_rl_path_draw", "0", CVAR_ARCHIVE },
                                   { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE } };
 
+typedef struct
+{
+  qhandle_t line_shader;
+} rl_t;
+
+static rl_t rl_;
+
 void init_rl(void)
 {
   init_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
-  line_shader = trap_R_RegisterShader("railCore");
+  rl_.line_shader = trap_R_RegisterShader("railCore");
 }
 
 void draw_rl(void)
@@ -47,9 +52,8 @@ void draw_rl(void)
     entityState_t entity = snap->entities[i];
     if (entity.eType == ET_MISSILE && entity.weapon == WP_ROCKET_LAUNCHER && entity.clientNum == ps->clientNum)
     {
-      // BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
-      VectorMA(entity.pos.trBase, (cg.time - entity.pos.trTime) * .001f, entity.pos.trDelta, origin);
-      VectorMA(entity.pos.trBase, MAX_RL_TIME * .001f, entity.pos.trDelta, dest);
+      BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
+      BG_EvaluateTrajectory(&entity.pos, entity.pos.trTime + MAX_RL_TIME, dest);
       trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
       if (path_draw.integer)
       {
@@ -60,7 +64,7 @@ void draw_rl(void)
         VectorCopy(origin, beam.oldorigin);
         VectorCopy(beam_trace.endpos, beam.origin);
         beam.reType       = RT_RAIL_CORE;
-        beam.customShader = line_shader;
+        beam.customShader = rl_.line_shader;
         AxisClear(beam.axis);
         beam.shaderRGBA[0] = color[0] * 255;
         beam.shaderRGBA[1] = color[1] * 255;
@@ -68,6 +72,7 @@ void draw_rl(void)
         beam.shaderRGBA[3] = color[3] * 255;
         trap_R_AddRefEntityToScene(&beam);
       }
+
       if (target_draw.integer)
       {
         qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
