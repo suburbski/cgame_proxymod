@@ -1,0 +1,104 @@
+#include "bg_public.h"
+#include "g_local.h"
+
+static vec3_t forward;
+static vec3_t muzzle;
+
+/*
+======================================================================
+
+GRENADE LAUNCHER
+
+======================================================================
+*/
+static void weapon_grenadelauncher_fire(entityState_t* ent)
+{
+  // extra vertical velocity
+  forward[2] += .2f;
+  VectorNormalize(forward);
+
+  fire_grenade(ent, muzzle, forward);
+  //  VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
+}
+
+/*
+======================================================================
+
+ROCKET
+
+======================================================================
+*/
+static void Weapon_RocketLauncher_Fire(entityState_t* ent)
+{
+  fire_rocket(ent, muzzle, forward);
+  //  VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
+}
+
+/*
+===============
+CalcMuzzlePointOrigin
+
+set muzzle location relative to pivoting eye
+===============
+*/
+static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, vec3_t muzzlePoint)
+{
+  VectorCopy(pm_ps->origin, muzzlePoint);
+  muzzlePoint[2] += pm_ps->viewheight;
+  VectorMA(muzzlePoint, 14, forward, muzzlePoint);
+  // snap to integer coordinates for more efficient network bandwidth usage
+  SnapVector(muzzlePoint);
+}
+
+/*
+===============
+FireWeapon
+===============
+*/
+void FireWeapon(playerState_t const* pm_ps, entityState_t* ent)
+{
+  // if (pm_ps->powerups[PW_QUAD])
+  // {
+  //   s_quadFactor = g_quadfactor.value;
+  // }
+  // else
+  // {
+  //   s_quadFactor = 1;
+  // }
+
+  // set aiming directions
+  AngleVectors(pm_ps->viewangles, forward, NULL, NULL);
+
+  CalcMuzzlePointOrigin(pm_ps, muzzle);
+
+  // fire the specific weapon
+  switch (pm_ps->weapon)
+  {
+  // case WP_GAUNTLET: Weapon_Gauntlet(ent); break;
+  // case WP_LIGHTNING: Weapon_LightningFire(ent); break;
+  // case WP_SHOTGUN: weapon_supershotgun_fire(ent); break;
+  // case WP_MACHINEGUN:
+  //   if (g_gametype.integer != GT_TEAM)
+  //   {
+  //     Bullet_Fire(ent, MACHINEGUN_SPREAD, g_q3p_mgdamage.value, MOD_MACHINEGUN);
+  //   }
+  //   else
+  //   {
+  //     Bullet_Fire(ent, MACHINEGUN_SPREAD, g_q3p_mgteamdamage.value, MOD_MACHINEGUN);
+  //   }
+  //   break;
+  case WP_GRENADE_LAUNCHER:
+    weapon_grenadelauncher_fire(ent);
+    break;
+  case WP_ROCKET_LAUNCHER:
+    Weapon_RocketLauncher_Fire(ent);
+    break;
+  // case WP_PLASMAGUN: Weapon_Plasmagun_Fire(ent); break;
+  // case WP_RAILGUN: weapon_railgun_fire(ent); break;
+  // case WP_BFG: BFG_Fire(ent); break;
+  // case WP_GRAPPLING_HOOK: Weapon_GrapplingHook_Fire(ent); break;
+  default:
+    // FIXME    G_Error( "Bad ent->s.weapon" );
+    break;
+  }
+}
