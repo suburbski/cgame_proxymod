@@ -92,3 +92,20 @@ void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t r
     break;
   }
 }
+
+/*
+========================
+BG_PlayerStateToEntityState
+
+This is done after each set of usercmd_t on the server,
+and after local prediction on the client
+========================
+*/
+void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* ent, qboolean snap)
+{
+  VectorCopy(pm_ps->origin, ent->pos.trBase);
+  if (snap)
+  {
+    SnapVector(ent->pos.trBase);
+  }
+}

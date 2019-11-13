@@ -41,9 +41,9 @@ CalcMuzzlePointOrigin
 set muzzle location relative to pivoting eye
 ===============
 */
-static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, vec3_t muzzlePoint)
+static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, entityState_t const* ent, vec3_t muzzlePoint)
 {
-  VectorCopy(pm_ps->origin, muzzlePoint);
+  VectorCopy(ent->pos.trBase, muzzlePoint);
   muzzlePoint[2] += pm_ps->viewheight;
   VectorMA(muzzlePoint, 14, forward, muzzlePoint);
   // snap to integer coordinates for more efficient network bandwidth usage
@@ -69,7 +69,7 @@ void FireWeapon(playerState_t const* pm_ps, entityState_t* ent)
   // set aiming directions
   AngleVectors(pm_ps->viewangles, forward, NULL, NULL);
 
-  CalcMuzzlePointOrigin(pm_ps, muzzle);
+  CalcMuzzlePointOrigin(pm_ps, ent, muzzle);
 
   // fire the specific weapon
   switch (pm_ps->weapon)

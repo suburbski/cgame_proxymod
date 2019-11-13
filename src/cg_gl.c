@@ -31,10 +31,9 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
 
 void draw_gl(void)
 {
-  entityState_t entity;
-  uint8_t       path_color[4];
-  uint8_t       preview_color[4];
-  vec4_t        color;
+  uint8_t path_color[4];
+  uint8_t preview_color[4];
+  vec4_t  color;
 
   playerState_t const* const ps = getPs();
   if (ps->weapon != WP_GRENADE_LAUNCHER) return;
@@ -48,6 +47,8 @@ void draw_gl(void)
     ParseVec(gl_path_preview_rgba.string, color, 4);
     for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
 
+    entityState_t entity;
+    BG_PlayerStateToEntityState(ps, &entity, qtrue);
     FireWeapon(ps, &entity);
     draw_nade_path(&entity.pos, cg.time + 2500, preview_color);
   }

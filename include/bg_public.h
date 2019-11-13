@@ -144,4 +144,6 @@ typedef enum
 void BG_EvaluateTrajectory(trajectory_t const* tr, int32_t atTime, vec3_t result);
 void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t result);
 
+void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* ent, qboolean snap);
+
 #endif // BG_PUBLIC_H
