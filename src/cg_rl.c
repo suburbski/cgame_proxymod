@@ -49,11 +49,18 @@ void draw_rl(void)
 
   if (target_draw.integer && ps->weapon == WP_ROCKET_LAUNCHER)
   {
-    entityState_t entity;
-    BG_PlayerStateToEntityState(ps, &entity, qtrue);
-    FireWeapon(ps, &entity);
-    BG_EvaluateTrajectory(&entity.pos, cg.time, origin);
-    BG_EvaluateTrajectory(&entity.pos, entity.pos.trTime + MAX_RL_TIME, dest);
+    gentity_t ent;
+    BG_PlayerStateToEntityState(ps, &ent.s, qtrue);
+    // use the snapped origin for linking so it matches client predicted versions
+    VectorCopy(ent.s.pos.trBase, ent.r.currentOrigin);
+
+    // execute client events
+    // ClientEvents
+    gentity_t m;
+    FireWeapon(ps, &m, &ent);
+
+    BG_EvaluateTrajectory(&m.s.pos, cg.time, origin);
+    BG_EvaluateTrajectory(&m.s.pos, m.s.pos.trTime + MAX_RL_TIME, dest);
     trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
     qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
     CG_ImpactMark(

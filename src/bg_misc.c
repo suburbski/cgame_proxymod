@@ -101,11 +101,28 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* ent, qboolean snap)
+void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* s, qboolean snap)
 {
-  VectorCopy(pm_ps->origin, ent->pos.trBase);
+  s->number = pm_ps->clientNum;
+
+  s->pos.trType = TR_INTERPOLATE;
+  VectorCopy(pm_ps->origin, s->pos.trBase);
   if (snap)
   {
-    SnapVector(ent->pos.trBase);
+    SnapVector(s->pos.trBase);
   }
+  // set the trDelta for flag direction
+  VectorCopy(pm_ps->velocity, s->pos.trDelta);
+
+  s->apos.trType = TR_INTERPOLATE;
+  VectorCopy(pm_ps->viewangles, s->apos.trBase);
+  if (snap)
+  {
+    SnapVector(s->apos.trBase);
+  }
+
+  s->eFlags = pm_ps->eFlags;
+
+  s->weapon          = pm_ps->weapon;
+  s->groundEntityNum = pm_ps->groundEntityNum;
 }

@@ -47,10 +47,17 @@ void draw_gl(void)
     ParseVec(gl_path_preview_rgba.string, color, 4);
     for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
 
-    entityState_t entity;
-    BG_PlayerStateToEntityState(ps, &entity, qtrue);
-    FireWeapon(ps, &entity);
-    draw_nade_path(&entity.pos, cg.time + 2500, preview_color);
+    gentity_t ent;
+    BG_PlayerStateToEntityState(ps, &ent.s, qtrue);
+    // use the snapped origin for linking so it matches client predicted versions
+    VectorCopy(ent.s.pos.trBase, ent.r.currentOrigin);
+
+    // execute client events
+    // ClientEvents
+    gentity_t m;
+    FireWeapon(ps, &m, &ent);
+
+    draw_nade_path(&m.s.pos, cg.time + 2500, preview_color);
   }
 
   if (!gl_path_draw.integer) return;
@@ -120,7 +127,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
 
     if (trace.fraction != 1)
     {
-      // CG_ReflectVelocity: reflect the velocity on the trace plane
+      // G_BounceMissile
       vec3_t velocity;
       float  dot;
       int    hitTime;

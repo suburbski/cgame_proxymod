@@ -56,6 +56,28 @@ typedef enum
   STAT_MAX_HEALTH     // health / armor limit, changable by handicap
 } statIndex_t;
 
+// entityState_t->eFlags
+#define EF_DEAD 0x00000001            // don't draw a foe marker over players with EF_DEAD
+#define EF_TELEPORT_BIT 0x00000004    // toggled every time the origin abruptly changes
+#define EF_AWARD_EXCELLENT 0x00000008 // draw an excellent sprite
+#define EF_PLAYER_EVENT 0x00000010
+#define EF_BOUNCE 0x00000010         // for missiles
+#define EF_BOUNCE_HALF 0x00000020    // for missiles
+#define EF_AWARD_GAUNTLET 0x00000040 // draw a gauntlet sprite
+#define EF_NODRAW 0x00000080         // may have an event, but no model (unspawned items)
+#define EF_FIRING 0x00000100         // for lightning gun
+#define EF_KAMIKAZE 0x00000200
+#define EF_MOVER_STOP 0x00000400       // will push otherwise
+#define EF_AWARD_CAP 0x00000800        // draw the capture sprite
+#define EF_TALK 0x00001000             // draw a talk balloon
+#define EF_CONNECTION 0x00002000       // draw a connection trouble sprite
+#define EF_VOTED 0x00004000            // already cast a vote
+#define EF_AWARD_IMPRESSIVE 0x00008000 // draw an impressive sprite
+#define EF_AWARD_DEFEND 0x00010000     // draw a defend sprite
+#define EF_AWARD_ASSIST 0x00020000     // draw a assist sprite
+#define EF_AWARD_DENIED 0x00040000     // denied
+#define EF_TEAMVOTED 0x00080000        // already cast a team vote
+
 // NOTE: may not have more than 16
 typedef enum
 {
@@ -144,6 +166,6 @@ typedef enum
 void BG_EvaluateTrajectory(trajectory_t const* tr, int32_t atTime, vec3_t result);
 void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t result);
 
-void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* ent, qboolean snap);
+void BG_PlayerStateToEntityState(playerState_t const* pm_ps, entityState_t* s, qboolean snap);
 
 #endif // BG_PUBLIC_H

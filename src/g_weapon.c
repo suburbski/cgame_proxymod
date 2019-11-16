@@ -1,6 +1,8 @@
 #include "bg_public.h"
+#include "cg_cvar.h"
 #include "g_local.h"
 
+static float  s_quadFactor;
 static vec3_t forward;
 static vec3_t muzzle;
 
@@ -11,14 +13,17 @@ GRENADE LAUNCHER
 
 ======================================================================
 */
-static void weapon_grenadelauncher_fire(entityState_t* ent)
+static void weapon_grenadelauncher_fire(gentity_t* m, gentity_t const* ent)
 {
   // extra vertical velocity
   forward[2] += .2f;
   VectorNormalize(forward);
 
-  fire_grenade(ent, muzzle, forward);
-  //  VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
+  fire_grenade(m, ent, muzzle, forward);
+  m->damage *= s_quadFactor;
+  m->splashDamage *= s_quadFactor;
+
+  // VectorAdd(m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta); // "real" physics
 }
 
 /*
@@ -28,10 +33,13 @@ ROCKET
 
 ======================================================================
 */
-static void Weapon_RocketLauncher_Fire(entityState_t* ent)
+static void Weapon_RocketLauncher_Fire(gentity_t* m, gentity_t const* ent)
 {
-  fire_rocket(ent, muzzle, forward);
-  //  VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
+  fire_rocket(m, ent, muzzle, forward);
+  m->damage *= s_quadFactor;
+  m->splashDamage *= s_quadFactor;
+
+  // VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
 }
 
 /*
@@ -41,9 +49,9 @@ CalcMuzzlePointOrigin
 set muzzle location relative to pivoting eye
 ===============
 */
-static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, entityState_t const* ent, vec3_t muzzlePoint)
+static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, gentity_t const* ent, vec3_t muzzlePoint)
 {
-  VectorCopy(ent->pos.trBase, muzzlePoint);
+  VectorCopy(ent->s.pos.trBase, muzzlePoint);
   muzzlePoint[2] += pm_ps->viewheight;
   VectorMA(muzzlePoint, 14, forward, muzzlePoint);
   // snap to integer coordinates for more efficient network bandwidth usage
@@ -55,16 +63,16 @@ static void CalcMuzzlePointOrigin(playerState_t const* pm_ps, entityState_t cons
 FireWeapon
 ===============
 */
-void FireWeapon(playerState_t const* pm_ps, entityState_t* ent)
+void FireWeapon(playerState_t const* pm_ps, gentity_t* m, gentity_t const* ent)
 {
-  // if (pm_ps->powerups[PW_QUAD])
-  // {
-  //   s_quadFactor = g_quadfactor.value;
-  // }
-  // else
-  // {
-  //   s_quadFactor = 1;
-  // }
+  if (pm_ps->powerups[PW_QUAD])
+  {
+    s_quadFactor = cvar_getValue("g_quadfactor");
+  }
+  else
+  {
+    s_quadFactor = 1;
+  }
 
   // set aiming directions
   AngleVectors(pm_ps->viewangles, forward, NULL, NULL);
@@ -88,10 +96,10 @@ void FireWeapon(playerState_t const* pm_ps, entityState_t* ent)
   //   }
   //   break;
   case WP_GRENADE_LAUNCHER:
-    weapon_grenadelauncher_fire(ent);
+    weapon_grenadelauncher_fire(m, ent);
     break;
   case WP_ROCKET_LAUNCHER:
-    Weapon_RocketLauncher_Fire(ent);
+    Weapon_RocketLauncher_Fire(m, ent);
     break;
   // case WP_PLASMAGUN: Weapon_Plasmagun_Fire(ent); break;
   // case WP_RAILGUN: weapon_railgun_fire(ent); break;
