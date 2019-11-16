@@ -71,7 +71,7 @@ __DLLEXPORT__ int32_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback );
-    cg.time = arg0;          // servertime
+    CG_DrawActiveFrame(arg0, arg1, arg2);
     update_entityStates();
     break;
 

@@ -71,6 +71,8 @@ typedef struct
   // incomplete
   int32_t clientNum;
 
+  qboolean demoPlayback;
+
   int32_t time; // this is the time value that the client
                 // is rendering at.
 } cg_t;
@@ -114,6 +116,11 @@ extern cg_t  cg;
 // cg_main.c
 //
 char const* CG_ConfigString(int32_t index);
+
+//
+// cg_view.c
+//
+void CG_DrawActiveFrame(int32_t serverTime, stereoFrame_t stereoView, qboolean demoPlayback);
 
 //
 // cg_marks.c
