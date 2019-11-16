@@ -23,13 +23,6 @@
 
 #include "cg_public.h"
 
-#ifdef NDEBUG
-#  define Q_ASSERT(x)
-#else
-#  define Q_ASSERT(x)                                                                                                  \
-    if (!(x)) trap_Error(vaf("^1%s -> %ld^7", #x, (intptr_t)x));
-#endif
-
 // TODO: remove this
 #define PSF_USERINPUT_NONE 0
 #define PSF_USERINPUT_FORWARD 1

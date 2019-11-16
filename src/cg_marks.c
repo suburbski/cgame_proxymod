@@ -1,5 +1,5 @@
+#include "assert.h"
 #include "cg_local.h"
-#include "cg_utils.h"
 
 /*
 =================
@@ -39,7 +39,7 @@ void CG_ImpactMark(
   vec3_t         markPoints[MAX_MARK_POINTS];
   vec3_t         projection;
 
-  Q_ASSERT(temporary == qtrue);
+  ASSERT_TRUE(temporary);
 
   // if (!cg_addMarks.integer)
   // {
