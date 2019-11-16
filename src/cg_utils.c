@@ -26,12 +26,12 @@
 
 snapshot_t const* getSnap(void)
 {
-  static snapshot_t tmp;
+  static snapshot_t snapshot;
   int32_t           curSnapNum;
   int32_t           servertime;
   trap_GetCurrentSnapshotNumber(&curSnapNum, &servertime);
-  trap_GetSnapshot(curSnapNum, &tmp);
-  return &tmp;
+  trap_GetSnapshot(curSnapNum, &snapshot);
+  return &snapshot;
 }
 
 playerState_t const* getPs(void)
