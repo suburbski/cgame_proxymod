@@ -143,6 +143,8 @@ void trap_CM_BoxTrace(
   int32_t      brushmask)
 {
   syscall(CG_CM_BOXTRACE, results, start, end, mins, maxs, model, brushmask);
+  // CG_Trace
+  results->entityNum = results->fraction != 1.f ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 }
 
 int32_t trap_CM_MarkFragments(
@@ -270,6 +272,16 @@ void trap_GetCurrentSnapshotNumber(int32_t* snapshotNumber, int32_t* serverTime)
 qboolean trap_GetSnapshot(int32_t snapshotNumber, snapshot_t* snapshot)
 {
   return syscall(CG_GETSNAPSHOT, snapshotNumber, snapshot);
+}
+
+int32_t trap_GetCurrentCmdNumber(void)
+{
+  return syscall(CG_GETCURRENTCMDNUMBER);
+}
+
+qboolean trap_GetUserCmd(int32_t cmdNumber, usercmd_t* ucmd)
+{
+  return syscall(CG_GETUSERCMD, cmdNumber, ucmd);
 }
 
 qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize)

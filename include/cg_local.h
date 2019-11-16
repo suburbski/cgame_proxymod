@@ -251,6 +251,14 @@ void trap_GetCurrentSnapshotNumber(int32_t* snapshotNumber, int32_t* serverTime)
 // old that it has fallen out of the client system queue
 qboolean trap_GetSnapshot(int32_t snapshotNumber, snapshot_t* snapshot);
 
+// returns the most recent command number that can be passed to GetUserCmd
+// this will always be at least one higher than the number in the current
+// snapshot, and it may be quite a few higher if it is a fast computer on
+// a lagged connection
+int32_t trap_GetCurrentCmdNumber(void);
+
+qboolean trap_GetUserCmd(int32_t cmdNumber, usercmd_t* ucmd);
+
 qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize);
 
 #endif // CG_LOCAL_H

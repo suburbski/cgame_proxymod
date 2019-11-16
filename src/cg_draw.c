@@ -56,6 +56,7 @@ Coordinates are 640*480 virtual values
 */
 void CG_FillRect(float x, float y, float w, float h, vec4_t const color)
 {
+  if (!w || !h) return;
   trap_R_SetColor(color);
   CG_AdjustFrom640(&x, &y, &w, &h);
   trap_R_DrawStretchPic(x, y, w, h, 0, 0, 0, 0, cgs.media.whiteShader);
