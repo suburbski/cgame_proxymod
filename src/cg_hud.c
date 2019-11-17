@@ -42,5 +42,5 @@ uint8_t draw_hud(void)
 {
   update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
-  return hud.integer;
+  return !!hud.integer;
 }

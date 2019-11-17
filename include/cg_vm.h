@@ -143,7 +143,6 @@ typedef struct vm_s
 extern vm_t    g_VM;
 extern char    vmpath[MAX_QPATH];
 extern char    vmbase[16];
-extern int32_t stacksize;
 extern int32_t vm_stacksize;
 
 intptr_t QDECL VM_Exec(

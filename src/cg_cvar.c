@@ -54,9 +54,9 @@ int32_t cvar_getInteger(char const* var_name)
   }
   if (*s == '0' && (s[1] == 'b' || s[1] == 'B'))
   {
-    return sign * strtol(s + 2, NULL, 2);
+    return (int32_t)sign * strtol(s + 2, NULL, 2);
   }
-  return sign * strtol(s, NULL, 0);
+  return (int32_t)sign * strtol(s, NULL, 0);
 }
 
 float cvar_getValue(char const* var_name)

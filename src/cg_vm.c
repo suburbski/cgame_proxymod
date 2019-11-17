@@ -150,7 +150,7 @@ static void VM_Run(vm_t* vm)
         // if a trap function, call our local syscall, which parses each message
         if (param < 0)
         {
-          ret = CG_SysCalls(dataSegment, (-param - 1), args);
+          ret = (int32_t)CG_SysCalls(dataSegment, (-param - 1), args);
           // otherwise it's a real function call, grab args and call function
         }
         else
@@ -564,7 +564,7 @@ intptr_t QDECL VM_Exec(
 
   //(ready) move back in stack to save pc
   vm->opStack--;
-  vm->opStack[0] = (vm->opPointer - vm->codeSegment);
+  vm->opStack[0] = (int32_t)(vm->opPointer - vm->codeSegment);
   //(set) move opPointer to start of opcodes
   vm->opPointer = vm->codeSegment;
 
@@ -895,11 +895,9 @@ int32_t opparms(int32_t op)
 }
 
 vm_t    g_VM;
-FILE*   g_df           = NULL;
-int32_t vm_stacksize   = 0;
-int32_t gameClientSize = 0;
 char    vmpath[MAX_QPATH];
 char    vmbase[16];
+int32_t vm_stacksize = 0;
 
 /*
 ==========

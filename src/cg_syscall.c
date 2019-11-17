@@ -299,7 +299,7 @@ qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize)
 // this subtracts the base VM address from a given value
 #define sub(x) ((x) ? (void*)((x) - (intptr_t)memoryBase) : NULL)
 // this gets an argument value
-#define arg(x) (args[(x)])
+#define arg(x) (args[x])
 // this adds the base VM address to an argument value
 #define ptr(x) (add(arg(x)))
 

@@ -145,7 +145,7 @@ void CG_DrawText(
   if (string == NULL) return;
 
   float         tmpX = x;
-  int32_t const len  = strlen(string);
+  int32_t const len  = (int32_t)strlen(string);
 
   // draw the drop shadow
   if (shadow)
