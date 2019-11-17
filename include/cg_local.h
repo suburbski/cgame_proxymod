@@ -26,7 +26,7 @@
 #include "tr_types.h"
 
 /* cg_vm.c */
-int32_t callVM(
+intptr_t callVM(
   int32_t cmd,
   int32_t arg0,
   int32_t arg1,
@@ -40,7 +40,7 @@ int32_t callVM(
   int32_t arg9,
   int32_t arg10,
   int32_t arg11);
-int32_t callVM_Destroy(void);
+intptr_t callVM_Destroy(void);
 int32_t setVMPtr(int32_t arg0);
 int32_t initVM(void);
 

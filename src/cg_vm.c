@@ -23,12 +23,10 @@
 #include "cg_vm.h"
 
 #include "cg_local.h"
+#include "cg_syscall.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef uint32_t (
-  *pfn_t)(int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
 
 /* VM_Run, VM_Exec, VM_Create, VM_Destroy, and VM_Restart
  * originally from Q3Fusion (http://www.sourceforge.net/projects/q3fusion/)
@@ -87,7 +85,7 @@ static void VM_Run(vm_t* vm)
     case OP_BREAK:
     // anything else
     default:
-      // RS_printf("ERROR: VM_Run: Unhandled opcode(%i)", op);
+      trap_Error(vaf("ERROR: VM_Run: Unhandled opcode(%i)", op));
       break;
 
 //
@@ -139,13 +137,15 @@ static void VM_Run(vm_t* vm)
         // if a trap function, call our local syscall, which parses each message
         if (param < 0)
         {
-          ret = VM_SysCalls(dataSegment, (-param - 1), args);
+          ret = CG_SysCalls(dataSegment, (-param - 1), args);
           // otherwise it's a real function call, grab args and call function
         }
         else
         {
           // cdecl calling convention says caller (us) cleans stack
           // so we can stuff the args without worry of stack corruption
+          typedef uint32_t (*pfn_t)(
+            int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
           ret = ((pfn_t)(intptr_t)param)(
             args[0],
             args[1],
@@ -506,7 +506,7 @@ static void VM_Run(vm_t* vm)
 // vm = pointer to to VM
 // command = GAME instruction to run
 // arg# = args to command
-int32_t QDECL VM_Exec(
+intptr_t QDECL VM_Exec(
   vm_t*   vm,
   int32_t command,
   int32_t arg0,
@@ -522,7 +522,7 @@ int32_t QDECL VM_Exec(
   int32_t arg10,
   int32_t arg11)
 {
-  // int32_t QDECL VM_Exec(vm_t *vm, int32_t command, ...) {
+  // intptr_t QDECL VM_Exec(vm_t *vm, int32_t command, ...) {
   int32_t* args;
 
   // prepare local stack
@@ -929,7 +929,7 @@ int32_t setVMPtr(int32_t arg0)
 callVM_Exec
 ==========
 */
-int32_t callVM(
+intptr_t callVM(
   int32_t cmd,
   int32_t arg0,
   int32_t arg1,
@@ -956,7 +956,7 @@ int32_t callVM(
 callVM_Destroy
 ==========
 */
-int32_t callVM_Destroy(void)
+intptr_t callVM_Destroy(void)
 {
   VM_Destroy(&g_VM);
   return 0;

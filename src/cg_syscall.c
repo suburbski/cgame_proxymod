@@ -18,15 +18,17 @@
   ==============================
   Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
+#include "cg_syscall.h"
+
 #include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
 #include "cg_trig.h"
 
-static int32_t(QDECL* syscall)(int32_t arg, ...) = (int32_t(QDECL*)(int32_t, ...)) - 1;
+static intptr_t(QDECL* syscall)(intptr_t arg, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
 
-__DLLEXPORT__ void dllEntry(int32_t(QDECL* syscallptr)(int32_t arg, ...))
+void dllEntry(intptr_t(QDECL* syscallptr)(intptr_t arg, ...))
 {
   syscall = syscallptr;
 }
@@ -303,7 +305,7 @@ qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize)
 
 #define _ptr(x) (add(x)) // ???
 
-int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args)
+intptr_t QDECL CG_SysCalls(uint8_t* memoryBase, int32_t cmd, int32_t* args)
 {
   switch (cmd)
   {

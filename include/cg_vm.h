@@ -23,6 +23,7 @@
 #ifndef CG_VM_H
 #define CG_VM_H
 
+#include "ExportImport.h"
 #include "q_shared.h"
 
 // magic number is stored in file as 44 14 72 12
@@ -145,7 +146,7 @@ extern char    vmbase[16];
 extern int32_t stacksize;
 extern int32_t vm_stacksize;
 
-int32_t QDECL VM_Exec(
+intptr_t QDECL VM_Exec(
   vm_t*   vm,
   int32_t command,
   int32_t arg0,
@@ -165,8 +166,7 @@ void     VM_Destroy(vm_t* vm);
 qboolean VM_Restart(vm_t* vm, qboolean savemem);
 void*    VM_ArgPtr(int32_t intValue);
 void*    VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue);
-int32_t QDECL VM_SysCalls(byte* memoryBase, int32_t cmd, int32_t* args);
-int32_t       int_byteswap(int32_t i);
-short         short_byteswap(short s);
+int32_t  int_byteswap(int32_t i);
+short    short_byteswap(short s);
 
 #endif // CG_VM_H

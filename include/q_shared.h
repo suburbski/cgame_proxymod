@@ -21,17 +21,12 @@ static inline char* vaf(char* format, ...)
 }
 
 #ifdef WIN32
-#  include <Windows.h>
-#  pragma warning(disable : 4996)
-#  define QDECL __cdecl
+#  include <windows.h>
 #  ifdef linux
 #    undef linux
 #  endif
-#  define __DLLEXPORT__ __declspec(dllexport)
 #else
 #  include <string.h>
-#  define QDECL
-#  define __DLLEXPORT__
 #endif
 
 #include <math.h>

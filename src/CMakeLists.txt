@@ -28,6 +28,8 @@ set_target_properties(${BINARY_NAME} PROPERTIES
   LINK_FLAGS_RELEASE -s
   PREFIX "")
 
+target_compile_definitions(${BINARY_NAME} PRIVATE BUILDING_SHARED)
+
 target_include_directories(${BINARY_NAME}
   PRIVATE ../include)
 

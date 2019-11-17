@@ -21,6 +21,10 @@
 #ifndef CG_MAIN_H
 #define CG_MAIN_H
 
+#include "ExportImport.h"
+
+#include <stdint.h>
+
 typedef enum
 {
   CG_INIT,
@@ -63,5 +67,20 @@ typedef enum
   CG_EVENT_HANDLING
   // void (*CG_EventHandling)(int32_t type);
 } cgameExport_t;
+
+EXPORTIMPORT intptr_t vmMain(
+  int32_t cmd,
+  int32_t arg0,
+  int32_t arg1,
+  int32_t arg2,
+  int32_t arg3,
+  int32_t arg4,
+  int32_t arg5,
+  int32_t arg6,
+  int32_t arg7,
+  int32_t arg8,
+  int32_t arg9,
+  int32_t arg10,
+  int32_t arg11);
 
 #endif // CG_MAIN_H

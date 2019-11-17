@@ -21,6 +21,8 @@
 #ifndef CG_FILE_H
 #define CG_FILE_H
 
+#include <stdint.h>
+
 typedef uint32_t fileHandle_t;
 
 // mode parm for FS_FOpenFile

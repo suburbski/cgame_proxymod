@@ -20,6 +20,7 @@
 */
 #include "cg_main.h"
 
+#include "assert.h"
 #include "bg_public.h"
 #include "cg_ammo.h"
 #include "cg_draw.h"
@@ -41,7 +42,7 @@ cgs_t cgs;
 static void CG_Init(int32_t clientNum);
 
 /* CLIENT to VM */
-__DLLEXPORT__ int32_t vmMain(
+intptr_t vmMain(
   int32_t cmd,
   int32_t arg0,
   int32_t arg1,
@@ -56,7 +57,7 @@ __DLLEXPORT__ int32_t vmMain(
   int32_t arg10,
   int32_t arg11)
 {
-  int32_t ret;
+  intptr_t ret;
 
   /* PRE CALL */
   switch (cmd)
@@ -148,7 +149,8 @@ __DLLEXPORT__ int32_t vmMain(
     break;
 
   case CG_SHUTDOWN: // void (*CG_Shutdown)( void )
-    callVM_Destroy();
+    ret = callVM_Destroy();
+    ASSERT_EQ(ret, 0);
     break;
   }
 
