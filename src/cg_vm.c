@@ -22,6 +22,7 @@
 */
 #include "cg_vm.h"
 
+#include "assert.h"
 #include "cg_local.h"
 #include "cg_syscall.h"
 
@@ -62,10 +63,14 @@ static void VM_Run(vm_t* vm)
   // keep going until opPointer is NULL
   // opPointer is set in OP_LEAVE, stored in the function stack
   // VM_Exec sets this to NULL before calling so that as soon as vmMain is done, execution stops
+
+#ifndef NDEBUG
+  int32_t nbfunc = 0;
+#endif
   do
   {
     // fetch opcode
-    op = (vmOps_t)opPointer[0];
+    op = opPointer[0];
     // get the param
     param = opPointer[1];
     // move to the next opcode
@@ -99,12 +104,20 @@ static void VM_Run(vm_t* vm)
 
     // enter a function, assign function parameters (length=param) from stack
     case OP_ENTER:
+#ifndef NDEBUG
+      // trap_Print(vaf("OP_ENTER: %d\n", nbfunc));
+      ++nbfunc;
+#endif
       vm->opBase -= param;
       *((int32_t*)(dataSegment + vm->opBase) + 1) = *opStack++;
       break;
 
     // leave a function, move opcode pointer to previous function
     case OP_LEAVE:
+#ifndef NDEBUG
+      --nbfunc;
+      // trap_Print(vaf("OP_LEAVE: %d\n", nbfunc));
+#endif
       opPointer = vm->codeSegment + *((int32_t*)(dataSegment + vm->opBase) + 1);
       vm->opBase += param;
       break;
@@ -492,6 +505,7 @@ static void VM_Run(vm_t* vm)
       break;
     }
   } while ((int32_t)(intptr_t)opPointer);
+  ASSERT_EQ(nbfunc, 0);
 
   //  vm->opBase = opBase;
   vm->opStack = opStack;
