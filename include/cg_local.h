@@ -41,8 +41,8 @@ intptr_t callVM(
   int32_t arg10,
   int32_t arg11);
 intptr_t callVM_Destroy(void);
-int32_t setVMPtr(int32_t arg0);
-int32_t initVM(void);
+int32_t  setVMPtr(int32_t arg0);
+int32_t  initVM(void);
 
 #define MAX_VERTS_ON_POLY 10
 #define MAX_MARK_POLYS 256
