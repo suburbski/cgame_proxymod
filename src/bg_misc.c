@@ -24,7 +24,7 @@ void BG_EvaluateTrajectory(trajectory_t const* tr, int32_t atTime, vec3_t result
     break;
   case TR_SINE:
     deltaTime = (atTime - tr->trTime) / (float)tr->trDuration;
-    phase     = sinf(deltaTime * M_PI * 2);
+    phase     = sinf(deltaTime * (float)M_PI * 2);
     VectorMA(tr->trBase, phase, tr->trDelta, result);
     break;
   case TR_LINEAR_STOP:
@@ -70,7 +70,7 @@ void BG_EvaluateTrajectoryDelta(trajectory_t const* tr, int32_t atTime, vec3_t r
     break;
   case TR_SINE:
     deltaTime = (atTime - tr->trTime) / (float)tr->trDuration;
-    phase     = cosf(deltaTime * M_PI * 2); // derivative of sin = cos
+    phase     = cosf(deltaTime * (float)M_PI * 2); // derivative of sin = cos
     phase *= .5f;
     VectorScale(tr->trDelta, phase, result);
     break;

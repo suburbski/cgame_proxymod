@@ -1117,13 +1117,13 @@ void AngleVectors(vec3_t const angles, vec3_t forward, vec3_t right, vec3_t up)
   static float sr, sp, sy, cr, cp, cy;
   // static to help MS compiler fp bugs
 
-  angle = angles[YAW] * (M_PI * 2 / 360);
+  angle = angles[YAW] * ((float)M_PI * 2 / 360);
   sy    = sinf(angle);
   cy    = cosf(angle);
-  angle = angles[PITCH] * (M_PI * 2 / 360);
+  angle = angles[PITCH] * ((float)M_PI * 2 / 360);
   sp    = sinf(angle);
   cp    = cosf(angle);
-  angle = angles[ROLL] * (M_PI * 2 / 360);
+  angle = angles[ROLL] * ((float)M_PI * 2 / 360);
   sr    = sinf(angle);
   cr    = cosf(angle);
 

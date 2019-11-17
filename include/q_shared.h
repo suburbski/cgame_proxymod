@@ -121,7 +121,7 @@ typedef int32_t fixed8_t;
 typedef int32_t fixed16_t;
 
 #ifndef M_PI
-#  define M_PI 3.14159265358979323846f // matches value in gcc v2 math.h
+#  define M_PI 3.14159265358979323846 // matches value in gcc v2 math.h
 #endif
 
 #define NUMVERTEXNORMALS 162
@@ -184,10 +184,10 @@ extern vec4_t colorDkGrey;
 
 extern vec4_t g_color_table[8];
 
-#define DEG2RAD(a) ((a) * (M_PI / 180.f))
-#define RAD2DEG(a) ((a) * (180.f / M_PI))
-#define RAD2SHORT(a) ((a) * (32768.f / M_PI))
-#define SHORT2RAD(a) ((a) * (M_PI / 32768.f))
+#define DEG2RAD(a) ((a) * ((float)M_PI / 180.f))
+#define RAD2DEG(a) ((a) * (180.f / (float)M_PI))
+#define RAD2SHORT(a) ((a) * (32768.f / (float)M_PI))
+#define SHORT2RAD(a) ((a) * ((float)M_PI / 32768.f))
 
 extern vec3_t vec3_origin;
 extern vec3_t axisDefault[3];
