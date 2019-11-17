@@ -26,7 +26,7 @@
 #include "cg_rl.h"
 #include "cg_trig.h"
 
-static intptr_t(QDECL* syscall)(intptr_t arg, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
+static intptr_t(QDECL* syscall)(intptr_t, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
 
 void dllEntry(intptr_t(QDECL* syscallptr)(intptr_t arg, ...))
 {

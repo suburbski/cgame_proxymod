@@ -7,7 +7,7 @@ Quick and easy:
   * Copy the platform specific binary into the 'defrag' directory.
   * Put `seta vm_cgame 0` in your config file (e.g. autoexec.cfg).
 
-You've correctly installed the proxymod if you load your favorite map and you see the following colored text in the console: `[mDd] cgame-proxy: x.x.x.x`
+You've correctly installed the proxymod if you load your favorite map and you see the following colored text in the console: `[mDd] cgame-proxy: x.x.x`.
 
 ## Configuration
 All the commands and cvars start with `mdd_`:

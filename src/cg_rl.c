@@ -70,7 +70,7 @@ void draw_rl(void)
   // todo: lerp trajectory stuff?
   for (int32_t i = 0; i < snap->numEntities; ++i)
   {
-    entityState_t entity = snap->entities[i];
+    entityState_t const entity = snap->entities[i];
     if (entity.eType == ET_MISSILE && entity.weapon == WP_ROCKET_LAUNCHER && entity.clientNum == ps->clientNum)
     {
       BG_EvaluateTrajectory(&entity.pos, cg.time, origin);

@@ -150,7 +150,7 @@ static void VM_Run(vm_t* vm)
         // if a trap function, call our local syscall, which parses each message
         if (param < 0)
         {
-          ret = (int32_t)CG_SysCalls(dataSegment, (-param - 1), args);
+          ret = (int32_t)CG_SysCalls(dataSegment, -param - 1, args);
           // otherwise it's a real function call, grab args and call function
         }
         else

@@ -8,7 +8,7 @@
 #  define vsnprintf _vsnprintf
 #endif
 
-static inline char* vaf(char* format, ...)
+static inline char* vaf(char const* format, ...)
 {
   va_list     argptr;
   static char str[1024];
