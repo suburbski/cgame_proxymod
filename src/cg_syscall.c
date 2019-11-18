@@ -458,6 +458,7 @@ intptr_t QDECL CG_SysCalls(uint8_t* memoryBase, int32_t cmd, int32_t* args)
     return syscall(cmd, ptr(0));
   case CG_R_REGISTERFONT:
     syscall(cmd, ptr(0), arg(1), ptr(2));
+    return 0;
   case CG_R_CLEARSCENE:
     syscall(cmd);
     return 0;
