@@ -50,4 +50,6 @@ void CG_Draw3DModel(
   vec3_t const origin,
   vec3_t const angles);
 
+void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color);
+
 #endif // CG_DRAW_H

@@ -22,6 +22,13 @@ All the commands and cvars start with `mdd_`:
   mdd_ammo_text_xh
   mdd_ammo_text_rgba
 
+  mdd_cgaz;
+  mdd_cgaz_yh;
+  mdd_cgaz_rgbaNoAccel;
+  mdd_cgaz_rgbaPartialAccel;
+  mdd_cgaz_rgbaFullAccel;
+  mdd_cgaz_rgbaTurnZone;
+
   mdd_gl_path_draw
   mdd_gl_path_rgba
   mdd_gl_path_preview_draw
@@ -47,6 +54,21 @@ All the commands and cvars start with `mdd_`:
 
   mdd_sound_local_only
 
+  mdd_snap
+  mdd_snap_speed
+  mdd_snap1
+  mdd_snap1_yh
+  mdd_snap1_rgba1
+  mdd_snap1_rgba2
+  mdd_snap1_rgba3
+  mdd_snap1_rgba4
+  mdd_snap2
+  mdd_snap2_yh
+  mdd_snap2_rgba1
+  mdd_snap2_rgba2
+  mdd_snap2_rgba3
+  mdd_snap2_rgba4
+
   mdd_timer
   mdd_timer_xywh
   mdd_timer_item_w
@@ -71,6 +93,33 @@ mdd_ammo 0b X X X X
             | + - - - gun
             + - - - - 3D
 ```
+```
+mdd_cgaz 0b X X X X
+            | | | |
+            | | | + - draw
+            | | + - - jump/crouch influence
+            | + - - - CPM air control zones
+            + - - - - ground
+```
+```
+mdd_snap 0b X X X X
+            | | | |
+            | | | + - draw
+            | | + - - jump/crouch influence
+            | + - - - CPM air control zones
+            + - - - - ground
+```
+```
+mdd_snapX 0b X X X X X
+        |    | | | | |
+        |    | | | | + - normal
+        |    | | | + - - highlight active
+        |    | | + - - - 45deg shift
+        |    | + - - - - blue/red (min/max accel)
+        |    + - - - - - height
+        |
+        + - either 1 or 2
+```
 Note that it's not necessary to have the same number of `1`'s and `0`'s as there are *different options*, or even use the binary representation. You can still use the good old decimal equivalent (or the octal and hexadecimal representation to impress your friends).
 
 ## Examples
@@ -82,3 +131,9 @@ Note that it's not necessary to have the same number of `1`'s and `0`'s as there
   * draw the 3D models instead of the 2D models
 
 So if you want to have 2D models, simply use `mdd_ammo 0b0101`.
+
+`mdd_cgaz 0b0101` will:
+  * draw the hud
+  * don't show jump/crouch influence
+  * show correct air control zones in CPM
+  * show correct zones when walking

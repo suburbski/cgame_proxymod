@@ -20,6 +20,7 @@
 */
 #include "cg_draw.h"
 
+#include "assert.h"
 #include "cg_local.h"
 
 #define RF_NOSHADOW 0x0040      // don't add stencil shadows
@@ -236,4 +237,63 @@ void CG_Draw3DModel(
   trap_R_ClearScene();
   trap_R_AddRefEntityToScene(&ent);
   trap_R_RenderScene(&refdef);
+}
+
+/*
+=================
+AngleToX
+=================
+*/
+static inline float AngleToX(float const angle)
+{
+  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
+  float const half_fov_x = cg.refdef.fov_x / 2;
+  if (angle >= half_fov_x) return 0;
+  if (angle <= -half_fov_x) return SCREEN_WIDTH;
+  return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
+}
+
+typedef struct
+{
+  float    x1;
+  float    x2;
+  qboolean split;
+} range_t;
+
+static inline range_t AnglesToRange(float start, float end, float const yaw)
+{
+  if (fabsf(end - start) > 2 * (float)M_PI)
+  {
+    range_t const ret = { 0, SCREEN_WIDTH, 0 };
+    return ret;
+  }
+
+  qboolean const split = end > start;
+  start                = AngleNormalizePI(start - yaw);
+  end                  = AngleNormalizePI(end - yaw);
+
+  if (end > start)
+  {
+    range_t const ret = { AngleToX(end), AngleToX(start), !split };
+    return ret;
+  }
+  else
+  {
+    range_t const ret = { AngleToX(start), AngleToX(end), split };
+    return ret;
+  }
+}
+
+void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color)
+{
+  range_t const lc_Range = AnglesToRange(start, end, yaw);
+  if (!lc_Range.split)
+  {
+    CG_FillRect(lc_Range.x1, y, lc_Range.x2 - lc_Range.x1, h, color);
+  }
+  else
+  {
+    CG_FillRect(0, y, lc_Range.x1, h, color);
+    CG_FillRect(lc_Range.x2, y, SCREEN_WIDTH - lc_Range.x2, h, color);
+  }
 }

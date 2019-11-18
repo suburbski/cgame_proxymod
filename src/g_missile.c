@@ -1,4 +1,3 @@
-#include "bg_public.h"
 #include "cg_local.h"
 #include "g_local.h"
 

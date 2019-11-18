@@ -9,6 +9,11 @@
 
 #define LIGHTNING_RANGE 768
 
+#define MINS_Z -24
+#define DEFAULT_VIEWHEIGHT 26
+#define CROUCH_VIEWHEIGHT 12
+#define DEAD_VIEWHEIGHT -16
+
 //
 // config strings are a general means of communicating variable length strings
 // from the server to all connected clients.
@@ -20,6 +25,36 @@
 #define CS_ITEMS 27 // string of 0's and 1's that tell which items are present
 
 #define CS_MODELS 32
+
+/*
+===================================================================================
+
+PMOVE MODULE
+
+The pmove code takes a player_state_t and a usercmd_t and generates a new player_state_t
+and some other output data.  Used for local prediction on the client game and true
+movement on the server game.
+===================================================================================
+*/
+
+typedef enum
+{
+  PM_NORMAL,        // can accelerate and turn
+  PM_NOCLIP,        // noclip movement
+  PM_SPECTATOR,     // still run into walls
+  PM_DEAD,          // no acceleration or turning, but free falling
+  PM_FREEZE,        // stuck in place with no control
+  PM_INTERMISSION,  // no movement or status bar
+  PM_SPINTERMISSION // no movement or status bar
+} pmtype_t;
+
+typedef enum
+{
+  WEAPON_READY,
+  WEAPON_RAISING,
+  WEAPON_DROPPING,
+  WEAPON_FIRING
+} weaponstate_t;
 
 // pmove->pm_flags
 #define PMF_DUCKED 1
@@ -36,7 +71,47 @@
 #define PMF_SCOREBOARD 8192   // spectate as a scoreboard
 #define PMF_INVULEXPAND 16384 // invulnerability sphere set to full size
 
+#define PMF_PROMODE 32768 // is CPM physic
+
 #define PMF_ALL_TIMES (PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK)
+
+#define MAXTOUCH 32
+typedef struct
+{
+  // state (in / out)
+  int32_t ps; // playerState_t*
+
+  // command (in)
+  usercmd_t cmd;
+  int32_t   tracemask; // collide against these types of surfaces
+  qboolean  killWallBug;
+  int32_t   debugLevel;  // if set, diagnostic output will be printed
+  qboolean  noFootsteps; // if the game is setup for no footsteps by the server
+  qboolean  gauntletHit; // true if a gauntlet attack would actually hit something
+
+  int32_t framecount;
+
+  // results (out)
+  int32_t numtouch;
+  int32_t touchents[MAXTOUCH];
+
+  vec3_t mins, maxs; // bounding box size
+
+  int32_t watertype;
+  int32_t waterlevel;
+
+  float xyspeed;
+
+  // for fixed msec Pmove
+  int32_t pmove_fixed;
+  int32_t pmove_msec;
+
+  // callbacks to test the world
+  // these will be different functions during game and cgame
+  int32_t trace;         // void (*trace)(trace_t* results, vec3_t const start, vec3_t const mins, vec3_t const maxs,
+                         // vec3_t const end, int32_t passEntityNum, int32_t contentMask);
+  int32_t pointcontents; // int32_t (*pointcontents)(vec3_t const point, int32_t passEntityNum);
+} pmove_t;
 
 //===================================================================================
 
@@ -125,6 +200,17 @@ typedef enum
 
   WP_NUM_WEAPONS
 } weapon_t;
+
+typedef struct animation_s
+{
+  int32_t firstFrame;
+  int32_t numFrames;
+  int32_t loopFrames;  // 0 to numFrames
+  int32_t frameLerp;   // msec between frames
+  int32_t initialLerp; // msec to get to first frame
+  int32_t reversed;    // true if animation is reversed
+  int32_t flipflop;    // true if animation should flipflop back to base
+} animation_t;
 
 // content masks
 #define MASK_ALL (-1)

@@ -539,6 +539,57 @@ float AngleNormalize180(float angle)
 
 /*
 =================
+AngleNormalize2PI
+
+returns angle normalized to the range [0 <= angle < 2 * M_PI]
+=================
+*/
+float AngleNormalize2PI(float angle)
+{
+  angle = fmodf(angle, 2 * (float)M_PI);
+  return angle < 0 ? angle + 2 * (float)M_PI : angle;
+}
+
+/*
+=================
+AngleNormalizePI
+
+returns angle normalized to the range [-PI <= angle < PI]
+=================
+*/
+float AngleNormalizePI(float angle)
+{
+  angle = fmodf(angle + (float)M_PI, 2 * (float)M_PI);
+  return angle < 0 ? angle + (float)M_PI : angle - (float)M_PI;
+}
+
+/*
+================
+AngleNormalize65536
+
+Returns shortangle normalized to the range [0 <= shortangle < 65536]
+================
+*/
+int32_t AngleNormalize65536(int32_t angle)
+{
+  return angle & 65535;
+}
+
+/*
+================
+AngleNormalize32768
+
+Returns shortangle normalized to the range [-32768 <= shortangle < 32768]
+================
+*/
+int32_t AngleNormalize32768(int32_t angle)
+{
+  angle = AngleNormalize65536(angle);
+  return angle < 32768 ? angle : angle - 65536;
+}
+
+/*
+=================
 AngleDelta
 
 returns the normalized delta from angle1 to angle2

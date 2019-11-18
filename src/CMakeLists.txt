@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 add_library(${BINARY_NAME} SHARED
   bg_misc.c
+  bg_pmove.c
   cg_ammo.c
+  cg_cgaz.c
   cg_consolecmds.c
   cg_cvar.c
   cg_draw.c
@@ -13,6 +15,7 @@ add_library(${BINARY_NAME} SHARED
   cg_main.c
   cg_marks.c
   cg_rl.c
+  cg_snap.c
   cg_syscall.c
   cg_timer.c
   cg_trig.c

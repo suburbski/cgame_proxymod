@@ -281,8 +281,12 @@ void AnglesToAxis(vec3_t const angles, vec3_t axis[3]);
 void AxisClear(vec3_t axis[3]);
 void AxisCopy(vec3_t in[3], vec3_t out[3]);
 
-float AngleNormalize360(float angle);
-float AngleNormalize180(float angle);
+float   AngleNormalize360(float angle);
+float   AngleNormalize180(float angle);
+float   AngleNormalize2PI(float angle);
+float   AngleNormalizePI(float angle);
+int32_t AngleNormalize65536(int32_t angle);
+int32_t AngleNormalize32768(int32_t angle);
 
 void RotatePointAroundVector(vec3_t dst, vec3_t const dir, vec3_t const point, float degrees);
 

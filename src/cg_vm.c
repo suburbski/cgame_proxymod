@@ -23,7 +23,10 @@
 #include "cg_vm.h"
 
 #include "assert.h"
+#include "cg_cgaz.h"
+#include "cg_hud.h"
 #include "cg_local.h"
+#include "cg_snap.h"
 #include "cg_syscall.h"
 
 #include <stdio.h>
@@ -108,6 +111,18 @@ static void VM_Run(vm_t* vm)
       // trap_Print(vaf("OP_ENTER: %d\n", nbfunc));
       ++nbfunc;
 #endif
+      {
+        intptr_t const subFunc = (opPointer - vm->codeSegment - 2) / 2;
+        if (subFunc == 0x1c62a /*df_hud 0*/ || subFunc == 0x1f98 /*df_hud 1*/) // CG_DrawCrosshair
+        {
+          if (draw_hud())
+          {
+            draw_cgaz();
+            draw_snap();
+          }
+        }
+      }
+
       vm->opBase -= param;
       *((int32_t*)(dataSegment + vm->opBase) + 1) = *opStack++;
       break;

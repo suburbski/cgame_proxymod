@@ -21,15 +21,15 @@
 #include "cg_main.h"
 
 #include "assert.h"
-#include "bg_public.h"
 #include "cg_ammo.h"
-#include "cg_draw.h"
+#include "cg_cgaz.h"
 #include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_hud.h"
 #include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_rl.h"
+#include "cg_snap.h"
 #include "cg_timer.h"
 #include "cg_trig.h"
 #include "version.h"
@@ -112,9 +112,11 @@ intptr_t vmMain(
     init_trig(); // Has to be before any CG_R_REGISTERMODEL.
 
     init_ammo();
+    init_cgaz();
     init_gl();
     init_jump();
     init_rl();
+    init_snap();
     init_timer();
     break;
 
@@ -124,8 +126,7 @@ intptr_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback )
-    // First check if we have models, otherwise CM_ClipHandleToModel will fail.
-    if (trap_CM_NumInlineModels() && draw_hud())
+    if (draw_hud())
     {
       draw_ammo();
       draw_jump();

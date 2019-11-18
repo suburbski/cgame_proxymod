@@ -21,6 +21,7 @@
 #include "cg_hud.h"
 
 #include "cg_cvar.h"
+#include "cg_local.h"
 #include "version.h"
 
 static vmCvar_t hud;
@@ -40,6 +41,9 @@ void init_hud(void)
 
 uint8_t draw_hud(void)
 {
+  // First check if we have models, otherwise CM_ClipHandleToModel will fail
+  if (!trap_CM_NumInlineModels()) return 0;
+
   update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
   return !!hud.integer;

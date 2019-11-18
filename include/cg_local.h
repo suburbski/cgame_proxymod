@@ -21,6 +21,7 @@
 #ifndef CG_LOCAL_H
 #define CG_LOCAL_H
 
+#include "bg_public.h"
 #include "cg_public.h"
 #include "q_shared.h"
 #include "tr_types.h"
@@ -46,6 +47,90 @@ int32_t  initVM(void);
 
 #define MAX_VERTS_ON_POLY 10
 #define MAX_MARK_POLYS 256
+
+//=================================================
+
+// player entities need to track more information
+// than any other type of entity.
+
+// note that not every player entity is a client entity,
+// because corpses after respawn are outside the normal
+// client numbering range
+
+// when changing animation, set animationTime to frameTime + lerping time
+// The current lerp will finish out, then it will lerp to the new animation
+typedef struct
+{
+  int32_t oldFrame;
+  int32_t oldFrameTime; // time when ->oldFrame was exactly on
+
+  int32_t frame;
+  int32_t frameTime; // time when ->frame will be exactly on
+
+  float backlerp;
+
+  float    yawAngle;
+  qboolean yawing;
+  float    pitchAngle;
+  qboolean pitching;
+
+  int32_t      animationNumber; // may include ANIM_TOGGLEBIT
+  animation_t* animation;
+  int32_t      animationTime; // time when the first frame of the animation will be exact
+} lerpFrame_t;
+
+typedef struct
+{
+  lerpFrame_t legs, torso, flag;
+  int32_t     painTime;
+  int32_t     painDirection; // flip from 0 to 1
+  int32_t     lightningFiring;
+
+  int32_t railFireTime;
+
+  // machinegun spinning
+  float    barrelAngle;
+  int32_t  barrelTime;
+  qboolean barrelSpinning;
+} playerEntity_t;
+
+//=================================================
+
+// centity_t have a direct corespondence with gentity_t in the game, but
+// only the entityState_t is directly communicated to the cgame
+typedef struct centity_s
+{
+  entityState_t currentState; // from cg.frame
+  entityState_t nextState;    // from cg.nextFrame, if available
+  qboolean      interpolate;  // true if next is valid to interpolate to
+  qboolean      currentValid; // true if cg.frame holds this entity
+
+  int32_t muzzleFlashTime; // move to playerEntity?
+  int32_t previousEvent;
+  int32_t teleportFlag;
+
+  int32_t trailTime; // so missile trails can handle dropped initial packets
+  int32_t dustTrailTime;
+  int32_t miscTime;
+
+  int32_t snapShotTime; // last time this entity was found in a snapshot
+
+  playerEntity_t pe;
+
+  int32_t errorTime; // decay the error from this time
+  vec3_t  errorOrigin;
+  vec3_t  errorAngles;
+
+  qboolean extrapolated; // false if origin / angles is an interpolation
+  vec3_t   rawOrigin;
+  vec3_t   rawAngles;
+
+  vec3_t beamEnd;
+
+  // exact interpolated position of entity on this frame
+  vec3_t lerpOrigin;
+  vec3_t lerpAngles;
+} centity_t;
 
 //======================================================================
 
@@ -75,6 +160,9 @@ typedef struct
 
   int32_t time; // this is the time value that the client
                 // is rendering at.
+
+  // view rendering
+  refdef_t refdef;
 } cg_t;
 
 // all of the model, shader, and sound references that are
