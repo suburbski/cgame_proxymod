@@ -2,6 +2,9 @@
 
 This proxymod should help players to train their abilities for the Quake III Arena modification DeFRaG. It adds hud elements to the standard defrag hud.
 
+## Changelog
+Please see [CHANGELOG](CHANGELOG.md) for notable changes between releases.
+
 ## Installation
 Quick and easy:
   * Copy the platform specific binary into the 'defrag' directory.
@@ -136,3 +139,46 @@ So if you want to have 2D models, simply use `mdd_ammo 0b0101`.
   * don't show jump/crouch influence
   * show correct air control zones in CPM
   * show correct zones when walking
+
+## Building
+The proxymod is written in C and uses CMake to control the building process.
+1. Create a separate `build` directory (keeps your repository clean).
+   ```
+   $ mkdir build
+   $ cd build
+   ```
+2. Generate input files for a native build system.
+   To generate standard Makefiles for a 32 bit release build on Windows with gcc, do:
+   ```
+   $ cmake\
+       -DBINARY_NAME=cgamex86                  \
+       -DCMAKE_BUILD_TYPE=Release              \
+       -DCMAKE_C_COMPILER=gcc                  \
+       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m32" \
+       -DCMAKE_INSTALL_PREFIX=/path/to/quake3/ \
+       -DCMAKE_POSITION_INDEPENDENT_CODE=FALSE \
+       -DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll    \
+       -DFORCE_COLORED_OUTPUT=TRUE             \
+       ..
+   ```
+   To generate Ninja files for a 64 bit debug build on Linux with clang, do:
+   ```
+   $ cmake -G Ninja                            \
+       -DBINARY_NAME=cgamex86_64               \
+       -DCMAKE_BUILD_TYPE=Debug                \
+       -DCMAKE_C_COMPILER=clang                \
+       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64" \
+       -DCMAKE_INSTALL_PREFIX=/path/to/quake3/ \
+       -DFORCE_COLORED_OUTPUT=TRUE             \
+       ..
+   ```
+   Note that the binary name for a 32 bit Windows build is `cgamex86`, while `cgamei386` on Linux. The binary name for a 64 bit build, however, is `cgamex86_64` on both Windows and Linux.
+3. Build the source code.
+   ```
+   $ cmake --build .
+   ```
+   If you specified an install prefix in step 2, you can build and install the new binary into the `defrag` subdirectory.
+   ```
+   $ cmake --build  . -- install
+   ```
+4. Profit.
