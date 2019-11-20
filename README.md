@@ -15,7 +15,6 @@ All the commands and cvars start with `mdd_`:
 ```
   mdd_hud
   mdd_version
-  mdd_pps_offset
 
   mdd_ammo
   mdd_ammo_graph_xywh

@@ -23,6 +23,7 @@
 #include "cg_cvar.h"
 #include "cg_local.h"
 #include "cg_vm.h"
+#include "defrag.h"
 
 snapshot_t const* getSnap(void)
 {
@@ -37,5 +38,5 @@ snapshot_t const* getSnap(void)
 playerState_t const* getPs(void)
 {
   if (cvar_getInteger("g_synchronousClients")) return &getSnap()->ps;
-  return (playerState_t const*)VM_ArgPtr(cvar_getInteger("mdd_pps_offset"));
+  return (playerState_t const*)VM_ArgPtr(DF_PPS_OFFSET);
 }
