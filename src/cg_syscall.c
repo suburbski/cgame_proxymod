@@ -24,7 +24,6 @@
 #include "cg_gl.h"
 #include "cg_local.h"
 #include "cg_rl.h"
-#include "cg_trig.h"
 
 static intptr_t(QDECL* syscall)(intptr_t, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
 
@@ -480,7 +479,6 @@ intptr_t QDECL CG_SysCalls(uint8_t* memoryBase, int32_t cmd, int32_t* args)
     syscall(cmd, ptr(0), arg(1), arg(2), arg(3), arg(4));
     return 0;
   case CG_R_RENDERSCENE:
-    draw_trig();
     draw_gl();
     draw_rl();
 

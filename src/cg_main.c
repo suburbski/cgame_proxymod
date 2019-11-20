@@ -31,7 +31,6 @@
 #include "cg_rl.h"
 #include "cg_snap.h"
 #include "cg_timer.h"
-#include "cg_trig.h"
 #include "version.h"
 
 #include <stdlib.h>
@@ -108,8 +107,6 @@ intptr_t vmMain(
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     init_hud();
-
-    init_trig(); // Has to be before any CG_R_REGISTERMODEL.
 
     init_ammo();
     init_cgaz();

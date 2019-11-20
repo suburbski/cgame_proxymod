@@ -78,9 +78,6 @@ All the commands and cvars start with `mdd_`:
   mdd_timer_gb_rgba
   mdd_timer_outline_w
   mdd_timer_outline_rgba
-
-  mdd_trig
-  mdd_trig_rgba
 ```
 Default values can be shown by typing the cvar into the console (e.g. `mdd_ammo_graph_xywh`) followed by pressing enter. Note that some cvars end with `_w`, `_xh` or even `_xywh`. Here `w` stands for width, `h` for height and `x` and `y` for the coordinates. It goes without saying that multiple values are separated by spaces.
 

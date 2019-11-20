@@ -18,7 +18,6 @@ add_library(${BINARY_NAME} SHARED
   cg_snap.c
   cg_syscall.c
   cg_timer.c
-  cg_trig.c
   cg_utils.c
   cg_view.c
   cg_vm.c
