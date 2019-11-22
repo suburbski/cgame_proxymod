@@ -10,10 +10,12 @@ static vmCvar_t ammo_graph_xywh;
 static vmCvar_t ammo_text_xh;
 static vmCvar_t ammo_text_rgba;
 
-static cvarTable_t ammo_cvars[] = { { &ammo, "mdd_ammo", "0b0001", CVAR_ARCHIVE },
-                                    { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE },
-                                    { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE },
-                                    { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE } };
+static cvarTable_t ammo_cvars[] = {
+  { &ammo, "mdd_ammo", "0b0001", CVAR_ARCHIVE },
+  { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE },
+  { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE },
+  { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE },
+};
 
 // mdd_ammo 0b X X X X
 //             | | | |

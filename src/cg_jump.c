@@ -29,7 +29,7 @@ static cvarTable_t jump_cvars[] = {
   { &jump_graph_outline_w, "mdd_jump_graph_outline_w", "1", CVAR_ARCHIVE },
   { &jump_graph_outline_rgba, "mdd_jump_graph_outline_rgba", "1 1 1 .75", CVAR_ARCHIVE },
   { &jump_text_xh, "mdd_jump_text_xh", "6 12", CVAR_ARCHIVE },
-  { &jump_text_rgba, "mdd_jump_text_rgba", "1 1 1 1", CVAR_ARCHIVE }
+  { &jump_text_rgba, "mdd_jump_text_rgba", "1 1 1 1", CVAR_ARCHIVE },
 };
 
 void init_jump(void)
