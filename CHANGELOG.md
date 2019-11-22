@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2019-11-22
+### Changed
+- Don't bloat q3config.cfg and improve cross-platform config compatibility by only archiving cvars that have non-default values.
+
 ## [1.1.0] - 2019-11-22
 ### Added
 - New cvar `mdd_fov`. When different from `0`, CampingGaz-HUD and Snap-HUD will use this fov instead of `cg_fov`.

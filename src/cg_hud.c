@@ -28,7 +28,7 @@ static vmCvar_t hud;
 static vmCvar_t version;
 
 static cvarTable_t hud_cvars[] = {
-  { &hud, "mdd_hud", "1", CVAR_ARCHIVE },
+  { &hud, "mdd_hud", "1", CVAR_ARCHIVE_ND },
   { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
 };
 

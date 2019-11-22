@@ -6,7 +6,7 @@
 static vmCvar_t sound_local_only;
 
 static cvarTable_t sound_cvars[] = {
-  { &sound_local_only, "mdd_sound_local_only", "0", CVAR_ARCHIVE },
+  { &sound_local_only, "mdd_sound_local_only", "0", CVAR_ARCHIVE_ND },
 };
 
 static entityState_t cg_entityStates[1024];

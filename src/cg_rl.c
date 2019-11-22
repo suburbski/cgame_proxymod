@@ -14,11 +14,11 @@ static vmCvar_t path_draw;
 static vmCvar_t path_rgba;
 
 static cvarTable_t rl_cvars[] = {
-  { &target_draw, "mdd_rl_target_draw", "0", CVAR_ARCHIVE },
-  { &target_shader, "mdd_rl_target_shader", "rlTraceMark", CVAR_ARCHIVE },
-  { &target_size, "mdd_rl_target_size", "24", CVAR_ARCHIVE },
-  { &path_draw, "mdd_rl_path_draw", "0", CVAR_ARCHIVE },
-  { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE },
+  { &target_draw, "mdd_rl_target_draw", "0", CVAR_ARCHIVE_ND },
+  { &target_shader, "mdd_rl_target_shader", "rlTraceMark", CVAR_ARCHIVE_ND },
+  { &target_size, "mdd_rl_target_size", "24", CVAR_ARCHIVE_ND },
+  { &path_draw, "mdd_rl_path_draw", "0", CVAR_ARCHIVE_ND },
+  { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE_ND },
 };
 
 typedef struct

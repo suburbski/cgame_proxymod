@@ -12,10 +12,10 @@ static vmCvar_t gl_path_preview_draw;
 static vmCvar_t gl_path_preview_rgba;
 
 static cvarTable_t gl_cvars[] = {
-  { &gl_path_draw, "mdd_gl_path_draw", "1", CVAR_ARCHIVE },
-  { &gl_path_rgba, "mdd_gl_path_rgba", "0 1 0 1", CVAR_ARCHIVE },
-  { &gl_path_preview_draw, "mdd_gl_path_preview_draw", "1", CVAR_ARCHIVE },
-  { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE },
+  { &gl_path_draw, "mdd_gl_path_draw", "1", CVAR_ARCHIVE_ND },
+  { &gl_path_rgba, "mdd_gl_path_rgba", "0 1 0 1", CVAR_ARCHIVE_ND },
+  { &gl_path_preview_draw, "mdd_gl_path_preview_draw", "1", CVAR_ARCHIVE_ND },
+  { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE_ND },
 };
 
 static qhandle_t beam_shader;

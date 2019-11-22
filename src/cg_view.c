@@ -3,7 +3,7 @@
 
 static vmCvar_t fov;
 
-static cvarTable_t view_cvars[] = { { &fov, "mdd_fov", "0", CVAR_ARCHIVE } };
+static cvarTable_t view_cvars[] = { { &fov, "mdd_fov", "0", CVAR_ARCHIVE_ND } };
 
 /*
 =================

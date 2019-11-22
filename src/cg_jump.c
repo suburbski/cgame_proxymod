@@ -19,17 +19,17 @@ static vmCvar_t jump_text_xh;
 static vmCvar_t jump_text_rgba;
 
 static cvarTable_t jump_cvars[] = {
-  { &jump, "mdd_jump", "3", CVAR_ARCHIVE },
-  { &jump_maxDelay, "mdd_jump_maxDelay", "360", CVAR_ARCHIVE },
-  { &jump_graph_xywh, "mdd_jump_graph_xywh", "8 8 8 104", CVAR_ARCHIVE },
-  { &jump_graph_rgba, "mdd_jump_graph_rgba", ".5 .5 .5 .5", CVAR_ARCHIVE },
-  { &jump_graph_rgbaOnGround, "mdd_jump_graph_rgbaOnGround", "0 1 0 .75", CVAR_ARCHIVE },
-  { &jump_graph_rgbaPreJump, "mdd_jump_graph_rgbaPreJump", "0 0 1 .75", CVAR_ARCHIVE },
-  { &jump_graph_rgbaPostJump, "mdd_jump_graph_rgbaPostJump", "1 0 0 .75", CVAR_ARCHIVE },
-  { &jump_graph_outline_w, "mdd_jump_graph_outline_w", "1", CVAR_ARCHIVE },
-  { &jump_graph_outline_rgba, "mdd_jump_graph_outline_rgba", "1 1 1 .75", CVAR_ARCHIVE },
-  { &jump_text_xh, "mdd_jump_text_xh", "6 12", CVAR_ARCHIVE },
-  { &jump_text_rgba, "mdd_jump_text_rgba", "1 1 1 1", CVAR_ARCHIVE },
+  { &jump, "mdd_jump", "3", CVAR_ARCHIVE_ND },
+  { &jump_maxDelay, "mdd_jump_maxDelay", "360", CVAR_ARCHIVE_ND },
+  { &jump_graph_xywh, "mdd_jump_graph_xywh", "8 8 8 104", CVAR_ARCHIVE_ND },
+  { &jump_graph_rgba, "mdd_jump_graph_rgba", ".5 .5 .5 .5", CVAR_ARCHIVE_ND },
+  { &jump_graph_rgbaOnGround, "mdd_jump_graph_rgbaOnGround", "0 1 0 .75", CVAR_ARCHIVE_ND },
+  { &jump_graph_rgbaPreJump, "mdd_jump_graph_rgbaPreJump", "0 0 1 .75", CVAR_ARCHIVE_ND },
+  { &jump_graph_rgbaPostJump, "mdd_jump_graph_rgbaPostJump", "1 0 0 .75", CVAR_ARCHIVE_ND },
+  { &jump_graph_outline_w, "mdd_jump_graph_outline_w", "1", CVAR_ARCHIVE_ND },
+  { &jump_graph_outline_rgba, "mdd_jump_graph_outline_rgba", "1 1 1 .75", CVAR_ARCHIVE_ND },
+  { &jump_text_xh, "mdd_jump_text_xh", "6 12", CVAR_ARCHIVE_ND },
+  { &jump_text_rgba, "mdd_jump_text_rgba", "1 1 1 1", CVAR_ARCHIVE_ND },
 };
 
 void init_jump(void)

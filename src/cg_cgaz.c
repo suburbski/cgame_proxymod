@@ -16,13 +16,13 @@ static vmCvar_t cgaz_rgbaFullAccel;
 static vmCvar_t cgaz_rgbaTurnZone;
 
 static cvarTable_t cgaz_cvars[] = {
-  { &cgaz, "mdd_cgaz", "0b1111", CVAR_ARCHIVE },
-  { &cgaz_speed, "mdd_cgaz_speed", "1", CVAR_ARCHIVE },
-  { &cgaz_yh, "mdd_cgaz_yh", "180 12", CVAR_ARCHIVE },
-  { &cgaz_rgbaNoAccel, "mdd_cgaz_rgbaNoAccel", ".25 .25 .25 .5", CVAR_ARCHIVE },
-  { &cgaz_rgbaPartialAccel, "mdd_cgaz_rgbaPartialAccel", "0 1 0 .5", CVAR_ARCHIVE },
-  { &cgaz_rgbaFullAccel, "mdd_cgaz_rgbaFullAccel", "0 .25 .25 .5", CVAR_ARCHIVE },
-  { &cgaz_rgbaTurnZone, "mdd_cgaz_rgbaTurnZone", "1 1 0 .5", CVAR_ARCHIVE },
+  { &cgaz, "mdd_cgaz", "0b1111", CVAR_ARCHIVE_ND },
+  { &cgaz_speed, "mdd_cgaz_speed", "1", CVAR_ARCHIVE_ND },
+  { &cgaz_yh, "mdd_cgaz_yh", "180 12", CVAR_ARCHIVE_ND },
+  { &cgaz_rgbaNoAccel, "mdd_cgaz_rgbaNoAccel", ".25 .25 .25 .5", CVAR_ARCHIVE_ND },
+  { &cgaz_rgbaPartialAccel, "mdd_cgaz_rgbaPartialAccel", "0 1 0 .5", CVAR_ARCHIVE_ND },
+  { &cgaz_rgbaFullAccel, "mdd_cgaz_rgbaFullAccel", "0 .25 .25 .5", CVAR_ARCHIVE_ND },
+  { &cgaz_rgbaTurnZone, "mdd_cgaz_rgbaTurnZone", "1 1 0 .5", CVAR_ARCHIVE_ND },
 };
 
 // mdd_cgaz 0b X X X X
