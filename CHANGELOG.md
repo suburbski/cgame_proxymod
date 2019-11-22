@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- New cvar `mdd_fov`. When different from `0`, CampingGaz-HUD and Snap-HUD will use this fov instead of `cg_fov`.
+
 ### Removed
 - Bounding box trigger display since engines support this now (`scr_triggers_draw 1` and `scr_clips_draw 1`).
 

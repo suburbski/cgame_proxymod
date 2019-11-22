@@ -1,6 +1,10 @@
 #include "cg_cvar.h"
 #include "cg_local.h"
 
+static vmCvar_t fov;
+
+static cvarTable_t view_cvars[] = { { &fov, "mdd_fov", "0", CVAR_ARCHIVE } };
+
 /*
 =================
 CG_CalcVrect
@@ -27,7 +31,7 @@ Fixed fov at intermissions, otherwise account for fov variable and zooms.
 */
 static void CG_CalcFov(void)
 {
-  float fov_x = cvar_getValue("cg_fov");
+  float fov_x = fov.value ? fov.value : cvar_getValue("cg_fov");
   if (fov_x < 1)
   {
     fov_x = 1;
@@ -60,6 +64,11 @@ static void CG_CalcViewValues(void)
   CG_CalcFov();
 }
 
+void init_view(void)
+{
+  init_cvars(view_cvars, ARRAY_LEN(view_cvars));
+}
+
 /*
 =================
 CG_DrawActiveFrame
@@ -70,6 +79,9 @@ Generates and draws a game scene and status information at the given time.
 void CG_DrawActiveFrame(int32_t serverTime, stereoFrame_t stereoView, qboolean demoPlayback)
 {
   (void)stereoView;
+
+  update_cvars(view_cvars, ARRAY_LEN(view_cvars));
+
   cg.time         = serverTime;
   cg.demoPlayback = demoPlayback;
 

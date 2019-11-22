@@ -64,6 +64,7 @@ intptr_t vmMain(
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     CG_Init(arg2);
     init_entityStates();
+    init_view();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );

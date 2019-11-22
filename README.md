@@ -19,6 +19,8 @@ All the commands and cvars start with `mdd_`:
   mdd_hud
   mdd_version
 
+  mdd_fov
+
   mdd_ammo
   mdd_ammo_graph_xywh
   mdd_ammo_text_xh
