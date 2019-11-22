@@ -35,7 +35,9 @@ target_compile_definitions(${BINARY_NAME} PRIVATE BUILDING_SHARED)
 target_include_directories(${BINARY_NAME}
   PRIVATE ../include)
 
-target_link_libraries(${BINARY_NAME}
-  PUBLIC m)
+if(NOT MSVC)
+  target_link_libraries(${BINARY_NAME}
+    PUBLIC m)
+endif()
 
 install(TARGETS ${BINARY_NAME} DESTINATION defrag)

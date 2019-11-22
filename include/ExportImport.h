@@ -12,7 +12,7 @@
 #  define EXPORTIMPORT
 #endif
 
-#ifdef WIN32
+#if defined(_MSC_VER)
 #  define EXPORT __declspec(dllexport)
 #  define IMPORT __declspec(dllimport)
 #  define QDECL __cdecl
@@ -23,6 +23,8 @@
 #    define QDECL __attribute__((__cdecl__))
 #  elif defined(__clang__)
 #    define QDECL __cdecl
+#  else
+#    error Unsupported compiler.
 #  endif
 #endif
 
