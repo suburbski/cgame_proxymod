@@ -114,7 +114,7 @@ static void VM_Run(vm_t* vm)
 #endif
       {
         intptr_t const subFunc = (opPointer - vm->codeSegment - 2) / 2;
-        if (subFunc == DF_CG_DRAWCROSSHAIR_VANILLA || subFunc == DF_CG_DRAWCROSSHAIR_DEFRAG)
+        if (subFunc == DF_CG_DRAW2D_DEFRAG || subFunc == DF_CG_DRAW2D_VANILLA)
         {
           if (draw_hud())
           {
