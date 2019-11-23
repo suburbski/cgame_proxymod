@@ -100,7 +100,7 @@ void draw_ammo(void)
   playerState_t const* const ps = getPs();
   for (uint8_t i = 0; i < 8; ++i)
   {
-    uint16_t const ammoLeft  = ps->ammo[i + 2];
+    int32_t const  ammoLeft  = ps->ammo[i + 2];
     qboolean const hasWeapon = ps->stats[STAT_WEAPONS] & (1 << (i + 2));
 
     if (!hasWeapon && (ammo.integer & AMMO_NOWEAPNODRAW || !ammoLeft)) continue;
