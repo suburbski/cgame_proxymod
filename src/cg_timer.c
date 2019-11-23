@@ -22,7 +22,7 @@ static vmCvar_t timer_outline_w;
 static vmCvar_t timer_outline_rgba;
 
 static cvarTable_t timer_cvars[] = {
-  { &timer, "mdd_time", "1", CVAR_ARCHIVE_ND },
+  { &timer, "mdd_timer", "1", CVAR_ARCHIVE_ND },
   { &timer_xywh, "mdd_timer_xywh", "275 275 100 16", CVAR_ARCHIVE_ND },
   { &timer_item_w, "mdd_timer_item_w", "3", CVAR_ARCHIVE_ND },
   { &timer_item_rgba, "mdd_timer_item_rgba", "1 1 0 1", CVAR_ARCHIVE_ND },

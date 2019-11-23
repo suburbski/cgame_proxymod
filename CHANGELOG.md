@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2019-11-23
+### Changed
+- Rename `mdd_time` into `mdd_timer` to align more with the other commands of the timer hud.
+
 ## [1.1.1] - 2019-11-22
 ### Changed
 - Don't bloat q3config.cfg and improve cross-platform config compatibility by only archiving cvars that have non-default values.
