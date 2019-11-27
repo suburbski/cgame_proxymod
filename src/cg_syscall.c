@@ -32,7 +32,7 @@ void dllEntry(intptr_t(QDECL* syscallptr)(intptr_t arg, ...))
   syscall = syscallptr;
 }
 
-static inline int32_t PASSFLOAT(float const x)
+static inline int32_t FloatAsInt(float const x)
 {
   floatint_t fi;
   fi.f = x;
@@ -208,12 +208,12 @@ int32_t trap_R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedL
 
 void trap_R_AddLightToScene(vec3_t const org, float intensity, float r, float g, float b)
 {
-  syscall(CG_R_ADDLIGHTTOSCENE, org, PASSFLOAT(intensity), PASSFLOAT(r), PASSFLOAT(g), PASSFLOAT(b));
+  syscall(CG_R_ADDLIGHTTOSCENE, org, FloatAsInt(intensity), FloatAsInt(r), FloatAsInt(g), FloatAsInt(b));
 }
 
 void trap_R_AddAdditiveLightToScene(vec3_t const org, float intensity, float r, float g, float b)
 {
-  syscall(CG_R_ADDADDITIVELIGHTTOSCENE, org, PASSFLOAT(intensity), PASSFLOAT(r), PASSFLOAT(g), PASSFLOAT(b));
+  syscall(CG_R_ADDADDITIVELIGHTTOSCENE, org, FloatAsInt(intensity), FloatAsInt(r), FloatAsInt(g), FloatAsInt(b));
 }
 
 void trap_R_RenderScene(refdef_t const* fd)
@@ -239,14 +239,14 @@ void trap_R_DrawStretchPic(
 {
   syscall(
     CG_R_DRAWSTRETCHPIC,
-    PASSFLOAT(x),
-    PASSFLOAT(y),
-    PASSFLOAT(w),
-    PASSFLOAT(h),
-    PASSFLOAT(s1),
-    PASSFLOAT(t1),
-    PASSFLOAT(s2),
-    PASSFLOAT(t2),
+    FloatAsInt(x),
+    FloatAsInt(y),
+    FloatAsInt(w),
+    FloatAsInt(h),
+    FloatAsInt(s1),
+    FloatAsInt(t1),
+    FloatAsInt(s2),
+    FloatAsInt(t2),
     hShader);
 }
 
