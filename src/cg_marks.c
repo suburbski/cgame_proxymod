@@ -101,9 +101,9 @@ void CG_ImpactMark(
       VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
 
       VectorSubtract(v->xyz, origin, delta);
-      v->st[0]               = .5f + DotProduct(delta, axis[1]) * texCoordScale;
-      v->st[1]               = .5f + DotProduct(delta, axis[2]) * texCoordScale;
-      *(int32_t*)v->modulate = *(int32_t*)colors;
+      v->st[0] = .5f + DotProduct(delta, axis[1]) * texCoordScale;
+      v->st[1] = .5f + DotProduct(delta, axis[2]) * texCoordScale;
+      memcpy(v->modulate, colors, sizeof(v->modulate));
     }
 
     // if it is a temporary (shadow) mark, add it immediately and forget about it

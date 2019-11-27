@@ -995,7 +995,7 @@ int32_t initVM(void)
     trap_Error(vaf("FATAL ERROR: Unable to load VM \"%s\"\n", vmpath));
     return qfalse;
   }
-  strncpy(vmbase, vaf("%u", g_VM.dataSegment), sizeof(vmbase));
+  strncpy(vmbase, vaf("%u", g_VM.dataSegment), sizeof(vmbase) - 1);
 
   return qtrue;
 }

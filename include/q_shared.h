@@ -43,15 +43,16 @@ typedef uint8_t byte;
 
 typedef enum
 {
-  qfalse,
+  qfalse = 0,
   qtrue
 } qboolean;
 
-typedef union
+typedef union floatint_u
 {
-  float    f;
   int32_t  i;
-  uint32_t ui;
+  uint32_t u;
+  float    f;
+  byte     b[4];
 } floatint_t;
 
 typedef uint32_t qhandle_t;
