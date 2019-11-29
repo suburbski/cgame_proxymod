@@ -131,7 +131,8 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
       float  dot;
       int    hitTime;
 
-      hitTime = leveltime - 8 + 8 * trace.fraction;
+      // reflect the velocity on the trace plane
+      hitTime = (leveltime - 8) + 8 * trace.fraction;
       BG_EvaluateTrajectoryDelta(&local_pos, hitTime, velocity);
       dot = DotProduct(velocity, trace.plane.normal);
       VectorMA(velocity, -2 * dot, trace.plane.normal, local_pos.trDelta);

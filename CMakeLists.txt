@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project(cgame_proxymod
   VERSION 1.1.2 # <mayor>.<minor>.<patch>
@@ -20,8 +20,16 @@ if(MSVC)
   add_compile_options(/W4)
 else()
   add_compile_options(-std=c99)
-  add_compile_options(-Wall -Wextra -pedantic-errors)
-  add_compile_options(-Wdouble-promotion -Wstrict-prototypes -Wshadow)
+  add_compile_options(
+    -Wall
+    -Wextra
+    -pedantic-errors)
+  add_compile_options(
+    -Wmissing-prototypes
+    -Wshadow
+    -Wstrict-prototypes
+    $<$<C_COMPILER_ID:Clang>:-Wunreachable-code-return>
+    $<$<C_COMPILER_ID:GNU>:-Wunreachable-code>)
 endif()
 
 option(BINARY_NAME "Name of the cgame_proxymod binary." "cgame")

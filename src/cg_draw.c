@@ -244,7 +244,7 @@ void CG_Draw3DModel(
 AngleToX
 =================
 */
-static inline float AngleToX(float const angle)
+static inline float AngleToX(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_x = cg.refdef.fov_x / 2;
@@ -260,7 +260,7 @@ typedef struct
   qboolean split;
 } range_t;
 
-static inline range_t AnglesToRange(float start, float end, float const yaw)
+static inline range_t AnglesToRange(float start, float end, float yaw)
 {
   if (fabsf(end - start) > 2 * (float)M_PI)
   {

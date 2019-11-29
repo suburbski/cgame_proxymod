@@ -857,7 +857,8 @@ qboolean VM_Restart(vm_t* vm, qboolean savemem)
   if (!vm) return qfalse;
 
   // save filename (we need this to reload the same file, obviously)
-  strncpy(name, vm->name, sizeof(name));
+  strncpy(name, vm->name, sizeof(name) - 1);
+  name[sizeof(name) - 1] = '\0';
 
   // save memory pointer or free it
   if (savemem == qtrue)
@@ -890,85 +891,6 @@ void* VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue)
   return (void*)(vm->dataSegment + (intValue & vm->dataSegmentMask));
 }
 
-// returns number of params
-// 0 = param
-// 1 = opStack[0]
-// 2 = opStack[0] & opStack[1]
-// 3 = param & opStack[0] & opStack[1]
-int32_t opparms(int32_t op)
-{
-  switch (op)
-  {
-  case OP_UNDEF:
-  case OP_NOP:
-  case OP_BREAK:
-  case OP_ENTER:
-  case OP_LEAVE:
-    return 0;
-  case OP_CALL:
-  case OP_PUSH:
-  case OP_POP:
-  case OP_CONST:
-  case OP_LOCAL:
-  case OP_LOAD1:
-  case OP_LOAD2:
-  case OP_LOAD4:
-  case OP_ARG:
-  case OP_CVIF:
-  case OP_CVFI:
-    return 1;
-  case OP_JUMP:
-  case OP_EQ:
-  case OP_NE:
-  case OP_LTI:
-  case OP_LEI:
-  case OP_GTI:
-  case OP_GEI:
-  case OP_LTU:
-  case OP_LEU:
-  case OP_GTU:
-  case OP_GEU:
-  case OP_EQF:
-  case OP_NEF:
-  case OP_LTF:
-  case OP_LEF:
-  case OP_GTF:
-  case OP_GEF:
-  case OP_STORE1:
-  case OP_STORE2:
-  case OP_STORE4:
-  case OP_SEX8:
-  case OP_SEX16:
-  case OP_NEGI:
-  case OP_ADD:
-  case OP_SUB:
-  case OP_DIVI:
-  case OP_DIVU:
-  case OP_MODI:
-  case OP_MODU:
-  case OP_MULI:
-  case OP_MULU:
-  case OP_BAND:
-  case OP_BOR:
-  case OP_BXOR:
-  case OP_BCOM:
-  case OP_LSH:
-  case OP_RSHI:
-  case OP_RSHU:
-  case OP_NEGF:
-  case OP_ADDF:
-  case OP_SUBF:
-  case OP_DIVF:
-  case OP_MULF:
-    return 2;
-  case OP_BLOCK_COPY:
-    return 3;
-  default:
-    return 0;
-  }
-  return 0;
-}
-
 vm_t    g_VM;
 char    vmpath[MAX_QPATH];
 char    vmbase[16];
@@ -981,7 +903,9 @@ initVM
 */
 int32_t initVM(void)
 {
-  strncpy(vmpath, DEFAULT_VMPATH, sizeof(vmpath));
+  strncpy(vmpath, DEFAULT_VMPATH, sizeof(vmpath) - 1);
+  vmpath[sizeof(vmpath) - 1] = '\0';
+
   vm_stacksize = 1;
   vm_stacksize *= (1 << 20); // convert to MB
 
@@ -996,6 +920,7 @@ int32_t initVM(void)
     return qfalse;
   }
   strncpy(vmbase, vaf("%u", g_VM.dataSegment), sizeof(vmbase) - 1);
+  vmbase[sizeof(vmbase) - 1] = '\0';
 
   return qtrue;
 }

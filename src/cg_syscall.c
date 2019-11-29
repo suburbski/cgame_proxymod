@@ -617,5 +617,4 @@ intptr_t QDECL CG_SysCalls(uint8_t* memoryBase, int32_t cmd, int32_t* args)
   default:
     return 0;
   }
-  return 0;
 }

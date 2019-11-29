@@ -65,7 +65,7 @@ void draw_rl(void)
     trap_CM_BoxTrace(&beam_trace, origin, dest, NULL, NULL, 0, CONTENTS_SOLID);
     qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
     CG_ImpactMark(
-      m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer, qtrue);
+      m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.value, qtrue);
   }
 
   // todo: lerp trajectory stuff?
@@ -99,7 +99,7 @@ void draw_rl(void)
       {
         qhandle_t m_shader = trap_R_RegisterShader(target_shader.string);
         CG_ImpactMark(
-          m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.integer, qtrue);
+          m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.value, qtrue);
       }
     }
   }

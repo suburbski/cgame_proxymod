@@ -14,7 +14,7 @@ static inline char* vaf(char const* format, ...)
   static char str[1024];
 
   va_start(argptr, format);
-  vsnprintf(str, 1024, format, argptr);
+  vsnprintf(str, sizeof(str), format, argptr);
   va_end(argptr);
 
   return str;

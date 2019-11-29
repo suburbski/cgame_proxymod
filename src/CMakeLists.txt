@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 add_library(${BINARY_NAME} SHARED
   bg_misc.c
