@@ -5,11 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.1.3] - 2020-02-10
 ### Changed
 - Draw all vanilla/defrag 2D hud elements (e.g. crosshair) on top of CampingGaz-HUD and Snap-HUD.
 
 ### Fixed
 - Correctly display infinite ammo (i.e. -1).
+- Draw fired grenade paths even after switching weapons.
 
 ## [1.1.2] - 2019-11-23
 ### Changed
@@ -34,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial CampingGaz-HUD which is more accurate/flexible than `df_hud_cgaz`.
 - Initial Snap-HUD which is more accurate/flexible than `scr_hud_snap`.
 
-[Unreleased]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.3...HEAD
+[1.1.3]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.0.0...v1.1.0

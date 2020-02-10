@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 project(cgame_proxymod
-  VERSION 1.1.2 # <mayor>.<minor>.<patch>
+  VERSION 1.1.3 # <mayor>.<minor>.<patch>
   LANGUAGES C)
 
 configure_file(version.h.in version.h)

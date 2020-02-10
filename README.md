@@ -62,16 +62,20 @@ All the commands and cvars start with `mdd_`:
   mdd_snap_speed
   mdd_snap1
   mdd_snap1_yh
-  mdd_snap1_rgba1
-  mdd_snap1_rgba2
-  mdd_snap1_rgba3
-  mdd_snap1_rgba4
+  mdd_snap1_def_rgba
+  mdd_snap1_alt_rgba
+  mdd_snap1_hl_def_rgba
+  mdd_snap1_hl_alt_rgba
+  mdd_snap1_45_def_rgba
+  mdd_snap1_45_alt_rgba
   mdd_snap2
   mdd_snap2_yh
-  mdd_snap2_rgba1
-  mdd_snap2_rgba2
-  mdd_snap2_rgba3
-  mdd_snap2_rgba4
+  mdd_snap2_def_rgba
+  mdd_snap2_alt_rgba
+  mdd_snap2_hl_def_rgba
+  mdd_snap2_hl_alt_rgba
+  mdd_snap2_45_def_rgba
+  mdd_snap2_45_alt_rgba
 
   mdd_timer
   mdd_timer_xywh
@@ -149,7 +153,7 @@ The proxymod is written in C and uses CMake to control the building process.
 2. Generate input files for a native build system.
    To generate standard Makefiles for a 32 bit release build on Windows with gcc, do:
    ```
-   $ cmake\
+   $ cmake                                     \
        -DBINARY_NAME=cgamex86                  \
        -DCMAKE_BUILD_TYPE=Release              \
        -DCMAKE_C_COMPILER=gcc                  \
