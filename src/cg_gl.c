@@ -35,13 +35,12 @@ void draw_gl(void)
   vec4_t  color;
 
   playerState_t const* const ps = getPs();
-  if (ps->weapon != WP_GRENADE_LAUNCHER) return;
 
   update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
 
   snapshot_t const* const snap = getSnap();
 
-  if (gl_path_preview_draw.integer)
+  if (ps->weapon == WP_GRENADE_LAUNCHER && gl_path_preview_draw.integer)
   {
     ParseVec(gl_path_preview_rgba.string, color, 4);
     for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
