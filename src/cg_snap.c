@@ -17,14 +17,6 @@ static vmCvar_t snap1_hl_def_rgba;
 static vmCvar_t snap1_hl_alt_rgba;
 static vmCvar_t snap1_45_def_rgba;
 static vmCvar_t snap1_45_alt_rgba;
-static vmCvar_t snap2;
-static vmCvar_t snap2_yh;
-static vmCvar_t snap2_def_rgba;
-static vmCvar_t snap2_alt_rgba;
-static vmCvar_t snap2_hl_def_rgba;
-static vmCvar_t snap2_hl_alt_rgba;
-static vmCvar_t snap2_45_def_rgba;
-static vmCvar_t snap2_45_alt_rgba;
 
 static cvarTable_t snap_cvars[] = {
   { &snap, "mdd_snap", "0b0001", CVAR_ARCHIVE_ND },
@@ -37,14 +29,6 @@ static cvarTable_t snap_cvars[] = {
   { &snap1_hl_alt_rgba, "mdd_snap1_hl_alt_rgba", ".5 .7 .9 .15", CVAR_ARCHIVE_ND },
   { &snap1_45_def_rgba, "mdd_snap1_45_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
   { &snap1_45_alt_rgba, "mdd_snap1_45_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
-  { &snap2, "mdd_snap2", "0b00000", CVAR_ARCHIVE_ND },
-  { &snap2_yh, "mdd_snap2_yh", "192 6", CVAR_ARCHIVE_ND },
-  { &snap2_def_rgba, "mdd_snap2_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
-  { &snap2_alt_rgba, "mdd_snap2_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
-  { &snap2_hl_def_rgba, "mdd_snap2_hl_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
-  { &snap2_hl_alt_rgba, "mdd_snap2_hl_alt_rgba", ".5 .7 .9 .15", CVAR_ARCHIVE_ND },
-  { &snap2_45_def_rgba, "mdd_snap2_45_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
-  { &snap2_45_alt_rgba, "mdd_snap2_45_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
 };
 
 // mdd_snap 0b X X X X
@@ -58,15 +42,13 @@ static cvarTable_t snap_cvars[] = {
 #define SNAP_CPM 4
 #define SNAP_GROUND 8
 
-// mdd_snapX 0b X X X X X
-//         |    | | | | |
-//         |    | | | | + - normal
-//         |    | | | + - - highlight active
-//         |    | | + - - - 45deg shift
-//         |    | + - - - - blue/red (min/max accel)
-//         |    + - - - - - height
-//         |
-//         + - either 1 or 2
+// mdd_snap1 0b X X X X X
+//              | | | | |
+//              | | | | + - normal
+//              | | | + - - highlight active
+//              | | + - - - 45deg shift
+//              | + - - - - blue/red (min/max accel)
+//              + - - - - - height
 #define SNAPX_NORMAL 1
 #define SNAPX_HL_ACTIVE 2
 #define SNAPX_45 4
@@ -231,7 +213,6 @@ static void PmoveSingle(void)
   int yaw = ANGLE2SHORT(s.pm_ps.viewangles[YAW]) + RAD2SHORT(atan2f(-s.pm.cmd.rightmove, s.pm.cmd.forwardmove));
 
   one_snap_draw(snap_cvars + 2, yaw);
-  one_snap_draw(snap_cvars + 10, yaw);
 }
 
 /*
@@ -595,10 +576,11 @@ static void one_zone_draw(
 static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw)
 {
   int32_t const snapX = cvar_getInteger(one_snap_cvars[0].cvarName);
+  if (!snapX) return;
+
   ParseVec(one_snap_cvars[1].vmCvar->string, s.graph_yh, 2);
   for (uint8_t i = 0; i < 6; ++i) ParseVec(one_snap_cvars[2 + i].vmCvar->string, s.graph_rgba[i], 5);
 
-  if (!snapX) return;
   if (snapX & SNAPX_BLUERED) // blue/red (min/max accel)
   {
     vec4_t colorr;

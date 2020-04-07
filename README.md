@@ -68,14 +68,6 @@ All the commands and cvars start with `mdd_`:
   mdd_snap1_hl_alt_rgba
   mdd_snap1_45_def_rgba
   mdd_snap1_45_alt_rgba
-  mdd_snap2
-  mdd_snap2_yh
-  mdd_snap2_def_rgba
-  mdd_snap2_alt_rgba
-  mdd_snap2_hl_def_rgba
-  mdd_snap2_hl_alt_rgba
-  mdd_snap2_45_def_rgba
-  mdd_snap2_45_alt_rgba
 
   mdd_timer
   mdd_timer_xywh
@@ -115,15 +107,13 @@ mdd_snap 0b X X X X
             + - - - - ground
 ```
 ```
-mdd_snapX 0b X X X X X
-        |    | | | | |
-        |    | | | | + - normal
-        |    | | | + - - highlight active
-        |    | | + - - - 45deg shift
-        |    | + - - - - blue/red (min/max accel)
-        |    + - - - - - height
-        |
-        + - either 1 or 2
+mdd_snap1 0b X X X X X
+             | | | | |
+             | | | | + - normal
+             | | | + - - highlight active
+             | | + - - - 45deg shift
+             | + - - - - blue/red (min/max accel)
+             + - - - - - height
 ```
 Note that it's not necessary to have the same number of `1`'s and `0`'s as there are *different options*, or even use the binary representation. You can still use the good old decimal equivalent (or the octal and hexadecimal representation to impress your friends).
 
