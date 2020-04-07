@@ -8,6 +8,7 @@
 #include "cg_utils.h"
 
 static vmCvar_t cgaz;
+static vmCvar_t cgaz_trueness;
 static vmCvar_t cgaz_speed;
 static vmCvar_t cgaz_yh;
 static vmCvar_t cgaz_rgbaNoAccel;
@@ -16,7 +17,8 @@ static vmCvar_t cgaz_rgbaFullAccel;
 static vmCvar_t cgaz_rgbaTurnZone;
 
 static cvarTable_t cgaz_cvars[] = {
-  { &cgaz, "mdd_cgaz", "0b1111", CVAR_ARCHIVE_ND },
+  { &cgaz, "mdd_cgaz", "0b1", CVAR_ARCHIVE_ND },
+  { &cgaz_trueness, "mdd_cgaz_trueness", "0b110", CVAR_ARCHIVE_ND },
   { &cgaz_speed, "mdd_cgaz_speed", "1", CVAR_ARCHIVE_ND },
   { &cgaz_yh, "mdd_cgaz_yh", "180 12", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaNoAccel, "mdd_cgaz_rgbaNoAccel", ".25 .25 .25 .5", CVAR_ARCHIVE_ND },
@@ -25,16 +27,19 @@ static cvarTable_t cgaz_cvars[] = {
   { &cgaz_rgbaTurnZone, "mdd_cgaz_rgbaTurnZone", "1 1 0 .5", CVAR_ARCHIVE_ND },
 };
 
-// mdd_cgaz 0b X X X X
-//             | | | |
-//             | | | + - draw
-//             | | + - - jump/crouch influence
-//             | + - - - CPM air control zones
-//             + - - - - ground
+// mdd_cgaz 0b X
+//             |
+//             + - draw
 #define CGAZ_DRAW 1
-#define CGAZ_JUMPCROUCH 2
-#define CGAZ_CPM 4
-#define CGAZ_GROUND 8
+
+// mdd_cgaz_trueness 0b X X X
+//                      | | |
+//                      | | + - jump/crouch influence
+//                      | + - - CPM air control zones
+//                      + - - - ground
+#define CGAZ_JUMPCROUCH 1
+#define CGAZ_CPM 2
+#define CGAZ_GROUND 4
 
 void init_cgaz(void)
 {
@@ -97,9 +102,11 @@ static void PM_WalkMove(void);
 void draw_cgaz(void)
 {
   update_cvars(cgaz_cvars, ARRAY_LEN(cgaz_cvars));
-  cgaz.integer = cvar_getInteger("mdd_cgaz");
 
+  cgaz.integer = cvar_getInteger("mdd_cgaz");
   if (!(cgaz.integer & CGAZ_DRAW)) return;
+
+  cgaz_trueness.integer = cvar_getInteger("mdd_cgaz_trueness");
 
   s.pm_ps = *getPs();
 
@@ -429,7 +436,9 @@ static void PM_Accelerate(float const wishspeed, float const accel)
   s.t.wishspeed  = wishspeed;
   s.t.a          = accel * s.t.wishspeed * pm_frametime;
   s.t.a_squared  = s.t.a * s.t.a;
-  if (!(cgaz.integer & CGAZ_GROUND) || s.t.v_squared - s.t.vf_squared >= 2 * s.t.a * s.t.wishspeed - s.t.a_squared)
+  if (
+    !(cgaz_trueness.integer & CGAZ_GROUND) ||
+    s.t.v_squared - s.t.vf_squared >= 2 * s.t.a * s.t.wishspeed - s.t.a_squared)
   {
     s.t.v_squared = s.t.vf_squared;
   }
@@ -491,7 +500,10 @@ static void PM_SlickAccelerate(float const wishspeed, float const accel)
   float const a          = accel * wishspeed * pm_frametime;
   float       v_squared  = VectorLengthSquared2(s.pml.previous_velocity);
   float const vf_squared = VectorLengthSquared2(s.pm_ps.velocity);
-  if (!(cgaz.integer & CGAZ_GROUND) || v_squared - vf_squared >= 2 * a * wishspeed - a * a) v_squared = vf_squared;
+  if (!(cgaz_trueness.integer & CGAZ_GROUND) || v_squared - vf_squared >= 2 * a * wishspeed - a * a)
+  {
+    v_squared = vf_squared;
+  }
   // float const v  = sqrtf(v_squared);
   float const vf = sqrtf(vf_squared);
   {
@@ -546,8 +558,8 @@ static void PM_AirMove(void)
 {
   PM_Friction();
 
-  float const scale = cgaz.integer & CGAZ_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
-                                                     : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
+  float const scale = cgaz_trueness.integer & CGAZ_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
+                                                              : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
 
   // project moves down to flat plane
   s.pml.forward[2] = 0;
@@ -562,7 +574,7 @@ static void PM_AirMove(void)
 
   float const wishspeed = scale * VectorLength2(s.wishvel);
 
-  if (cgaz.integer & CGAZ_CPM && s.pm_ps.pm_flags & PMF_PROMODE)
+  if (cgaz_trueness.integer & CGAZ_CPM && s.pm_ps.pm_flags & PMF_PROMODE)
   {
     if (s.pm.cmd.forwardmove == 0 && s.pm.cmd.rightmove != 0)
     {
@@ -657,8 +669,8 @@ static void PM_WalkMove(void)
 
   PM_Friction();
 
-  float const scale = cgaz.integer & CGAZ_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
-                                                     : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
+  float const scale = cgaz_trueness.integer & CGAZ_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
+                                                              : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
 
   // project moves down to flat plane
   s.pml.forward[2] = 0;

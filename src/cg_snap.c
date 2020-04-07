@@ -8,52 +8,50 @@
 #include "cg_utils.h"
 
 static vmCvar_t snap;
+static vmCvar_t snap_trueness;
 static vmCvar_t snap_speed;
-static vmCvar_t snap1;
-static vmCvar_t snap1_yh;
-static vmCvar_t snap1_def_rgba;
-static vmCvar_t snap1_alt_rgba;
-static vmCvar_t snap1_hl_def_rgba;
-static vmCvar_t snap1_hl_alt_rgba;
-static vmCvar_t snap1_45_def_rgba;
-static vmCvar_t snap1_45_alt_rgba;
+static vmCvar_t snap_yh;
+static vmCvar_t snap_def_rgba;
+static vmCvar_t snap_alt_rgba;
+static vmCvar_t snap_hl_def_rgba;
+static vmCvar_t snap_hl_alt_rgba;
+static vmCvar_t snap_45_def_rgba;
+static vmCvar_t snap_45_alt_rgba;
 
 static cvarTable_t snap_cvars[] = {
-  { &snap, "mdd_snap", "0b0001", CVAR_ARCHIVE_ND },
+  { &snap, "mdd_snap", "0b00011", CVAR_ARCHIVE_ND },
+  { &snap_trueness, "mdd_snap_trueness", "0b000", CVAR_ARCHIVE_ND },
   { &snap_speed, "mdd_snap_speed", "320", CVAR_ARCHIVE_ND },
-  { &snap1, "mdd_snap1", "0b10010", CVAR_ARCHIVE_ND },
-  { &snap1_yh, "mdd_snap1_yh", "180 12", CVAR_ARCHIVE_ND },
-  { &snap1_def_rgba, "mdd_snap1_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
-  { &snap1_alt_rgba, "mdd_snap1_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
-  { &snap1_hl_def_rgba, "mdd_snap1_hl_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
-  { &snap1_hl_alt_rgba, "mdd_snap1_hl_alt_rgba", ".5 .7 .9 .15", CVAR_ARCHIVE_ND },
-  { &snap1_45_def_rgba, "mdd_snap1_45_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
-  { &snap1_45_alt_rgba, "mdd_snap1_45_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
+  { &snap_yh, "mdd_snap_yh", "180 12", CVAR_ARCHIVE_ND },
+  { &snap_def_rgba, "mdd_snap_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
+  { &snap_alt_rgba, "mdd_snap_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
+  { &snap_hl_def_rgba, "mdd_snap_hl_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
+  { &snap_hl_alt_rgba, "mdd_snap_hl_alt_rgba", ".5 .7 .9 .15", CVAR_ARCHIVE_ND },
+  { &snap_45_def_rgba, "mdd_snap_45_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },
+  { &snap_45_alt_rgba, "mdd_snap_45_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
 };
 
-// mdd_snap 0b X X X X
-//             | | | |
-//             | | | + - draw
-//             | | + - - jump/crouch influence
-//             | + - - - CPM air control zones
-//             + - - - - ground
-#define SNAP_DRAW 1
-#define SNAP_JUMPCROUCH 2
-#define SNAP_CPM 4
-#define SNAP_GROUND 8
+// mdd_snap 0b X X X X X
+//             | | | | |
+//             | | | | + - normal
+//             | | | + - - highlight active
+//             | | + - - - 45deg shift
+//             | + - - - - blue/red (min/max accel)
+//             + - - - - - height
+#define SNAP_NORMAL 1
+#define SNAP_HL_ACTIVE 2
+#define SNAP_45 4
+#define SNAP_BLUERED 8
+#define SNAP_HEIGHT 16
 
-// mdd_snap1 0b X X X X X
-//              | | | | |
-//              | | | | + - normal
-//              | | | + - - highlight active
-//              | | + - - - 45deg shift
-//              | + - - - - blue/red (min/max accel)
-//              + - - - - - height
-#define SNAPX_NORMAL 1
-#define SNAPX_HL_ACTIVE 2
-#define SNAPX_45 4
-#define SNAPX_BLUERED 8
-#define SNAPX_HEIGHT 16
+// mdd_snap_trueness 0b X X X
+//                      | | |
+//                      | | + - jump/crouch influence
+//                      | + - - CPM air control zones
+//                      + - - - ground (deprecated)
+#define SNAP_JUMPCROUCH 1
+#define SNAP_CPM 2
+#define SNAP_GROUND 4 // TODO: Remove
 
 void init_snap(void)
 {
@@ -84,7 +82,7 @@ typedef struct
 
   vec2_t graph_yh;
 
-  vec4_t graph_rgba[5];
+  vec4_t graph_rgba[6];
 
   vec2_t wishvel;
 
@@ -100,14 +98,16 @@ static void PM_AirMove(void);
 static void PM_WalkMove(void);
 
 static void update_snap_state(void);
-static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw);
+static void one_snap_draw(int yaw);
 
 void draw_snap(void)
 {
   update_cvars(snap_cvars, ARRAY_LEN(snap_cvars));
-  snap.integer = cvar_getInteger("mdd_snap");
 
-  if (!(snap.integer & SNAP_DRAW)) return;
+  snap.integer = cvar_getInteger("mdd_snap");
+  if (!snap.integer) return;
+
+  snap_trueness.integer = cvar_getInteger("mdd_snap_trueness");
 
   s.pm_ps = *getPs();
 
@@ -212,7 +212,7 @@ static void PmoveSingle(void)
 
   int yaw = ANGLE2SHORT(s.pm_ps.viewangles[YAW]) + RAD2SHORT(atan2f(-s.pm.cmd.rightmove, s.pm.cmd.forwardmove));
 
-  one_snap_draw(snap_cvars + 2, yaw);
+  one_snap_draw(yaw);
 }
 
 /*
@@ -263,8 +263,8 @@ PM_AirMove
 */
 static void PM_AirMove(void)
 {
-  float const scale = snap.integer & SNAP_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
-                                                     : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
+  float const scale = snap_trueness.integer & SNAP_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
+                                                              : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
 
   // project moves down to flat plane
   s.pml.forward[2] = 0;
@@ -281,7 +281,7 @@ static void PM_AirMove(void)
 
   if (s.pm_ps.pm_flags & PMF_PROMODE)
   {
-    if (snap.integer & SNAP_CPM)
+    if (snap_trueness.integer & SNAP_CPM)
     {
       if (!s.pm.cmd.forwardmove && s.pm.cmd.rightmove)
       {
@@ -379,8 +379,8 @@ static void PM_WalkMove(void)
     return;
   }
 
-  float const scale = snap.integer & SNAP_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
-                                                     : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
+  float const scale = snap_trueness.integer & SNAP_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
+                                                              : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
 
   // project moves down to flat plane
   s.pml.forward[2] = 0;
@@ -419,7 +419,7 @@ static void PM_WalkMove(void)
 
   // when a player gets hit, they temporarily lose
   // full control, which allows them to be moved a bit
-  if (snap.integer & SNAP_GROUND)
+  if (snap_trueness.integer & SNAP_GROUND)
   {
     if (s.pml.groundTrace.surfaceFlags & SURF_SLICK || s.pm_ps.pm_flags & PMF_TIME_KNOCKBACK)
     {
@@ -563,6 +563,7 @@ static void one_zone_draw(
   qboolean const hl_color)
 {
   ASSERT_LE(start, end);
+  ASSERT_LE(alt_color, 1); // 0 or 1
   if (hl_color && AngleNormalize65536(yaw - start) <= AngleNormalize65536(end - start))
   {
     CG_FillAngleYaw(SHORT2RAD(start), SHORT2RAD(end), SHORT2RAD(yaw), y, h, s.graph_rgba[2 + alt_color]);
@@ -573,15 +574,12 @@ static void one_zone_draw(
   }
 }
 
-static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw)
+static void one_snap_draw(int yaw)
 {
-  int32_t const snapX = cvar_getInteger(one_snap_cvars[0].cvarName);
-  if (!snapX) return;
+  ParseVec(snap_yh.string, s.graph_yh, 2);
+  for (uint8_t i = 0; i < 6; ++i) ParseVec(snap_cvars[4 + i].vmCvar->string, s.graph_rgba[i], 4);
 
-  ParseVec(one_snap_cvars[1].vmCvar->string, s.graph_yh, 2);
-  for (uint8_t i = 0; i < 6; ++i) ParseVec(one_snap_cvars[2 + i].vmCvar->string, s.graph_rgba[i], 5);
-
-  if (snapX & SNAPX_BLUERED) // blue/red (min/max accel)
+  if (snap.integer & SNAP_BLUERED) // blue/red (min/max accel)
   {
     vec4_t colorr;
     float  diffAbsAccel = s.maxAbsAccel - s.minAbsAccel;
@@ -595,11 +593,11 @@ static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw
       {
         int const bSnap = s.zones[i] + 1 + j;
         int const eSnap = s.zones[i + 1] + 0 + j;
-        one_zone_draw(bSnap, eSnap, yaw, s.graph_yh[0], s.graph_yh[1], &colorr, 0, snapX & SNAPX_HL_ACTIVE);
+        one_zone_draw(bSnap, eSnap, yaw, s.graph_yh[0], s.graph_yh[1], &colorr, 0, snap.integer & SNAP_HL_ACTIVE);
       }
     }
   }
-  if (snapX & SNAPX_45) // shifted 45deg
+  if (snap.integer & SNAP_45) // shifted 45deg
   {
     int8_t alt_color = 0;
     for (int i = 0; i < 2 * s.maxAccel; ++i)
@@ -613,7 +611,7 @@ static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw
       alt_color ^= 1;
     }
   }
-  if (snapX & SNAPX_NORMAL) // normal
+  if (snap.integer & SNAP_NORMAL) // normal
   {
     int8_t alt_color = 0;
     for (int i = 0; i < 2 * s.maxAccel; ++i)
@@ -623,12 +621,12 @@ static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw
         int const bSnap = s.zones[i] + 1 + j;
         int const eSnap = s.zones[i + 1] + 0 + j;
         one_zone_draw(
-          bSnap, eSnap, yaw, s.graph_yh[0], s.graph_yh[1], &s.graph_rgba[0], alt_color, snapX & SNAPX_HL_ACTIVE);
+          bSnap, eSnap, yaw, s.graph_yh[0], s.graph_yh[1], &s.graph_rgba[0], alt_color, snap.integer & SNAP_HL_ACTIVE);
       }
       alt_color ^= 1;
     }
   }
-  if (snapX & SNAPX_HEIGHT) // heavily inspired by breadsticks' version
+  if (snap.integer & SNAP_HEIGHT) // heavily inspired by breadsticks' version
   {
     float       gain;
     float const diffAbsAccel = s.maxAbsAccel - s.minAbsAccel;
@@ -642,7 +640,7 @@ static void one_snap_draw(cvarTable_t const* const one_snap_cvars, int const yaw
       {
         int const bSnap = s.zones[i] + 1 + j;
         int const eSnap = s.zones[i + 1] + 0 + j;
-        one_zone_draw(bSnap, eSnap, yaw, y_, h_, &s.graph_rgba[0], 0, snapX & SNAPX_HL_ACTIVE);
+        one_zone_draw(bSnap, eSnap, yaw, y_, h_, &s.graph_rgba[0], 0, snap.integer & SNAP_HL_ACTIVE);
       }
     }
   }

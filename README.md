@@ -27,6 +27,7 @@ All the commands and cvars start with `mdd_`:
   mdd_ammo_text_rgba
 
   mdd_cgaz;
+  mdd_cgaz_trueness;
   mdd_cgaz_yh;
   mdd_cgaz_rgbaNoAccel;
   mdd_cgaz_rgbaPartialAccel;
@@ -59,15 +60,15 @@ All the commands and cvars start with `mdd_`:
   mdd_sound_local_only
 
   mdd_snap
+  mdd_snap_trueness
   mdd_snap_speed
-  mdd_snap1
-  mdd_snap1_yh
-  mdd_snap1_def_rgba
-  mdd_snap1_alt_rgba
-  mdd_snap1_hl_def_rgba
-  mdd_snap1_hl_alt_rgba
-  mdd_snap1_45_def_rgba
-  mdd_snap1_45_alt_rgba
+  mdd_snap_yh
+  mdd_snap_def_rgba
+  mdd_snap_alt_rgba
+  mdd_snap_hl_def_rgba
+  mdd_snap_hl_alt_rgba
+  mdd_snap_45_def_rgba
+  mdd_snap_45_alt_rgba
 
   mdd_timer
   mdd_timer_xywh
@@ -91,29 +92,32 @@ mdd_ammo 0b X X X X
             + - - - - 3D
 ```
 ```
-mdd_cgaz 0b X X X X
-            | | | |
-            | | | + - draw
-            | | + - - jump/crouch influence
-            | + - - - CPM air control zones
-            + - - - - ground
+mdd_cgaz 0b X
+            | 
+            + - draw
 ```
 ```
-mdd_snap 0b X X X X
-            | | | |
-            | | | + - draw
-            | | + - - jump/crouch influence
-            | + - - - CPM air control zones
-            + - - - - ground
+mdd_cgaz_trueness 0b X X X
+                     | | |
+                     | | + - jump/crouch influence
+                     | + - - CPM air control zones
+                     + - - - ground
 ```
 ```
-mdd_snap1 0b X X X X X
-             | | | | |
-             | | | | + - normal
-             | | | + - - highlight active
-             | | + - - - 45deg shift
-             | + - - - - blue/red (min/max accel)
-             + - - - - - height
+mdd_snap 0b X X X X X
+            | | | | |
+            | | | | + - normal
+            | | | + - - highlight active
+            | | + - - - 45deg shift
+            | + - - - - blue/red (min/max accel)
+            + - - - - - height
+```
+```
+mdd_snap_trueness 0b X X X
+                     | | |
+                     | | + - jump/crouch influence
+                     | + - - CPM air control zones
+                     + - - - ground (deprecated)
 ```
 Note that it's not necessary to have the same number of `1`'s and `0`'s as there are *different options*, or even use the binary representation. You can still use the good old decimal equivalent (or the octal and hexadecimal representation to impress your friends).
 
@@ -127,9 +131,8 @@ Note that it's not necessary to have the same number of `1`'s and `0`'s as there
 
 So if you want to have 2D models, simply use `mdd_ammo 0b0101`.
 
-`mdd_cgaz 0b0101` will:
-  * draw the hud
-  * don't show jump/crouch influence
+`mdd_cgaz_trueness 0b110` will:
+  * not show jump/crouch influence
   * show correct air control zones in CPM
   * show correct zones when walking
 

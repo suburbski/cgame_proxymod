@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Extract the *trueness* bits from the `mdd_cgaz` cvar into `mdd_cgaz_trueness`.
+- Rename `mdd_snap` cvar to `mdd_snap_trueness`.
+- Rename `mdd_snap1` cvar to `mdd_snap`.
+- Rename all `mdd_snap1_` cvars to `mdd_snap_`.
+
+### Deprecated
+- Wrong snapzones are shown when the *ground* bit is enabled in `mdd_snap_trueness`. Friction is not taken into account and will not happen in the near future.
+
 ### Removed
 - Don't display second snaphud and remove all its `mdd_snap2` cvars.
 
