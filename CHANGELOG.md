@@ -48,9 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial CampingGaz-HUD which is more accurate/flexible than `df_hud_cgaz`.
 - Initial Snap-HUD which is more accurate/flexible than `scr_hud_snap`.
 
-[Unreleased]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.3...HEAD
-[1.1.3]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.2...v1.1.3
-[1.1.2]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.1...v1.1.2
-[1.1.1]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.1.0...v1.1.1
-[1.1.0]: https://github.com/Jelvan1/cgame_proxymod/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/Jelvan1/cgame_proxymod/releases/tag/v1.0.0
+[Unreleased]: ../../compare/v1.1.3...HEAD
+[1.1.3]: ../../compare/v1.1.2...v1.1.3
+[1.1.2]: ../../compare/v1.1.1...v1.1.2
+[1.1.1]: ../../compare/v1.1.0...v1.1.1
+[1.1.0]: ../../compare/v1.0.0...v1.1.0
+[1.0.0]: ../../releases/tag/v1.0.0
