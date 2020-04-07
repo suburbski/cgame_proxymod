@@ -2,15 +2,22 @@
 
 This proxymod should help players to train their abilities for the Quake III Arena modification DeFRaG. It adds hud elements to the standard defrag hud.
 
-## Changelog
-Please see [CHANGELOG](CHANGELOG.md) for notable changes between releases.
-
 ## Installation
 Quick and easy:
-  * Copy the platform specific binary into the 'defrag' directory.
-  * Put `seta vm_cgame 0` in your config file (e.g. autoexec.cfg).
+  1. Find the right *cgame* platform specific binary in the [latest release](../../releases/latest). To know which binary to choose, run `\version` in your engine's console. This will tell you *Windows vs Linux* and *32-bit vs 64-bit*.
+
+|             | **32-bit** | **64-bit** |
+| :---------: | :--------: | :--------: |
+| **Windows** | [cgamex86.dll](../../releases/latest/download/cgamex86.dll) | [cgamex86_64.dll](../../releases/latest/download/cgamex86_64.dll) |
+|  **Linux**  | [cgamei386.so](../../releases/latest/download/cgamei386.so) | [cgamex86_64.so](../../releases/latest/download/cgamex86_64.so)   |
+
+  2. Download and copy this binary into the *defrag* folder of your Quake III Arena directory.
+  3. Put `seta vm_cgame 0` in your config file (e.g. *defrag/autoexec.cfg*).
 
 You've correctly installed the proxymod if you load your favorite map and you see the following colored text in the console: `[mDd] cgame-proxy: x.x.x`.
+
+## Changelog
+Please see [CHANGELOG](CHANGELOG.md) for notable changes between [releases](../../releases).
 
 ## Configuration
 All the commands and cvars start with `mdd_`:
