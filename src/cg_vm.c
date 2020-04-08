@@ -113,7 +113,7 @@ static void VM_Run(vm_t* vm)
       ++nbfunc;
 #endif
       {
-        intptr_t const subFunc = (opPointer - vm->codeSegment - 2) / 2;
+        intptr_t const subFunc = (opPointer - 2 - vm->codeSegment) / 2;
         if (subFunc == DF_CG_DRAW2D_DEFRAG || subFunc == DF_CG_DRAW2D_VANILLA)
         {
           if (draw_hud())
@@ -714,7 +714,11 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   {
     free(vmBase);
     memset(vm, 0, sizeof(vm_t));
-    trap_Error(vaf("Proxymod only works with defrag %s.\n", DF_VERSION));
+    trap_Error(vaf(
+      "^1Proxymod only works with defrag %s. "
+      "Download it from https://q3defrag.org/files/defrag/defrag_%s.zip^1.^7\n",
+      DF_VERSION,
+      DF_VERSION));
     return qfalse;
   }
 
