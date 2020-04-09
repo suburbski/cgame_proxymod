@@ -24,20 +24,38 @@ add_library(${BINARY_NAME} SHARED
   g_missile.c
   g_weapon.c
   q_math.c
-  q_shared.c)
+  q_shared.c
+)
 
-set_target_properties(${BINARY_NAME} PROPERTIES
-  LINK_FLAGS_RELEASE -s
-  PREFIX "")
+target_include_directories(${BINARY_NAME}
+  PRIVATE ../include
+)
 
 target_compile_definitions(${BINARY_NAME} PRIVATE BUILDING_SHARED)
 
-target_include_directories(${BINARY_NAME}
-  PRIVATE ../include)
-
-if(NOT MSVC)
-  target_link_libraries(${BINARY_NAME}
-    PUBLIC m)
+if(MSVC)
+  target_compile_options(${BINARY_NAME} PRIVATE /W4)
+else()
+  target_compile_options(${BINARY_NAME} PRIVATE
+    -std=c99
+    -Wall
+    -Wextra
+    -pedantic-errors
+    -Wmissing-prototypes
+    -Wshadow
+    -Wstrict-prototypes
+    $<$<C_COMPILER_ID:Clang>:-Wunreachable-code-return>
+    $<$<C_COMPILER_ID:GNU>:-Wunreachable-code>
+  )
 endif()
 
-install(TARGETS ${BINARY_NAME} DESTINATION defrag)
+if(NOT MSVC)
+  target_link_libraries(${BINARY_NAME} PUBLIC m)
+endif()
+
+set_target_properties(${BINARY_NAME} PROPERTIES
+  LINK_FLAGS_RELEASE -s
+  PREFIX ""
+)
+
+install(TARGETS ${BINARY_NAME} DESTINATION bin)
