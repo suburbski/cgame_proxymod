@@ -424,15 +424,16 @@ void VectorRotate(vec3_t const in, vec3_t matrix[3], vec3_t out)
 */
 float Q_rsqrt(float number)
 {
-  floatint_t  t;
+  int32_t     i;
   float       x2, y;
   float const threehalfs = 1.5f;
 
-  x2  = number * .5f;
-  t.f = number;
-  t.i = 0x5f3759df - (t.i >> 1); // what the fuck?
-  y   = t.f;
-  y   = y * (threehalfs - (x2 * y * y)); // 1st iteration
+  x2 = number * .5f;
+  y  = number;
+  memcpy(&i, &y, sizeof(int32_t));
+  i = 0x5f3759df - (i >> 1); // what the fuck?
+  memcpy(&y, &i, sizeof(float));
+  y = y * (threehalfs - (x2 * y * y)); // 1st iteration
   // y   = y * (threehalfs - (x2 * y * y)); // 2nd iteration, this can be removed
 
   return y;
@@ -440,10 +441,11 @@ float Q_rsqrt(float number)
 
 float Q_fabs(float f)
 {
-  floatint_t fi;
-  fi.f = f;
-  fi.i &= 0x7FFFFFFF;
-  return fi.f;
+  int32_t i;
+  memcpy(&i, &f, sizeof(int32_t));
+  i &= 0x7FFFFFFF;
+  memcpy(&f, &i, sizeof(float));
+  return f;
 }
 #endif
 

@@ -32,11 +32,11 @@ void dllEntry(intptr_t(QDECL* syscallptr)(intptr_t arg, ...))
   syscall = syscallptr;
 }
 
-static inline int32_t FloatAsInt(float const x)
+static inline int32_t FloatAsInt(float f)
 {
-  floatint_t fi;
-  fi.f = x;
-  return fi.i;
+  int32_t i;
+  memcpy(&i, &f, sizeof(int32_t));
+  return i;
 }
 
 void trap_Print(char const* fmt)
