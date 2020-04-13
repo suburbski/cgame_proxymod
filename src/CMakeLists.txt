@@ -59,4 +59,4 @@ set_target_properties(${BINARY_NAME} PROPERTIES
   PREFIX ""
 )
 
-install(TARGETS ${BINARY_NAME} DESTINATION bin)
+install(TARGETS ${BINARY_NAME} DESTINATION .)

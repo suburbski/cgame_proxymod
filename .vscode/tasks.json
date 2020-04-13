@@ -1,0 +1,241 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "clean all",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "${workspaceFolder}/build",
+        "${workspaceFolder}/bin"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "cmake Debug Linux 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Debug/Linux_64-bit",
+        "-G",
+        "Ninja",
+        "-DBINARY_NAME=cgamex86_64",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
+        "-DCMAKE_CXX_COMPILER=g++-9",
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m64\"",
+        "-DCMAKE_INSTALL_PREFIX=${env:HOME}/Quake3e/defrag",
+        "-DFORCE_COLORED_OUTPUT=TRUE",
+        "-DINSTALL_GTEST=OFF"
+      ]
+    },
+    {
+      "label": "cmake Release Linux 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Release/Linux_32-bit",
+        "-G",
+        "Ninja",
+        "-DBINARY_NAME=cgamei386",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
+        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
+        "-DFORCE_COLORED_OUTPUT=TRUE"
+      ]
+    },
+    {
+      "label": "cmake Release Linux 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Release/Linux_64-bit",
+        "-G",
+        "Ninja",
+        "-DBINARY_NAME=cgamex86_64",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
+        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
+        "-DFORCE_COLORED_OUTPUT=TRUE"
+      ]
+    },
+    {
+      "label": "cmake Release Windows 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Release/Windows_32-bit",
+        "-DBINARY_NAME=cgamex86",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=i686-w64-mingw32-gcc",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
+        "-DCMAKE_POSITION_INDEPENDENT_CODE=FALSE",
+        "-DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll",
+        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
+        "-DFORCE_COLORED_OUTPUT=TRUE"
+      ]
+    },
+    {
+      "label": "cmake Release Windows 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Release/Windows_64-bit",
+        "-DBINARY_NAME=cgamex86_64",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
+        "-DCMAKE_POSITION_INDEPENDENT_CODE=FALSE",
+        "-DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll",
+        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
+        "-DFORCE_COLORED_OUTPUT=TRUE"
+      ]
+    },
+    {
+      "label": "build Debug Linux 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Debug/Linux_64-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Debug/Linux_64-bit"
+        ]
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": [
+        "cmake Debug Linux 64-bit"
+      ]
+    },
+    {
+      "label": "build Release Linux 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Release/Linux_32-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Release/Linux_32-bit"
+        ]
+      },
+      "group": "build",
+      "dependsOn": [
+        "cmake Release Linux 32-bit"
+      ]
+    },
+    {
+      "label": "build Release Linux 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Release/Linux_64-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Release/Linux_64-bit"
+        ]
+      },
+      "group": "build",
+      "dependsOn": [
+        "cmake Release Linux 64-bit"
+      ]
+    },
+    {
+      "label": "build Release Windows 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Release/Windows_32-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Release/Windows_32-bit"
+        ]
+      },
+      "group": "build",
+      "dependsOn": [
+        "cmake Release Windows 32-bit"
+      ]
+    },
+    {
+      "label": "build Release Windows 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Release/Windows_64-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Release/Windows_64-bit"
+        ]
+      },
+      "group": "build",
+      "dependsOn": [
+        "cmake Release Windows 64-bit"
+      ]
+    },
+    {
+      "label": "build Release All",
+      "group": "build",
+      "dependsOn": [
+        "build Release Linux 32-bit",
+        "build Release Linux 64-bit",
+        "build Release Windows 32-bit",
+        "build Release Windows 64-bit"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

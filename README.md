@@ -44,44 +44,43 @@ So if you want to use 2D models, simply use `mdd_ammo 0b0101`.
   * show true ground zones
 
 ## Building
-The proxymod is written in C and uses CMake to control the building process.
-1. Create a separate `build` directory (keeps your repository clean).
-   ```
-   $ mkdir build
-   $ cd build
-   ```
-2. Generate input files for a native build system.
+The proxymod is written in C and uses CMake to control the building process. Visual Studio Code build tasks are available and basically do the following steps:
+1. Generate input files for a native build system.
    To generate standard Makefiles for a 32 bit release build on Windows with gcc, do:
    ```
-   $ cmake                                     \
-       -DBINARY_NAME=cgamex86                  \
-       -DCMAKE_BUILD_TYPE=Release              \
-       -DCMAKE_C_COMPILER=gcc                  \
-       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m32" \
-       -DCMAKE_INSTALL_PREFIX=/path/to/quake3/ \
-       -DCMAKE_POSITION_INDEPENDENT_CODE=FALSE \
-       -DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll    \
-       -DFORCE_COLORED_OUTPUT=TRUE             \
-       ..
+   $ cmake                                         \
+       -S <repo path>                              \
+       -B <build path>                             \
+       -DBINARY_NAME=cgamex86                      \
+       -DCMAKE_BUILD_TYPE=Release                  \
+       -DCMAKE_C_COMPILER=gcc                      \
+       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m32"     \
+       -DCMAKE_INSTALL_PREFIX=<quake3 path>/defrag \
+       -DCMAKE_POSITION_INDEPENDENT_CODE=FALSE     \
+       -DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll        \
+       -DFORCE_COLORED_OUTPUT=TRUE
    ```
    To generate Ninja files for a 64 bit debug build on Linux with clang, do:
    ```
-   $ cmake -G Ninja                            \
-       -DBINARY_NAME=cgamex86_64               \
-       -DCMAKE_BUILD_TYPE=Debug                \
-       -DCMAKE_C_COMPILER=clang                \
-       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64" \
-       -DCMAKE_INSTALL_PREFIX=/path/to/quake3/ \
-       -DFORCE_COLORED_OUTPUT=TRUE             \
-       ..
+   $ cmake                                         \
+       -S <repo path>                              \
+       -B <build path>                             \
+       -G Ninja                                    \
+       -DBINARY_NAME=cgamex86_64                   \
+       -DCMAKE_BUILD_TYPE=Debug                    \
+       -DCMAKE_C_COMPILER=clang                    \
+       -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64"     \
+       -DCMAKE_INSTALL_PREFIX=<quake3 path>/defrag \
+       -DFORCE_COLORED_OUTPUT=TRUE                 \
+       -DINSTALL_GTEST=OFF
    ```
    Note that the binary name for a 32 bit Windows build is `cgamex86`, while `cgamei386` on Linux. The binary name for a 64 bit build, however, is `cgamex86_64` on both Windows and Linux.
-3. Build the source code.
+2. Build the source code.
    ```
-   $ cmake --build .
+   $ cmake --build <build path>
    ```
-   If you specified an install prefix in step 2, you can build and install the new binary into the `defrag` subdirectory.
+   If you specified an install prefix in step 2, you can build and install the new binary directly into the *defrag* folder of your Quake III Arena directory.
    ```
-   $ cmake --build  . -- install
+   $ cmake --build  <build path> -- install
    ```
-4. Profit.
+3. Profit.
