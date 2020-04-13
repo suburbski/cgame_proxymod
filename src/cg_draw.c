@@ -264,7 +264,7 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
 {
   if (fabsf(end - start) > 2 * (float)M_PI)
   {
-    range_t const ret = { 0, SCREEN_WIDTH, 0 };
+    range_t const ret = { 0, SCREEN_WIDTH, qfalse };
     return ret;
   }
 
@@ -286,14 +286,14 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color)
 {
-  range_t const lc_Range = AnglesToRange(start, end, yaw);
-  if (!lc_Range.split)
+  range_t const range = AnglesToRange(start, end, yaw);
+  if (!range.split)
   {
-    CG_FillRect(lc_Range.x1, y, lc_Range.x2 - lc_Range.x1, h, color);
+    CG_FillRect(range.x1, y, range.x2 - range.x1, h, color);
   }
   else
   {
-    CG_FillRect(0, y, lc_Range.x1, h, color);
-    CG_FillRect(lc_Range.x2, y, SCREEN_WIDTH - lc_Range.x2, h, color);
+    CG_FillRect(0, y, range.x1, h, color);
+    CG_FillRect(range.x2, y, SCREEN_WIDTH - range.x2, h, color);
   }
 }
