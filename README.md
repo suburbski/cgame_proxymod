@@ -1,6 +1,6 @@
 # mDd client Proxymod:
 
-This proxymod should help players to train their abilities for the Quake III Arena modification DeFRaG. It adds hud elements to the standard defrag hud.
+This proxymod helps players to train their abilities in the Quake III Arena modification DeFRaG. It adds hud elements to the standard defrag hud.
 
 ## Installation
 Quick and easy:
@@ -20,128 +20,28 @@ You've correctly installed the proxymod if you load your favorite map and you se
 Please see [CHANGELOG](CHANGELOG.md) for notable changes between [releases](../../releases).
 
 ## Configuration
-All the commands and cvars start with `mdd_`:
+All commands and cvars start with `mdd_` and can be listed by typing this prefix in the console followed by pressing the *tab* key. Information about those cvars can be requested with `mdd_help <cvar>`.
 
-```
-  mdd_hud
-  mdd_version
-
-  mdd_fov
-
-  mdd_ammo
-  mdd_ammo_graph_xywh
-  mdd_ammo_text_xh
-  mdd_ammo_text_rgba
-
-  mdd_cgaz;
-  mdd_cgaz_trueness;
-  mdd_cgaz_yh;
-  mdd_cgaz_rgbaNoAccel;
-  mdd_cgaz_rgbaPartialAccel;
-  mdd_cgaz_rgbaFullAccel;
-  mdd_cgaz_rgbaTurnZone;
-
-  mdd_gl_path_draw
-  mdd_gl_path_rgba
-  mdd_gl_path_preview_draw
-  mdd_gl_path_preview_rgba
-
-  mdd_jump
-  mdd_jump_maxDelay
-  mdd_jump_graph_xywh
-  mdd_jump_graph_rgba
-  mdd_jump_graph_rgbaOnGround;
-  mdd_jump_graph_rgbaPreJump;
-  mdd_jump_graph_rgbaPostJump;
-  mdd_jump_graph_outline_w;
-  mdd_jump_graph_outline_rgba;
-  mdd_jump_text_xh
-  mdd_jump_text_rgba
-
-  mdd_rl_target_draw
-  mdd_rl_target_shader
-  mdd_rl_target_size
-  mdd_rl_path_draw
-  mdd_rl_path_rgba
-
-  mdd_sound_local_only
-
-  mdd_snap
-  mdd_snap_trueness
-  mdd_snap_speed
-  mdd_snap_yh
-  mdd_snap_def_rgba
-  mdd_snap_alt_rgba
-  mdd_snap_hl_def_rgba
-  mdd_snap_hl_alt_rgba
-  mdd_snap_45_def_rgba
-  mdd_snap_45_alt_rgba
-
-  mdd_timer
-  mdd_timer_xywh
-  mdd_timer_item_w
-  mdd_timer_item_rgba
-  mdd_timer_gb_rgba
-  mdd_timer_outline_w
-  mdd_timer_outline_rgba
-```
-Default values can be shown by typing the cvar into the console (e.g. `mdd_ammo_graph_xywh`) followed by pressing enter. Note that some cvars end with `_w`, `_xh` or even `_xywh`. Here `w` stands for width, `h` for height and `x` and `y` for the coordinates. It goes without saying that multiple values are separated by spaces.
-
-## Bitset
-There are a few cvars have binary-literals as default values (e.g. `mdd_ammo`). These start with `0b` followed by a sequence of `1`'s and `0`'s.
-
-```
-mdd_ammo 0b X X X X
-            | | | |
-            | | | + - draw
-            | | + - - no weapon -> no draw
-            | + - - - gun
-            + - - - - 3D
-```
-```
-mdd_cgaz 0b X
-            | 
-            + - draw
-```
-```
-mdd_cgaz_trueness 0b X X X
-                     | | |
-                     | | + - jump/crouch influence
-                     | + - - CPM air control zones
-                     + - - - ground
-```
-```
-mdd_snap 0b X X X X X
-            | | | | |
-            | | | | + - normal
-            | | | + - - highlight active
-            | | + - - - 45deg shift
-            | + - - - - blue/red (min/max accel)
-            + - - - - - height
-```
-```
-mdd_snap_trueness 0b X X X
-                     | | |
-                     | | + - jump/crouch influence
-                     | + - - CPM air control zones
-                     + - - - ground (deprecated)
-```
-Note that it's not necessary to have the same number of `1`'s and `0`'s as there are *different options*, or even use the binary representation. You can still use the good old decimal equivalent (or the octal and hexadecimal representation to impress your friends).
+Default values can be shown by typing the cvar into the console followed by pressing *enter* key. There are a few things worth noting:
+  * Some cvars end with `_w`, `_xh` or even `_xywh`. Here `w` stands for width, `h` for height and `x` and `y` for the coordinates. Multiple values are separated by spaces.
+  E.g., `mdd_ammo_graph_xywh 610 100 24 24`, `mdd_cgaz_yh 180 12`.
+  * Some cvars have binary-literals as default values. They start with `0b` followed by a sequence of `1`'s and `0`'s.
+  E.g., `mdd_ammo 0b0011`, `mdd_cgaz_trueness 0b110`.
+  Note that it's not necessary to have the same total number of `1`'s and `0`'s as there are *different items* for these cvars, or even use the binary representation altogether. You can still use the good old decimal equivalent (or the octal and hexadecimal representation to impress your friends).
 
 ## Examples
+### `mdd_ammo 0b1101`
+  * draw the ammo hud
+  * show the ammo even if you don't have the weapon
+  * use gun icons instead of ammo icons
+  * use 3D models instead of 2D models
 
-`mdd_ammo 0b1101` will:
-  * draw the hud
-  * draw the ammo/gun even if you don't have the weapon
-  * draw the gun instead of the ammo
-  * draw the 3D models instead of the 2D models
+So if you want to use 2D models, simply use `mdd_ammo 0b0101`.
 
-So if you want to have 2D models, simply use `mdd_ammo 0b0101`.
-
-`mdd_cgaz_trueness 0b110` will:
-  * not show jump/crouch influence
-  * show correct air control zones in CPM
-  * show correct zones when walking
+### `mdd_cgaz_trueness 0b110`
+  * don't show true jump/crouch zones, ignore their influence
+  * show true CPM air control zones
+  * show true ground zones
 
 ## Building
 The proxymod is written in C and uses CMake to control the building process.

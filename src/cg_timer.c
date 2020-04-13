@@ -4,6 +4,7 @@
 #include "cg_draw.h"
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "help.h"
 #include "nade_tracking.h"
 
 #define MAX_GB_TIME 250
@@ -31,9 +32,55 @@ static cvarTable_t timer_cvars[] = {
   { &timer_outline_rgba, "mdd_timer_outline_rgba", "1 1 1 1", CVAR_ARCHIVE_ND },
 };
 
+static help_t timer_help[] = {
+  {
+    timer_cvars + 1,
+    X | Y | W | H,
+    {
+      "mdd_timer_xywh X X X X",
+    },
+  },
+  {
+    timer_cvars + 2,
+    W,
+    {
+      "mdd_timer_item_w X",
+    },
+  },
+  {
+    timer_cvars + 3,
+    RGBA,
+    {
+      "mdd_timer_item_rgba X X X X",
+    },
+  },
+  {
+    timer_cvars + 4,
+    RGBA,
+    {
+      "mdd_timer_gb_rgba X X X X",
+    },
+  },
+  {
+    timer_cvars + 5,
+    W,
+    {
+      "mdd_timer_outline_w X",
+    },
+  },
+  {
+    timer_cvars + 6,
+    RGBA,
+    {
+      "mdd_timer_outline_rgba X X X X",
+    },
+  },
+};
+
 void init_timer(void)
 {
   init_cvars(timer_cvars, ARRAY_LEN(timer_cvars));
+  init_help(timer_help, ARRAY_LEN(timer_help));
 
   for (uint8_t i = 0; i < MAX_NADES; ++i) nades[i].id = -1;
 }

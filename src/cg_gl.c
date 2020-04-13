@@ -4,6 +4,7 @@
 #include "cg_local.h"
 #include "cg_utils.h"
 #include "g_local.h"
+#include "help.h"
 #include "nade_tracking.h"
 
 static vmCvar_t gl_path_draw;
@@ -18,11 +19,30 @@ static cvarTable_t gl_cvars[] = {
   { &gl_path_preview_rgba, "mdd_gl_path_preview_rgba", "0 .5 0 1", CVAR_ARCHIVE_ND },
 };
 
+static help_t gl_help[] = {
+  {
+    gl_cvars + 1,
+    RGBA,
+    {
+      "mdd_gl_path_rgba X X X X",
+    },
+  },
+  {
+    gl_cvars + 3,
+    RGBA,
+    {
+      "mdd_gl_path_preview_rgba X X X X",
+    },
+  },
+};
+
 static qhandle_t beam_shader;
 
 void init_gl(void)
 {
   init_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
+  init_help(gl_help, ARRAY_LEN(gl_help));
+
   beam_shader = trap_R_RegisterShader("railCore");
 }
 

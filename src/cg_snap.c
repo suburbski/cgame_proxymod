@@ -6,6 +6,7 @@
 #include "cg_draw.h"
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "help.h"
 
 static vmCvar_t snap;
 static vmCvar_t snap_trueness;
@@ -31,31 +32,94 @@ static cvarTable_t snap_cvars[] = {
   { &snap_45_alt_rgba, "mdd_snap_45_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
 };
 
-// mdd_snap 0b X X X X X
-//             | | | | |
-//             | | | | + - normal
-//             | | | + - - highlight active
-//             | | + - - - 45deg shift
-//             | + - - - - blue/red (min/max accel)
-//             + - - - - - height
+static help_t snap_help[] = {
+  {
+    snap_cvars + 0,
+    BINARY_LITERAL,
+    {
+      "mdd_snap 0bXXXXX",
+      "           |||||",
+      "           ||||+- draw basic hud",
+      "           |||+-- highlight active zone",
+      "           ||+--- draw 45deg shifted zones",
+      "           |+---- accel-based color  (min/max => blue/red)",
+      "           +----- accel-based height (min/max => low/high)",
+    },
+  },
 #define SNAP_NORMAL 1
 #define SNAP_HL_ACTIVE 2
 #define SNAP_45 4
 #define SNAP_BLUERED 8
 #define SNAP_HEIGHT 16
-
-// mdd_snap_trueness 0b X X X
-//                      | | |
-//                      | | + - jump/crouch influence
-//                      | + - - CPM air control zones
-//                      + - - - ground (deprecated)
+  {
+    snap_cvars + 1,
+    BINARY_LITERAL,
+    {
+      "mdd_snap_trueness 0bXXX",
+      "                    |||",
+      "                    ||+- show true jump/crouch zones",
+      "                    |+-- show true CPM air control zones",
+      "                    +--- show true ground zones (deprecated)",
+    },
+  },
 #define SNAP_JUMPCROUCH 1
 #define SNAP_CPM 2
 #define SNAP_GROUND 4 // TODO: Remove
+  {
+    snap_cvars + 3,
+    Y | H,
+    {
+      "mdd_snap_yh X X",
+    },
+  },
+  {
+    snap_cvars + 4,
+    RGBA,
+    {
+      "mdd_snap_def_rgba X X X X",
+    },
+  },
+  {
+    snap_cvars + 5,
+    RGBA,
+    {
+      "mdd_snap_alt_rgba X X X X",
+    },
+  },
+  {
+    snap_cvars + 6,
+    RGBA,
+    {
+      "mdd_snap_hl_def_rgba X X X X",
+    },
+  },
+  {
+    snap_cvars + 7,
+    RGBA,
+    {
+      "mdd_snap_hl_alt_rgba X X X X",
+    },
+  },
+  {
+    snap_cvars + 8,
+    RGBA,
+    {
+      "mdd_snap_45_def_rgba X X X X",
+    },
+  },
+  {
+    snap_cvars + 9,
+    RGBA,
+    {
+      "mdd_snap_45_alt_rgba X X X X",
+    },
+  },
+};
 
 void init_snap(void)
 {
   init_cvars(snap_cvars, ARRAY_LEN(snap_cvars));
+  init_help(snap_help, ARRAY_LEN(snap_help));
 }
 
 #define MAX_SNAPHUD_ZONES_Q1                                                                                           \

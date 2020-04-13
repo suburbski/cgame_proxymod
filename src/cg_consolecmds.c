@@ -21,19 +21,26 @@
 */
 #include "cg_local.h"
 #include "cg_vm.h"
+#include "help.h"
 
 #include <stdlib.h>
 
-static void CG_PointsTo_f(void);
+static void cmdHelp(void);
+#ifndef NDEBUG
+static void cmdPointsTo_DebugOnly(void);
+#endif
 
 typedef struct
 {
-  char* cmd;
+  char const* cmd;
   void (*function)(void);
 } consoleCommand_t;
 
 static consoleCommand_t commands[] = {
-  { "mdd_points_to", CG_PointsTo_f } // TODO: only debug build
+  { "mdd_help", cmdHelp },
+#ifndef NDEBUG
+  { "mdd_points_to", cmdPointsTo_DebugOnly },
+#endif
 };
 
 /*
@@ -77,11 +84,27 @@ void CG_InitConsoleCommands(void)
   }
 }
 
-static void CG_PointsTo_f(void)
+static void cmdHelp(void)
 {
   if (trap_Argc() != 2)
   {
-    trap_Print("usage: p <pointer>\n");
+    trap_Print("usage: mdd_help <cvar>\n");
+    cvars_with_help();
+    return;
+  }
+
+  char cvar[MAX_STRING_CHARS];
+  trap_Argv(1, cvar, sizeof(cvar));
+
+  cvar_help(cvar);
+}
+
+#ifndef NDEBUG
+static void cmdPointsTo_DebugOnly(void)
+{
+  if (trap_Argc() != 2)
+  {
+    trap_Print("usage: mdd_points_to <pointer>\n");
     return;
   }
 
@@ -91,3 +114,4 @@ static void CG_PointsTo_f(void)
   long const offset = strtol(cmd, NULL, 0);
   trap_Print(vaf("%s -> 0x%lx\n", cmd, *(int32_t*)VM_ArgPtr(offset)));
 }
+#endif

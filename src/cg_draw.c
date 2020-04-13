@@ -35,6 +35,10 @@ Adjusted for resolution and screen aspect ratio
 */
 void CG_AdjustFrom640(float* x, float* y, float* w, float* h)
 {
+  assert(x);
+  assert(y);
+  assert(w);
+  assert(h);
 #if 0
   // adjust for wide screens
   if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {

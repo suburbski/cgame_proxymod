@@ -6,6 +6,7 @@
 #include "cg_draw.h"
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "help.h"
 
 static vmCvar_t cgaz;
 static vmCvar_t cgaz_trueness;
@@ -27,23 +28,72 @@ static cvarTable_t cgaz_cvars[] = {
   { &cgaz_rgbaTurnZone, "mdd_cgaz_rgbaTurnZone", "1 1 0 .5", CVAR_ARCHIVE_ND },
 };
 
-// mdd_cgaz 0b X
-//             |
-//             + - draw
+static help_t cgaz_help[] = {
+  {
+    cgaz_cvars + 0,
+    BINARY_LITERAL,
+    {
+      "mdd_cgaz 0bX",
+      "           |",
+      "           +- draw hud",
+    },
+  },
 #define CGAZ_DRAW 1
-
-// mdd_cgaz_trueness 0b X X X
-//                      | | |
-//                      | | + - jump/crouch influence
-//                      | + - - CPM air control zones
-//                      + - - - ground
+  {
+    cgaz_cvars + 1,
+    BINARY_LITERAL,
+    {
+      "mdd_cgaz_trueness 0bXXX",
+      "                    |||",
+      "                    ||+- show true jump/crouch zones",
+      "                    |+-- show true CPM air control zones",
+      "                    +--- show true ground zones",
+    },
+  },
 #define CGAZ_JUMPCROUCH 1
 #define CGAZ_CPM 2
 #define CGAZ_GROUND 4
+  {
+    cgaz_cvars + 3,
+    Y | H,
+    {
+      "mdd_cgaz_yh X X",
+    },
+  },
+  {
+    cgaz_cvars + 4,
+    RGBA,
+    {
+      "mdd_cgaz_rgbaNoAccel X X X X",
+    },
+  },
+  {
+    cgaz_cvars + 5,
+    RGBA,
+    {
+      "mdd_cgaz_rgbaPartialAccel X X X X",
+    },
+  },
+  {
+    cgaz_cvars + 6,
+    RGBA,
+    {
+      "mdd_cgaz_rgbaFullAccel X X X X",
+    },
+  },
+  {
+    cgaz_cvars + 7,
+    RGBA,
+    {
+      "mdd_cgaz_rgbaTurnZone X X X X",
+    },
+  },
+};
 
 void init_cgaz(void)
 {
   init_cvars(cgaz_cvars, ARRAY_LEN(cgaz_cvars));
+  init_help(cgaz_help, ARRAY_LEN(cgaz_help));
 }
 
 typedef struct

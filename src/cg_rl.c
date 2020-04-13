@@ -4,6 +4,7 @@
 #include "cg_local.h"
 #include "cg_utils.h"
 #include "g_local.h"
+#include "help.h"
 
 #define MAX_RL_TIME 15000
 
@@ -21,6 +22,16 @@ static cvarTable_t rl_cvars[] = {
   { &path_rgba, "mdd_rl_path_rgba", "1 0 0 0", CVAR_ARCHIVE_ND },
 };
 
+static help_t rl_help[] = {
+  {
+    rl_cvars + 4,
+    RGBA,
+    {
+      "mdd_rl_path_rgba X X X X",
+    },
+  },
+};
+
 typedef struct
 {
   qhandle_t line_shader;
@@ -31,6 +42,8 @@ static rl_t rl_;
 void init_rl(void)
 {
   init_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
+  init_help(rl_help, ARRAY_LEN(rl_help));
+
   rl_.line_shader = trap_R_RegisterShader("railCore");
 }
 

@@ -4,6 +4,7 @@
 #include "cg_draw.h"
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "help.h"
 
 static vmCvar_t ammo;
 static vmCvar_t ammo_graph_xywh;
@@ -11,22 +12,51 @@ static vmCvar_t ammo_text_xh;
 static vmCvar_t ammo_text_rgba;
 
 static cvarTable_t ammo_cvars[] = {
-  { &ammo, "mdd_ammo", "0b0001", CVAR_ARCHIVE_ND },
+  { &ammo, "mdd_ammo", "0b0011", CVAR_ARCHIVE_ND },
   { &ammo_graph_xywh, "mdd_ammo_graph_xywh", "610 100 24 24", CVAR_ARCHIVE_ND },
   { &ammo_text_xh, "mdd_ammo_text_xh", "6 12", CVAR_ARCHIVE_ND },
   { &ammo_text_rgba, "mdd_ammo_text_rgba", "1 1 1 1", CVAR_ARCHIVE_ND },
 };
 
-// mdd_ammo 0b X X X X
-//             | | | |
-//             | | | + - draw
-//             | | + - - no weapon -> no draw
-//             | + - - - gun
-//             + - - - - 3D
+static help_t ammo_help[] = {
+  {
+    ammo_cvars + 0,
+    BINARY_LITERAL,
+    {
+      "mdd_ammo 0bXXXX",
+      "           ||||",
+      "           |||+- draw hud",
+      "           ||+-- show weaponless ammo",
+      "           |+--- use gun icons",
+      "           +---- use 3D models",
+    },
+  },
 #define AMMO_DRAW 1
-#define AMMO_NOWEAPNODRAW 2
+#define AMMO_WEAPONLESSAMMO 2
 #define AMMO_GUN 4
 #define AMMO_3D 8
+  {
+    ammo_cvars + 1,
+    X | Y | W | H,
+    {
+      "mdd_ammo_graph_xywh X X X X",
+    },
+  },
+  {
+    ammo_cvars + 2,
+    X | H,
+    {
+      "mdd_ammo_text_xh X X",
+    },
+  },
+  {
+    ammo_cvars + 3,
+    RGBA,
+    {
+      "mdd_ammo_text_rgba X X X X",
+    },
+  },
+};
 
 typedef struct
 {
@@ -46,6 +76,7 @@ static ammo_t ammo_;
 void init_ammo(void)
 {
   init_cvars(ammo_cvars, ARRAY_LEN(ammo_cvars));
+  init_help(ammo_help, ARRAY_LEN(ammo_help));
 
   ammo_.graph_icons[0]  = trap_R_RegisterShader("icons/icona_machinegun");
   ammo_.graph_icons[1]  = trap_R_RegisterShader("icons/icona_shotgun");
@@ -103,7 +134,7 @@ void draw_ammo(void)
     int32_t const  ammoLeft  = ps->ammo[i + 2];
     qboolean const hasWeapon = ps->stats[STAT_WEAPONS] & (1 << (i + 2));
 
-    if (!hasWeapon && (ammo.integer & AMMO_NOWEAPNODRAW || !ammoLeft)) continue;
+    if (!hasWeapon && (!(ammo.integer & AMMO_WEAPONLESSAMMO) || !ammoLeft)) continue;
 
     if (!(ammo.integer & AMMO_3D))
     {

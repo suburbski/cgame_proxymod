@@ -1,6 +1,8 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
+#include "cg_local.h"
+
 #include <signal.h>
 
 #define FLT_DECIMAL_DIG 9

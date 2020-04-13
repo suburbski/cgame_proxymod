@@ -3,6 +3,7 @@
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_utils.h"
+#include "help.h"
 
 #include <stdlib.h>
 
@@ -32,9 +33,76 @@ static cvarTable_t jump_cvars[] = {
   { &jump_text_rgba, "mdd_jump_text_rgba", "1 1 1 1", CVAR_ARCHIVE_ND },
 };
 
+static help_t jump_help[] = {
+  {
+    jump_cvars + 2,
+    X | Y | W | H,
+    {
+      "mdd_jump_graph_xywh X X X X",
+    },
+  },
+  {
+    jump_cvars + 3,
+    RGBA,
+    {
+      "mdd_jump_graph_rgba X X X X",
+    },
+  },
+  {
+    jump_cvars + 4,
+    RGBA,
+    {
+      "mdd_jump_graph_rgbaOnGround X X X X",
+    },
+  },
+  {
+    jump_cvars + 5,
+    RGBA,
+    {
+      "mdd_jump_graph_rgbaPreJump X X X X",
+    },
+  },
+  {
+    jump_cvars + 6,
+    RGBA,
+    {
+      "mdd_jump_graph_rgbaPostJump X X X X",
+    },
+  },
+  {
+    jump_cvars + 7,
+    W,
+    {
+      "mdd_jump_graph_outline_w X",
+    },
+  },
+  {
+    jump_cvars + 8,
+    RGBA,
+    {
+      "mdd_jump_graph_outline_rgba X X X X",
+    },
+  },
+  {
+    jump_cvars + 9,
+    X | H,
+    {
+      "mdd_jump_text_xh X X",
+    },
+  },
+  {
+    jump_cvars + 10,
+    RGBA,
+    {
+      "mdd_jump_text_rgba X X X X",
+    },
+  },
+};
+
 void init_jump(void)
 {
   init_cvars(jump_cvars, ARRAY_LEN(jump_cvars));
+  init_help(jump_help, ARRAY_LEN(jump_help));
 }
 
 typedef enum

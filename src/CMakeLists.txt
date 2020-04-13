@@ -23,6 +23,7 @@ add_library(${BINARY_NAME} SHARED
   cg_vm.c
   g_missile.c
   g_weapon.c
+  help.c
   q_math.c
   q_shared.c
 )
