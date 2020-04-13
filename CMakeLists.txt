@@ -21,3 +21,11 @@ if(${FORCE_COLORED_OUTPUT})
 endif()
 
 add_subdirectory(src)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_options(-std=c++17)
+
+  enable_testing()
+  add_subdirectory(googletest)
+  add_subdirectory(test)
+endif()
