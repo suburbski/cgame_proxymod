@@ -75,17 +75,6 @@ typedef struct
 
   vec2_t wishvel;
 
-  // float p;
-  // float prev_d;
-  // float prev_vf_squared;
-  // float prev_wishspeed;
-  // float prev_a;
-
-  // float p_min;
-  // float p_opt;
-  // float p_max_cos;
-  // float p_max;
-
   pmove_t       pm;
   playerState_t pm_ps;
   pml_t         pml;
@@ -229,76 +218,6 @@ static void CG_DrawCGaz(void)
 
   CG_FillAngleYaw(+s.d_max_cos, +s.d_max, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
   CG_FillAngleYaw(-s.d_max, -s.d_max_cos, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
-
-  // #define SCREEN_CENTER_X (SCREEN_WIDTH / 2)
-  //   float const scale = 1;
-  //   s.p *= scale;
-  //   s.p_min *= scale;
-  //   s.p_opt *= scale;
-  //   s.p_max_cos *= scale;
-  //   s.p_max *= scale;
-  //   CG_FillRect(SCREEN_CENTER_X - s.p, s.graph_yh[0] - 30, s.p_min, s.graph_yh[1], s.graph_rgbaNoAccel);
-  //   CG_FillRect(
-  //     SCREEN_CENTER_X + s.p_min - s.p, s.graph_yh[0] - 30, s.p_opt - s.p_min, s.graph_yh[1],
-  //     s.graph_rgbaPartialAccel);
-  //   CG_FillRect(
-  //     SCREEN_CENTER_X + s.p_opt - s.p, s.graph_yh[0] - 30, s.p_max_cos - s.p_opt, s.graph_yh[1],
-  //     s.graph_rgbaFullAccel);
-  //   CG_FillRect(SCREEN_CENTER_X + s.p_max_cos - s.p,
-  //               s.graph_yh[0] - 30,
-  //               s.p_max - s.p_max_cos,
-  //               s.graph_yh[1],
-  //               s.graph_rgbaTurnZone);
-
-  //   /// et CGaz
-  //   // absoluate velocity angle
-  //   float vel_angle = AngleNormalize180(RAD2DEG(atan2f(s.pml.previous_velocity[1], s.pml.previous_velocity[0])));
-  //   // relative velocity angle to viewangles[1]
-  //   float vel_relang = AngleNormalize180(s.pm_ps.viewangles[YAW] - vel_angle);
-  //   vel_relang       = DEG2RAD(vel_relang);
-  //   float vel_size = VectorLength2(s.pm_ps.velocity);
-
-  // #define SCREEN_CENTER_X (cgs.glconfig.vidWidth / 2)
-  // #define SCREEN_CENTER_Y (cgs.glconfig.vidHeight / 2)
-
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + s.pm.cmd.rightmove,
-  //            SCREEN_CENTER_Y - s.pm.cmd.forwardmove,
-  //            colorCyan);
-
-  //   vel_size /= 5;
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + vel_size * sin(vel_relang),
-  //            SCREEN_CENTER_Y - vel_size * cos(vel_relang),
-  //            colorRed);
-  //   if (vel_size > SCREEN_HEIGHT / 2)
-  //   {
-  //     vel_size = SCREEN_HEIGHT / 2;
-  //   }
-  //   vel_size /= 2;
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + vel_size * sin(vel_relang + s.d_opt),
-  //            SCREEN_CENTER_Y - vel_size * cos(vel_relang + s.d_opt),
-  //            s.graph_rgbaFullAccel);
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + vel_size * sin(vel_relang - s.d_opt),
-  //            SCREEN_CENTER_Y - vel_size * cos(vel_relang - s.d_opt),
-  //            s.graph_rgbaFullAccel);
-
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + vel_size * sin(vel_relang + s.d_min),
-  //            SCREEN_CENTER_Y - vel_size * cos(vel_relang + s.d_min),
-  //            s.graph_rgbaPartialAccel);
-  //   DrawLine(SCREEN_CENTER_X,
-  //            SCREEN_CENTER_Y,
-  //            SCREEN_CENTER_X + vel_size * sin(vel_relang - s.d_min),
-  //            SCREEN_CENTER_Y - vel_size * cos(vel_relang - s.d_min),
-  //            s.graph_rgbaPartialAccel);
 }
 
 /*
@@ -455,40 +374,6 @@ static void PM_Accelerate(float const wishspeed, float const accel)
   ASSERT_LE(s.d_min, s.d_opt);
   ASSERT_LE(s.d_opt, s.d_max_cos);
   ASSERT_LE(s.d_max_cos, s.d_max);
-
-  // {
-  //   float const d        = DEG2RAD(s.pm_ps.viewangles[YAW]) + s.prev_d;
-  //   float       cosine   = cosf(d);
-  //   float const prev_vf  = sqrtf(s.prev_vf_squared);
-  //   float       addspeed = s.prev_wishspeed - prev_vf * cosine;
-  //   if (addspeed < 0) addspeed = 0;
-  //   float const accelspeed = s.prev_a > addspeed ? addspeed : s.prev_a;
-  //   float const r          = sqrtf(s.prev_vf_squared + accelspeed * accelspeed + 2 * prev_vf * accelspeed * cosine);
-  //   s.p                    = fabsf(RAD2DEG(asinf(accelspeed * sinf(d) / r)) / pm_frametime);
-
-  //   s.prev_d = -atan2f(s.pml.previous_velocity[1], s.pml.previous_velocity[0]) +
-  //              atan2f(-s.pm.cmd.rightmove, s.pm.cmd.forwardmove);
-  //   s.prev_vf_squared = vf_squared;
-  //   s.prev_wishspeed  = wishspeed;
-  //   s.prev_a          = a;
-  // }
-  // {
-  //   s.p_min = RAD2DEG(asinf(a * sqrtf(v_squared - wishspeed * wishspeed) / (v * vf))) / pm_frametime;
-  // }
-  // {
-  //   float const tmp = vf_squared - a * a + 2 * a * wishspeed;
-  //   s.p_opt         = RAD2DEG(asinf(a * sqrtf(tmp - wishspeed * wishspeed) / (vf * sqrtf(tmp)))) / pm_frametime;
-  // }
-  // {
-  //   float const tmp = a * a - vf_squared + 2 * v * vf;
-  //   s.p_max_cos     = RAD2DEG(asinf(sqrtf(tmp - v_squared) / sqrtf(tmp))) / pm_frametime;
-  //   // if (s.p_max_cos < s.p_opt)
-  // }
-  // {
-  //   float const tmp = v_squared - vf_squared - a * a;
-  //   s.p_max         = RAD2DEG(asinf(sqrtf(4 * a * a * vf_squared - tmp * tmp) / (2 * v * vf))) / pm_frametime;
-  // }
-  // g_syscall(CG_PRINT, vaf("a: %1.3f - %1.3f %1.3f %1.3f %1.3f\n", s.p, s.p_min, s.p_opt, s.p_max_cos, s.p_max));
 
   CG_DrawCGaz();
 }
