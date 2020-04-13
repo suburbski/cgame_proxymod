@@ -48,6 +48,7 @@ void init_cgaz(void)
 
 typedef struct
 {
+  float g_squared; // 0 when not on slick.
   float v_squared;
   float vf_squared;
   float a_squared;
@@ -73,13 +74,13 @@ typedef struct
   float d_max_cos;
   float d_max;
 
+  float d_vel;
+
   vec2_t wishvel;
 
   pmove_t       pm;
   playerState_t pm_ps;
   pml_t         pml;
-
-  state_t t;
 } cgaz_t;
 
 static cgaz_t s;
@@ -88,12 +89,14 @@ static void PmoveSingle(void);
 static void PM_AirMove(void);
 static void PM_WalkMove(void);
 
+static void CG_DrawCGaz(void);
+
 void draw_cgaz(void)
 {
   update_cvars(cgaz_cvars, ARRAY_LEN(cgaz_cvars));
 
   cgaz.integer = cvar_getInteger("mdd_cgaz");
-  if (!(cgaz.integer & CGAZ_DRAW)) return;
+  if (!cgaz.integer) return;
 
   cgaz_trueness.integer = cvar_getInteger("mdd_cgaz_trueness");
 
@@ -196,11 +199,13 @@ static void PmoveSingle(void)
     // airborne
     PM_AirMove();
   }
+
+  CG_DrawCGaz();
 }
 
 static void CG_DrawCGaz(void)
 {
-  float const yaw = atan2f(s.wishvel[1], s.wishvel[0]) - atan2f(s.pml.previous_velocity[1], s.pml.previous_velocity[0]);
+  float const yaw = atan2f(s.wishvel[1], s.wishvel[0]) - s.d_vel;
 
   ParseVec(cgaz_yh.string, s.graph_yh, 2);
   ParseVec(cgaz_rgbaNoAccel.string, s.graph_rgbaNoAccel, 4);
@@ -278,67 +283,111 @@ static void PM_Friction(void)
   for (uint8_t i = 0; i < 3; ++i) s.pm_ps.velocity[i] *= newspeed;
 }
 
-static void update_d_min(void)
+static float update_d_min(state_t const* state)
 {
+  assert(state);
 #ifndef NDEBUG
-  if (s.t.a == 0)
+  if (state->a == 0)
   {
-    ASSERT_EQ(s.t.v_squared - s.t.vf_squared, 2 * s.t.a * s.t.wishspeed - s.t.a_squared);
+    ASSERT_EQ(state->v_squared - state->vf_squared, 2 * state->a * state->wishspeed - state->a_squared);
   }
   else
   {
-    ASSERT_LT(s.t.v_squared - s.t.vf_squared, 2 * s.t.a * s.t.wishspeed - s.t.a_squared);
+    ASSERT_LT(state->v_squared - state->vf_squared, 2 * state->a * state->wishspeed - state->a_squared);
   }
 #endif
-  float const num_squared = s.t.wishspeed * s.t.wishspeed - s.t.v_squared + s.t.vf_squared;
+  float const num_squared =
+    state->wishspeed * state->wishspeed - state->v_squared + state->vf_squared + state->g_squared;
   ASSERT_GE(num_squared, 0);
   float const num = sqrtf(num_squared);
-  s.d_min         = num >= s.t.vf ? 0 : acosf(num / s.t.vf);
+  return num >= state->vf ? 0 : acosf(num / state->vf);
 }
 
-static void update_d_opt(void)
+static float update_d_opt(state_t const* state)
 {
-  float const num = s.t.wishspeed - s.t.a;
-  s.d_opt         = num >= s.t.vf ? 0 : acosf(num / s.t.vf);
+  assert(state);
+  float const num = state->wishspeed - state->a;
+  return num >= state->vf ? 0 : acosf(num / state->vf);
 }
 
-static void update_d_max_cos(void)
+static float update_d_max_cos(state_t const* state, float d_opt)
 {
-  float const num = s.t.v - s.t.vf;
-  s.d_max_cos     = num >= s.t.a ? 0 : acosf(num / s.t.a);
-  if (s.d_max_cos < s.d_opt)
+  assert(state);
+  float const num       = sqrtf(state->v_squared - state->g_squared) - state->vf;
+  float       d_max_cos = num >= state->a ? 0 : acosf(num / state->a);
+  if (d_max_cos < d_opt)
   {
-    ASSERT_FLOAT_GE(s.t.v * s.t.vf - s.t.vf_squared, s.t.a * s.t.wishspeed - s.t.a_squared);
-    s.d_max_cos = s.d_opt;
+    ASSERT_FLOAT_GE(state->v * state->vf - state->vf_squared, state->a * state->wishspeed - state->a_squared);
+    d_max_cos = d_opt;
   }
+  return d_max_cos;
 }
 
-static void update_d_max(void)
+static float update_d_max(state_t const* state, float d_max_cos)
 {
+  assert(state);
 #ifndef NDEBUG
-  if (s.t.a == 0)
+  if (state->a == 0)
   {
-    ASSERT_EQ(s.t.v_squared - s.t.vf_squared, 2 * s.t.a * s.t.wishspeed - s.t.a_squared);
+    ASSERT_EQ(state->v_squared - state->vf_squared, 2 * state->a * state->wishspeed - state->a_squared);
   }
   else
   {
-    ASSERT_LT(s.t.v_squared - s.t.vf_squared, 2 * s.t.a * s.t.wishspeed - s.t.a_squared);
+    ASSERT_LT(state->v_squared - state->vf_squared, 2 * state->a * state->wishspeed - state->a_squared);
   }
 #endif
-  float const num = s.t.v_squared - s.t.vf_squared - s.t.a_squared;
-  float const den = 2 * s.t.a * s.t.vf;
+  float const num = state->v_squared - state->vf_squared - state->a_squared - state->g_squared;
+  float const den = 2 * state->a * state->vf;
   if (num >= den)
   {
-    s.d_max = 0;
+    return 0;
   }
   else if (-num >= den)
   {
-    s.d_max = (float)M_PI;
+    return (float)M_PI;
   }
-  else
+  float d_max = acosf(num / den);
+  if (d_max < d_max_cos)
   {
-    s.d_max = acosf(num / den);
+    ASSERT_EQ(state->a, 0);
+    d_max = d_max_cos;
   }
+  return d_max;
+}
+
+static void update_d(float wishspeed, float accel, float slickGravity)
+{
+  ASSERT_GE(slickGravity, 0);
+  ASSERT_EQ(slickGravity > 0, s.pml.groundTrace.surfaceFlags & SURF_SLICK || s.pm_ps.pm_flags & PMF_TIME_KNOCKBACK);
+
+  state_t state;
+  state.g_squared  = slickGravity * slickGravity;
+  state.v_squared  = VectorLengthSquared2(s.pml.previous_velocity);
+  state.vf_squared = VectorLengthSquared2(s.pm_ps.velocity);
+  state.wishspeed  = wishspeed;
+  state.a          = accel * state.wishspeed * pm_frametime;
+  state.a_squared  = state.a * state.a;
+  if (
+    !(cgaz_trueness.integer & CGAZ_GROUND) ||
+    state.v_squared - state.vf_squared >= 2 * state.a * state.wishspeed - state.a_squared)
+  {
+    state.v_squared = state.vf_squared;
+  }
+  state.v  = sqrtf(state.v_squared);
+  state.vf = sqrtf(state.vf_squared);
+
+  ASSERT_LE(state.a * pm_frametime, 1);
+
+  s.d_min     = update_d_min(&state);
+  s.d_opt     = update_d_opt(&state);
+  s.d_max_cos = update_d_max_cos(&state, s.d_opt);
+  s.d_max     = update_d_max(&state, s.d_max_cos);
+
+  ASSERT_LE(s.d_min, s.d_opt);
+  ASSERT_LE(s.d_opt, s.d_max_cos);
+  ASSERT_LE(s.d_max_cos, s.d_max);
+
+  s.d_vel = atan2f(s.pm_ps.velocity[1], s.pm_ps.velocity[0]);
 }
 
 /*
@@ -348,89 +397,14 @@ PM_Accelerate
 Handles user intended acceleration
 ==============
 */
-static void PM_Accelerate(float const wishspeed, float const accel)
+static void PM_Accelerate(float wishspeed, float accel)
 {
-  s.t.v_squared  = VectorLengthSquared2(s.pml.previous_velocity);
-  s.t.vf_squared = VectorLengthSquared2(s.pm_ps.velocity);
-  s.t.wishspeed  = wishspeed;
-  s.t.a          = accel * s.t.wishspeed * pm_frametime;
-  s.t.a_squared  = s.t.a * s.t.a;
-  if (
-    !(cgaz_trueness.integer & CGAZ_GROUND) ||
-    s.t.v_squared - s.t.vf_squared >= 2 * s.t.a * s.t.wishspeed - s.t.a_squared)
-  {
-    s.t.v_squared = s.t.vf_squared;
-  }
-  s.t.v  = sqrtf(s.t.v_squared);
-  s.t.vf = sqrtf(s.t.vf_squared);
-
-  ASSERT_LE(s.t.a * pm_frametime, 1);
-
-  update_d_min();
-  update_d_opt();
-  update_d_max_cos();
-  update_d_max();
-
-  ASSERT_LE(s.d_min, s.d_opt);
-  ASSERT_LE(s.d_opt, s.d_max_cos);
-  ASSERT_LE(s.d_max_cos, s.d_max);
-
-  CG_DrawCGaz();
+  update_d(wishspeed, accel, 0);
 }
 
-static void PM_SlickAccelerate(float const wishspeed, float const accel)
+static void PM_SlickAccelerate(float wishspeed, float accel)
 {
-  float const g          = s.pm_ps.gravity * pm_frametime;
-  float const g_squared  = g * g;
-  float const a          = accel * wishspeed * pm_frametime;
-  float       v_squared  = VectorLengthSquared2(s.pml.previous_velocity);
-  float const vf_squared = VectorLengthSquared2(s.pm_ps.velocity);
-  if (!(cgaz_trueness.integer & CGAZ_GROUND) || v_squared - vf_squared >= 2 * a * wishspeed - a * a)
-  {
-    v_squared = vf_squared;
-  }
-  // float const v  = sqrtf(v_squared);
-  float const vf = sqrtf(vf_squared);
-  {
-    float const num = sqrtf(wishspeed * wishspeed - v_squared + vf_squared + g_squared);
-    s.d_min         = num >= vf ? 0 : acosf(num / vf);
-  }
-  {
-    float const num = wishspeed - a;
-    s.d_opt         = num >= vf ? 0 : acosf(num / vf);
-  }
-  {
-    float const num = sqrtf(v_squared - g_squared) - vf;
-    s.d_max_cos     = num >= a ? 0 : acosf(num / a);
-    if (s.d_max_cos < s.d_opt) s.d_max_cos = s.d_opt; // v * vf - vf_squared >= a * wishspeed - a * a
-  }
-  {
-    float const num = v_squared - vf_squared - a * a - g_squared;
-    float const den = 2 * a * vf;
-    if (num >= den)
-    {
-      s.d_max = 0;
-    }
-    else if (-num >= den)
-    {
-      s.d_max = (float)M_PI;
-    }
-    else
-    {
-      s.d_max = acosf(num / den);
-    }
-    if (s.d_max < s.d_max_cos)
-    {
-      ASSERT_FALSE(a);
-      s.d_max = s.d_max_cos;
-    }
-  }
-
-  ASSERT_LE(s.d_min, s.d_opt);
-  ASSERT_LE(s.d_opt, s.d_max_cos);
-  ASSERT_LE(s.d_max_cos, s.d_max);
-
-  CG_DrawCGaz();
+  update_d(wishspeed, accel, s.pm_ps.gravity * pm_frametime);
 }
 
 /*
@@ -469,6 +443,7 @@ static void PM_AirMove(void)
     {
       // Air control when s.pm.cmd.forwardmove != 0 && s.pm.cmd.rightmove == 0 only changes direction
       PM_Accelerate(wishspeed, pm_airaccelerate);
+      // TODO: clean up
       if (s.d_max > (float)M_PI / 2)
       {
         float       v_squared  = VectorLengthSquared2(s.pml.previous_velocity);
@@ -496,7 +471,6 @@ static void PM_AirMove(void)
       }
     }
   }
-
   else
   {
     PM_Accelerate(wishspeed, pm_airaccelerate);
