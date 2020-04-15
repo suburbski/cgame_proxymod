@@ -200,15 +200,18 @@ typedef struct
 extern cgs_t cgs;
 extern cg_t  cg;
 
+extern vmCvar_t mdd_fov;
+
 //
 // cg_main.c
 //
 char const* CG_ConfigString(int32_t index);
 
+void CG_UpdateCvars(void);
+
 //
 // cg_view.c
 //
-void init_view(void);
 void CG_DrawActiveFrame(int32_t serverTime, stereoFrame_t stereoView, qboolean demoPlayback);
 
 //

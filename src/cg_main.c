@@ -23,6 +23,7 @@
 #include "assert.h"
 #include "cg_ammo.h"
 #include "cg_cgaz.h"
+#include "cg_cvar.h"
 #include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_hud.h"
@@ -34,9 +35,6 @@
 #include "version.h"
 
 #include <stdlib.h>
-
-cg_t  cg;
-cgs_t cgs;
 
 static void CG_Init(int32_t clientNum);
 
@@ -64,7 +62,6 @@ intptr_t vmMain(
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     CG_Init(arg2);
     init_entityStates();
-    init_view();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -156,6 +153,35 @@ intptr_t vmMain(
   return ret;
 }
 
+cg_t  cg;
+cgs_t cgs;
+
+vmCvar_t mdd_fov;
+
+static cvarTable_t cvarTable[] = {
+  { &mdd_fov, "mdd_fov", "0", CVAR_ARCHIVE_ND },
+};
+
+/*
+=================
+CG_RegisterCvars
+=================
+*/
+static void CG_RegisterCvars(void)
+{
+  init_cvars(cvarTable, ARRAY_LEN(cvarTable));
+}
+
+/*
+=================
+CG_UpdateCvars
+=================
+*/
+void CG_UpdateCvars(void)
+{
+  update_cvars(cvarTable, ARRAY_LEN(cvarTable));
+}
+
 //===========================================================================
 
 /*
@@ -198,6 +224,8 @@ static void CG_Init(int32_t clientNum)
   cgs.media.charsetProp     = trap_R_RegisterShader("menu/art/font1_prop.tga");
   cgs.media.charsetPropGlow = trap_R_RegisterShader("menu/art/font1_prop_glo.tga");
   cgs.media.charsetPropB    = trap_R_RegisterShader("menu/art/font2_prop.tga");
+
+  CG_RegisterCvars();
 
   CG_InitConsoleCommands();
 
