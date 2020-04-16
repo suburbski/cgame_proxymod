@@ -201,6 +201,7 @@ extern cgs_t cgs;
 extern cg_t  cg;
 
 extern vmCvar_t mdd_fov;
+extern vmCvar_t mdd_projection;
 
 //
 // cg_main.c

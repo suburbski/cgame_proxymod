@@ -243,18 +243,32 @@ void CG_Draw3DModel(
   trap_R_RenderScene(&refdef);
 }
 
-/*
-=================
-AngleToX
-=================
-*/
-static inline float AngleToX(float angle)
+static inline float RectilinearProjection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_x = cg.refdef.fov_x / 2;
   if (angle >= half_fov_x) return 0;
   if (angle <= -half_fov_x) return SCREEN_WIDTH;
   return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
+}
+
+static inline float CylindricalProjection(float angle)
+{
+  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
+  float const tan_half_fov_x = tanf(cg.refdef.fov_x / 2);
+  if (angle >= tan_half_fov_x) return 0;
+  if (angle <= -tan_half_fov_x) return SCREEN_WIDTH;
+  return SCREEN_WIDTH / 2 * (1 - angle / tan_half_fov_x);
+}
+
+static inline float PaniniProjection(float angle)
+{
+  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
+  float const tan_half_fov_x = tanf(cg.refdef.fov_x / 2);
+  float const x =  SCREEN_WIDTH / 2 * (1 - 2 * tanf(angle / 2) / tan_half_fov_x);
+  if (x < 0) return 0;
+  if (x > SCREEN_WIDTH) return SCREEN_WIDTH;
+  return x;
 }
 
 typedef struct
@@ -272,19 +286,41 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
     return ret;
   }
 
-  qboolean const split = end > start;
-  start                = AngleNormalizePI(start - yaw);
-  end                  = AngleNormalizePI(end - yaw);
+  qboolean split = end > start;
+  start          = AngleNormalizePI(start - yaw);
+  end            = AngleNormalizePI(end - yaw);
 
   if (end > start)
   {
-    range_t const ret = { AngleToX(end), AngleToX(start), !split };
+    split           = !split;
+    float const tmp = start;
+    start           = end;
+    end             = tmp;
+  }
+
+  switch (mdd_projection.integer)
+  {
+  case 0:
+  {
+    range_t const ret = { RectilinearProjection(start), RectilinearProjection(end), split };
     return ret;
   }
-  else
+  case 1:
   {
-    range_t const ret = { AngleToX(start), AngleToX(end), split };
+    range_t const ret = { CylindricalProjection(start), CylindricalProjection(end), split };
     return ret;
+  }
+  case 2:
+  {
+    range_t const ret = { PaniniProjection(start), PaniniProjection(end), split };
+    return ret;
+  }
+  default:
+  {
+    assert(qfalse);
+    range_t const ret = { 0, 0, qfalse };
+    return ret;
+  }
   }
 }
 

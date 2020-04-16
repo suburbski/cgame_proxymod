@@ -157,9 +157,11 @@ cg_t  cg;
 cgs_t cgs;
 
 vmCvar_t mdd_fov;
+vmCvar_t mdd_projection;
 
 static cvarTable_t cvarTable[] = {
   { &mdd_fov, "mdd_fov", "0", CVAR_ARCHIVE_ND },
+  { &mdd_projection, "mdd_projection", "0", CVAR_ARCHIVE_ND },
 };
 
 /*
