@@ -408,7 +408,7 @@ static float update_d_max(state_t const* state, float d_max_cos)
 static void update_d(float wishspeed, float accel, float slickGravity)
 {
   ASSERT_GE(slickGravity, 0);
-  ASSERT_EQ(slickGravity > 0, s.pml.groundTrace.surfaceFlags & SURF_SLICK || s.pm_ps.pm_flags & PMF_TIME_KNOCKBACK);
+  assert(slickGravity == 0 || s.pml.groundTrace.surfaceFlags & SURF_SLICK || s.pm_ps.pm_flags & PMF_TIME_KNOCKBACK);
 
   state_t state;
   state.g_squared  = slickGravity * slickGravity;
