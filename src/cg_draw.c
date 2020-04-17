@@ -264,8 +264,7 @@ static inline float CylindricalProjection(float angle)
 static inline float PaniniProjection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
-  float const tan_half_fov_x = tanf(cg.refdef.fov_x / 2);
-  float const x =  SCREEN_WIDTH / 2 * (1 - 2 * tanf(angle / 2) / tan_half_fov_x);
+  float const x = SCREEN_WIDTH / 2 * (1 - 2 * tanf(angle / 2) / tanf(cg.refdef.fov_x / 2));
   if (x < 0) return 0;
   if (x > SCREEN_WIDTH) return SCREEN_WIDTH;
   return x;

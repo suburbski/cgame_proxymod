@@ -32,6 +32,7 @@
 #include "cg_rl.h"
 #include "cg_snap.h"
 #include "cg_timer.h"
+#include "compass.h"
 #include "version.h"
 
 #include <stdlib.h>
@@ -108,6 +109,7 @@ intptr_t vmMain(
 
     init_ammo();
     init_cgaz();
+    init_compass();
     init_gl();
     init_jump();
     init_rl();

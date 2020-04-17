@@ -11,7 +11,8 @@ typedef enum
   W              = 4,
   H              = 8,
   BINARY_LITERAL = 16,
-  RGBA
+  RGBA,
+  RGBAS
 } cvarKind_t;
 
 typedef struct

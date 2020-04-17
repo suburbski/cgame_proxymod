@@ -21,6 +21,7 @@ add_library(${BINARY_NAME} SHARED
   cg_utils.c
   cg_view.c
   cg_vm.c
+  compass.c
   g_missile.c
   g_weapon.c
   help.c

@@ -9,7 +9,7 @@ typedef struct
 } helpTable_t;
 
 static size_t      helpTableIdx = 0;
-static helpTable_t helpTable[7];
+static helpTable_t helpTable[8];
 
 static void preHelp(cvarKind_t kind, char const* defaultString);
 static void postHelp(cvarKind_t kind);
@@ -100,7 +100,14 @@ static void preHelp(cvarKind_t kind, char const* defaultString)
     trap_Print("^2Enable/disable items by replacing ^3X^2's with ^31^2/^30^2 resp.\n");
     return;
   case RGBA:
-    trap_Print("^2This cvar accepts 4 numbers:^7\n");
+    trap_Print("^2This cvar accepts a set of 4 numbers:^7\n");
+    trap_Print("  ^3r^2ed   [0,1]^7\n");
+    trap_Print("  ^3g^2reen [0,1]^7\n");
+    trap_Print("  ^3b^2lue  [0,1]^7\n");
+    trap_Print("  ^3a^2lpha [0,1]^7\n");
+    return;
+  case RGBAS:
+    trap_Print("^2This cvar accepts sets of 4 numbers:^7\n");
     trap_Print("  ^3r^2ed   [0,1]^7\n");
     trap_Print("  ^3g^2reen [0,1]^7\n");
     trap_Print("  ^3b^2lue  [0,1]^7\n");
@@ -127,6 +134,7 @@ static void postHelp(cvarKind_t kind)
     trap_Print("^2Examples: github.com/Jelvan1/cgame_proxymod#examples^7\n");
     return;
   case RGBA:
+  case RGBAS:
     return;
   default:
     assert(qfalse);

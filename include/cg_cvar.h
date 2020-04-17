@@ -33,7 +33,9 @@ typedef struct
   int32_t   cvarFlags;
 } cvarTable_t;
 
-void    ParseVec(char* data, float* vec, uint8_t size);
+char const* ParseVec(char const* data, vec_t* vec, uint8_t size);
+char const* ParseVec4(char const* data, vec4_t* vec, uint8_t size);
+
 int32_t cvar_getInteger(char const* var_name);
 float   cvar_getValue(char const* var_name);
 

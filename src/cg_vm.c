@@ -28,6 +28,7 @@
 #include "cg_local.h"
 #include "cg_snap.h"
 #include "cg_syscall.h"
+#include "compass.h"
 #include "defrag.h"
 
 #include <stdio.h>
@@ -118,6 +119,7 @@ static void VM_Run(vm_t* vm)
         {
           if (draw_hud())
           {
+            draw_compass();
             draw_cgaz();
             draw_snap();
           }

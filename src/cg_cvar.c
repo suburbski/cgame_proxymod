@@ -20,20 +20,44 @@
 */
 #include "cg_cvar.h"
 
+#include "assert.h"
 #include "cg_local.h"
 
 #include <ctype.h>
 #include <stdlib.h>
 
-void ParseVec(char* data, float* vec, uint8_t size)
+char const* ParseVec(char const* data, vec_t* vec, uint8_t size)
 {
-  if (!data) return;
-  memset(vec, 0, size * sizeof(vec[0]));
+  assert(data);
+  assert(vec);
+  ASSERT_GT(size, 0);
+
+  char* end;
+  for (uint8_t i = 0; i < size; ++i)
+  {
+    vec[i] = strtof(data, &end);
+    assert(data != end);
+    data = end;
+  }
+  return data;
+}
+
+char const* ParseVec4(char const* data, vec4_t* vec, uint8_t size)
+{
+  assert(data);
+  assert(vec);
+  ASSERT_GT(size, 0);
 
   for (uint8_t i = 0; i < size; ++i)
   {
-    vec[i] = strtof(data, &data);
+    while (!isdigit(*data))
+    {
+      assert(*data != '\0');
+      ++data;
+    }
+    data = ParseVec(data, vec[i], ARRAY_LEN(*vec));
   }
+  return data;
 }
 
 int32_t cvar_getInteger(char const* var_name)
