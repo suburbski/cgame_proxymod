@@ -21,18 +21,8 @@
 #include "cg_main.h"
 
 #include "assert.h"
-#include "cg_ammo.h"
-#include "cg_cgaz.h"
-#include "cg_cvar.h"
 #include "cg_entity.h"
-#include "cg_gl.h"
 #include "cg_hud.h"
-#include "cg_jump.h"
-#include "cg_local.h"
-#include "cg_rl.h"
-#include "cg_snap.h"
-#include "cg_timer.h"
-#include "compass.h"
 #include "version.h"
 
 #include <stdlib.h>
@@ -142,14 +132,6 @@ intptr_t vmMain(
 cg_t  cg;
 cgs_t cgs;
 
-vmCvar_t mdd_fov;
-vmCvar_t mdd_projection;
-
-static cvarTable_t cvarTable[] = {
-  { &mdd_fov, "mdd_fov", "0", CVAR_ARCHIVE_ND },
-  { &mdd_projection, "mdd_projection", "0", CVAR_ARCHIVE_ND },
-};
-
 /*
 =================
 CG_RegisterCvars
@@ -157,17 +139,7 @@ CG_RegisterCvars
 */
 static void CG_RegisterCvars(void)
 {
-  init_cvars(cvarTable, ARRAY_LEN(cvarTable));
-
-  init_ammo();
-  init_cgaz();
-  init_compass();
-  init_gl();
   init_hud();
-  init_jump();
-  init_rl();
-  init_snap();
-  init_timer();
 }
 
 /*
@@ -177,7 +149,6 @@ CG_UpdateCvars
 */
 void CG_UpdateCvars(void)
 {
-  update_cvars(cvarTable, ARRAY_LEN(cvarTable));
 }
 
 //===========================================================================

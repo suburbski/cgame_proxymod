@@ -20,29 +20,59 @@
 */
 #include "cg_hud.h"
 
+#include "cg_ammo.h"
+#include "cg_cgaz.h"
 #include "cg_cvar.h"
+#include "cg_gl.h"
+#include "cg_jump.h"
 #include "cg_local.h"
+#include "cg_rl.h"
+#include "cg_snap.h"
+#include "cg_timer.h"
+#include "compass.h"
 #include "version.h"
 
 static vmCvar_t hud;
 static vmCvar_t version;
 
+vmCvar_t mdd_fov;
+vmCvar_t mdd_projection;
+
 static cvarTable_t hud_cvars[] = {
   { &hud, "mdd_hud", "1", CVAR_ARCHIVE_ND },
   { &version, "mdd_version", VERSION, CVAR_USERINFO | CVAR_INIT },
+  { &mdd_fov, "mdd_fov", "0", CVAR_ARCHIVE_ND },
+  { &mdd_projection, "mdd_projection", "0", CVAR_ARCHIVE_ND },
 };
 
 void init_hud(void)
 {
   init_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
+
+  init_ammo();
+  init_cgaz();
+  init_compass();
+  init_gl();
+  init_jump();
+  init_rl();
+  init_snap();
+  init_timer();
 }
 
-uint8_t draw_hud(void)
+void draw_hud(void)
 {
   // First check if we have models, otherwise CM_ClipHandleToModel will fail
-  if (!trap_CM_NumInlineModels()) return 0;
+  if (!trap_CM_NumInlineModels()) return;
 
   update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
-  return !!hud.integer;
+  if (!hud.integer) return;
+
+  draw_compass();
+  draw_cgaz();
+  draw_snap();
+
+  draw_ammo();
+  draw_jump();
+  draw_timer();
 }

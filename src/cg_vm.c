@@ -120,16 +120,7 @@ static void VM_Run(vm_t* vm)
         intptr_t const subFunc = (opPointer - 2 - vm->codeSegment) / 2;
         if (subFunc == DF_CG_DRAW2D_DEFRAG || subFunc == DF_CG_DRAW2D_VANILLA)
         {
-          if (draw_hud())
-          {
-            draw_compass();
-            draw_cgaz();
-            draw_snap();
-
-            draw_ammo();
-            draw_jump();
-            draw_timer();
-          }
+          draw_hud();
         }
       }
 
