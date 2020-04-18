@@ -48,13 +48,10 @@ char const* ParseVec4(char const* data, vec4_t* vec, uint8_t size)
   assert(vec);
   ASSERT_GT(size, 0);
 
-  for (uint8_t i = 0; i < size; ++i)
+  data = ParseVec(data, vec[0], ARRAY_LEN(*vec));
+  for (uint8_t i = 1; i < size; ++i)
   {
-    while (!isdigit(*data))
-    {
-      assert(*data != '\0');
-      ++data;
-    }
+    while (*data++ != '/') assert(data[-1] != '\0');
     data = ParseVec(data, vec[i], ARRAY_LEN(*vec));
   }
   return data;

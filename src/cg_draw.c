@@ -243,34 +243,33 @@ void CG_Draw3DModel(
   trap_R_RenderScene(&refdef);
 }
 
-// Breaks with fov >=180.
-static inline float RectilinearProjection(float angle)
+static inline qboolean AngleInFov(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_x = cg.refdef.fov_x / 2;
-  if (angle >= half_fov_x) return 0;
-  if (angle <= -half_fov_x) return SCREEN_WIDTH;
-  return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
+  return angle > -half_fov_x && angle < half_fov_x;
 }
 
-// Breaks with fov >360.
-static inline float CylindricalProjection(float angle)
+static inline float Projection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_x = cg.refdef.fov_x / 2;
   if (angle >= half_fov_x) return 0;
   if (angle <= -half_fov_x) return SCREEN_WIDTH;
-  return SCREEN_WIDTH / 2 * (1 - angle / half_fov_x);
-}
 
-// Breaks with fov >=360.
-static inline float PaniniProjection(float angle)
-{
-  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
-  float const half_fov_x = cg.refdef.fov_x / 2;
-  if (angle >= half_fov_x) return 0;
-  if (angle <= -half_fov_x) return SCREEN_WIDTH;
-  return SCREEN_WIDTH / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
+  ASSERT_TRUE(AngleInFov(angle));
+  switch (mdd_projection.integer)
+  {
+  case 0: // Rectilinear projection. Breaks with fov >=180.
+    return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
+  case 1: // Cylindrical projection. Breaks with fov >360.
+    return SCREEN_WIDTH / 2 * (1 - angle / half_fov_x);
+  case 2: // Panini projection. Breaks with fov >=360.
+    return SCREEN_WIDTH / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
+  default:
+    assert(qfalse);
+    return 0;
+  }
 }
 
 typedef struct
@@ -300,30 +299,8 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
     end             = tmp;
   }
 
-  switch (mdd_projection.integer)
-  {
-  case 0:
-  {
-    range_t const ret = { RectilinearProjection(start), RectilinearProjection(end), split };
-    return ret;
-  }
-  case 1:
-  {
-    range_t const ret = { CylindricalProjection(start), CylindricalProjection(end), split };
-    return ret;
-  }
-  case 2:
-  {
-    range_t const ret = { PaniniProjection(start), PaniniProjection(end), split };
-    return ret;
-  }
-  default:
-  {
-    assert(qfalse);
-    range_t const ret = { 0, 0, qfalse };
-    return ret;
-  }
-  }
+  range_t const ret = { Projection(start), Projection(end), split };
+  return ret;
 }
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color)
@@ -338,4 +315,24 @@ void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t
     CG_FillRect(0, y, range.x1, h, color);
     CG_FillRect(range.x2, y, SCREEN_WIDTH - range.x2, h, color);
   }
+}
+
+void CG_DrawLineYaw(float angle, float yaw, float y, float w, float h, vec4_t const color)
+{
+  angle = AngleNormalizePI(angle - yaw);
+  if (!AngleInFov(angle)) return;
+
+  float const x = Projection(angle);
+  CG_FillRect(x - w / 2, y, w, h, color);
+}
+
+void CG_DrawCharYaw(float angle, float yaw, float y, float w, float h, uint8_t ch, vec4_t const color)
+{
+  angle = AngleNormalizePI(angle - yaw);
+  if (!AngleInFov(angle)) return;
+
+  float const x = Projection(angle);
+  trap_R_SetColor(color);
+  CG_DrawChar(x - w / 2, y, w, h, ch);
+  trap_R_SetColor(NULL);
 }

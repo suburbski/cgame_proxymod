@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- New cvar `mdd_projection`. Determines how angles will be projected on the screen. This affects both CampingGaz-HUD and Snap-HUD.
-- Simple compass similar to the one from `df_hud_cgaz`.
+- Compass which is more accurate/flexible than `df_hud_cgaz`.
+- New cvar `mdd_projection`. Determines how angles will be projected on the screen. This affects the compass, CampingGaz-HUD and Snap-HUD.
 
 ## [1.2.0] - 2020-04-13
 ### Added

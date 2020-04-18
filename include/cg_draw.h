@@ -51,5 +51,7 @@ void CG_Draw3DModel(
   vec3_t const angles);
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color);
+void CG_DrawLineYaw(float angle, float yaw, float y, float w, float h, vec4_t const color);
+void CG_DrawCharYaw(float angle, float yaw, float y, float w, float h, uint8_t ch, vec4_t const color);
 
 #endif // CG_DRAW_H
