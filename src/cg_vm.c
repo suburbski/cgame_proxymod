@@ -23,11 +23,14 @@
 #include "cg_vm.h"
 
 #include "assert.h"
+#include "cg_ammo.h"
 #include "cg_cgaz.h"
 #include "cg_hud.h"
+#include "cg_jump.h"
 #include "cg_local.h"
 #include "cg_snap.h"
 #include "cg_syscall.h"
+#include "cg_timer.h"
 #include "compass.h"
 #include "defrag.h"
 
@@ -122,6 +125,10 @@ static void VM_Run(vm_t* vm)
             draw_compass();
             draw_cgaz();
             draw_snap();
+
+            draw_ammo();
+            draw_jump();
+            draw_timer();
           }
         }
       }

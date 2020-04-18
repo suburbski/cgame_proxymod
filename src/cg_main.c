@@ -105,16 +105,6 @@ intptr_t vmMain(
   switch (cmd)
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
-    init_hud();
-
-    init_ammo();
-    init_cgaz();
-    init_compass();
-    init_gl();
-    init_jump();
-    init_rl();
-    init_snap();
-    init_timer();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -123,12 +113,6 @@ intptr_t vmMain(
 
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback )
-    if (draw_hud())
-    {
-      draw_ammo();
-      draw_jump();
-      draw_timer();
-    }
     break;
 
   case CG_CROSSHAIR_PLAYER: // int32_t (*CG_CrosshairPlayer)( void )
@@ -174,6 +158,16 @@ CG_RegisterCvars
 static void CG_RegisterCvars(void)
 {
   init_cvars(cvarTable, ARRAY_LEN(cvarTable));
+
+  init_ammo();
+  init_cgaz();
+  init_compass();
+  init_gl();
+  init_hud();
+  init_jump();
+  init_rl();
+  init_snap();
+  init_timer();
 }
 
 /*
