@@ -1,3 +1,4 @@
+#include "assert.h"
 #include "cg_cvar.h"
 #include "cg_local.h"
 
@@ -27,15 +28,8 @@ Fixed fov at intermissions, otherwise account for fov variable and zooms.
 */
 static void CG_CalcFov(void)
 {
-  float fov_x = mdd_fov.value ? mdd_fov.value : cvar_getValue("cg_fov");
-  if (fov_x < 1)
-  {
-    fov_x = 1;
-  }
-  else if (fov_x > 160)
-  {
-    fov_x = 160;
-  }
+  float fov_x = mdd_fov.value > 0 ? mdd_fov.value : cvar_getValue("cg_fov");
+  ASSERT_GT(fov_x, 0);
 
   // set it
   cg.refdef.fov_x = DEG2RAD(fov_x);

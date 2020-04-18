@@ -243,6 +243,7 @@ void CG_Draw3DModel(
   trap_R_RenderScene(&refdef);
 }
 
+// Breaks with fov >=180.
 static inline float RectilinearProjection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
@@ -252,22 +253,24 @@ static inline float RectilinearProjection(float angle)
   return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
 }
 
+// Breaks with fov >360.
 static inline float CylindricalProjection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
-  float const tan_half_fov_x = tanf(cg.refdef.fov_x / 2);
-  if (angle >= tan_half_fov_x) return 0;
-  if (angle <= -tan_half_fov_x) return SCREEN_WIDTH;
-  return SCREEN_WIDTH / 2 * (1 - angle / tan_half_fov_x);
+  float const half_fov_x = cg.refdef.fov_x / 2;
+  if (angle >= half_fov_x) return 0;
+  if (angle <= -half_fov_x) return SCREEN_WIDTH;
+  return SCREEN_WIDTH / 2 * (1 - angle / half_fov_x);
 }
 
+// Breaks with fov >=360.
 static inline float PaniniProjection(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
-  float const x = SCREEN_WIDTH / 2 * (1 - 2 * tanf(angle / 2) / tanf(cg.refdef.fov_x / 2));
-  if (x < 0) return 0;
-  if (x > SCREEN_WIDTH) return SCREEN_WIDTH;
-  return x;
+  float const half_fov_x = cg.refdef.fov_x / 2;
+  if (angle >= half_fov_x) return 0;
+  if (angle <= -half_fov_x) return SCREEN_WIDTH;
+  return SCREEN_WIDTH / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
 }
 
 typedef struct

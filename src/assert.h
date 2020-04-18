@@ -12,6 +12,7 @@
 #  define ASSERT_TRUE(x)
 #  define ASSERT_FALSE(x)
 #  define ASSERT_EQ(x, y)
+#  define ASSERT_NE(x, y)
 #  define ASSERT_GT(x, y)
 #  define ASSERT_LT(x, y)
 #  define ASSERT_GE(x, y)
@@ -34,6 +35,18 @@
     if (!((x) == (y)))                                                                                                 \
       trap_Error(vaf(                                                                                                  \
         "^1(%s:%d) %s == %s -> %.*g == %.*g^7\n",                                                                      \
+        __FILE__,                                                                                                      \
+        __LINE__,                                                                                                      \
+        #x,                                                                                                            \
+        #y,                                                                                                            \
+        FLT_DECIMAL_DIG,                                                                                               \
+        (double)(intptr_t)(x),                                                                                         \
+        FLT_DECIMAL_DIG,                                                                                               \
+        (double)(intptr_t)(y)));
+#  define ASSERT_NE(x, y)                                                                                              \
+    if (!((x) != (y)))                                                                                                 \
+      trap_Error(vaf(                                                                                                  \
+        "^1(%s:%d) %s != %s -> %.*g != %.*g^7\n",                                                                      \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
