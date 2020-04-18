@@ -3,6 +3,8 @@
 
 void init_rl(void);
 
+void update_rl(void);
+
 void draw_rl(void);
 
 #endif // CG_RL_H

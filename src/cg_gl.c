@@ -46,6 +46,11 @@ void init_gl(void)
   beam_shader = trap_R_RegisterShader("railCore");
 }
 
+void update_gl(void)
+{
+  update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
+}
+
 static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const* color);
 
 void draw_gl(void)
@@ -55,8 +60,6 @@ void draw_gl(void)
   vec4_t  color;
 
   playerState_t const* const ps = getPs();
-
-  update_cvars(gl_cvars, ARRAY_LEN(gl_cvars));
 
   snapshot_t const* const snap = getSnap();
 

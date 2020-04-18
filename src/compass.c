@@ -38,6 +38,11 @@ void init_compass(void)
   init_help(compass_help, ARRAY_LEN(compass_help));
 }
 
+void update_compass(void)
+{
+  update_cvars(compass_cvars, ARRAY_LEN(compass_cvars));
+}
+
 typedef struct
 {
   vec2_t graph_yh;
@@ -50,8 +55,6 @@ static compass_t s;
 
 void draw_compass(void)
 {
-  update_cvars(compass_cvars, ARRAY_LEN(compass_cvars));
-
   if (!compass.integer) return;
 
   ParseVec(compass_yh.string, s.graph_yh, 2);

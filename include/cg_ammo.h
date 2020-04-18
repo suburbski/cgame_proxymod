@@ -3,6 +3,8 @@
 
 void init_ammo(void);
 
+void update_ammo(void);
+
 void draw_ammo(void);
 
 #endif // CG_AMMO_H

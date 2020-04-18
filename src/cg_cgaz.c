@@ -96,6 +96,13 @@ void init_cgaz(void)
   init_help(cgaz_help, ARRAY_LEN(cgaz_help));
 }
 
+void update_cgaz(void)
+{
+  update_cvars(cgaz_cvars, ARRAY_LEN(cgaz_cvars));
+  cgaz.integer          = cvar_getInteger("mdd_cgaz");
+  cgaz_trueness.integer = cvar_getInteger("mdd_cgaz_trueness");
+}
+
 typedef struct
 {
   float g_squared; // 0 when not on slick.
@@ -143,12 +150,7 @@ static void CG_DrawCGaz(void);
 
 void draw_cgaz(void)
 {
-  update_cvars(cgaz_cvars, ARRAY_LEN(cgaz_cvars));
-
-  cgaz.integer = cvar_getInteger("mdd_cgaz");
   if (!cgaz.integer) return;
-
-  cgaz_trueness.integer = cvar_getInteger("mdd_cgaz_trueness");
 
   s.pm_ps = *getPs();
 

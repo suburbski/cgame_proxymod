@@ -3,6 +3,8 @@
 
 void init_cgaz(void);
 
+void update_cgaz(void);
+
 void draw_cgaz(void);
 
 #endif // CG_CGAZ_H

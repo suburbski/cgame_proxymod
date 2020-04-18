@@ -105,6 +105,11 @@ void init_jump(void)
   init_help(jump_help, ARRAY_LEN(jump_help));
 }
 
+void update_jump(void)
+{
+  update_cvars(jump_cvars, ARRAY_LEN(jump_cvars));
+}
+
 typedef enum
 {
   AIR_NOJUMP,
@@ -264,8 +269,6 @@ static void update_jump_state(void)
 
 void draw_jump(void)
 {
-  update_cvars(jump_cvars, ARRAY_LEN(jump_cvars));
-
   if (!jump.integer) return;
 
   update_jump_state();

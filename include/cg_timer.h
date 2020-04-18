@@ -3,6 +3,8 @@
 
 void init_timer(void);
 
+void update_timer(void);
+
 void draw_timer(void);
 
 #endif // CG_TIMER_H

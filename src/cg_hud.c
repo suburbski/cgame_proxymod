@@ -23,6 +23,7 @@
 #include "cg_ammo.h"
 #include "cg_cgaz.h"
 #include "cg_cvar.h"
+#include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_jump.h"
 #include "cg_local.h"
@@ -52,6 +53,7 @@ void init_hud(void)
   init_ammo();
   init_cgaz();
   init_compass();
+  init_entityStates();
   init_gl();
   init_jump();
   init_rl();
@@ -59,12 +61,27 @@ void init_hud(void)
   init_timer();
 }
 
+void update_hud(void)
+{
+  update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
+
+  if (!hud.integer) return;
+
+  update_ammo();
+  update_cgaz();
+  update_compass();
+  update_entityStates();
+  update_gl();
+  update_jump();
+  update_rl();
+  update_snap();
+  update_timer();
+}
+
 void draw_hud(void)
 {
   // First check if we have models, otherwise CM_ClipHandleToModel will fail
   if (!trap_CM_NumInlineModels()) return;
-
-  update_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
   if (!hud.integer) return;
 

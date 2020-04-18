@@ -85,6 +85,11 @@ void init_timer(void)
   for (uint8_t i = 0; i < MAX_NADES; ++i) nades[i].id = -1;
 }
 
+void update_timer(void)
+{
+  update_cvars(timer_cvars, ARRAY_LEN(timer_cvars));
+}
+
 typedef struct
 {
   vec4_t graph_xywh;
@@ -106,8 +111,6 @@ static void draw_item(float progress, vec4_t const color);
 
 void draw_timer(void)
 {
-  update_cvars(timer_cvars, ARRAY_LEN(timer_cvars));
-
   if (!timer.integer) return;
 
   ParseVec(timer_xywh.string, timer_.graph_xywh, 4);
@@ -129,7 +132,7 @@ void draw_timer(void)
   playerState_t const* const ps   = getPs();
 
   // gb stuff
-  // todo: make gb timer off-able and use pps if available and cvar
+  // TODO: make gb timer off-able and use pps if available and cvar
   if (ps->pm_flags & PMF_TIME_KNOCKBACK && ps->groundEntityNum != ENTITYNUM_NONE && !(ps->pm_flags & PMF_RESPAWNED))
   {
     draw_item(1.f - (float)ps->pm_time / MAX_GB_TIME, timer_.graph_gb_rgba);

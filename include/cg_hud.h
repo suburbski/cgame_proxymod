@@ -25,6 +25,8 @@
 
 void init_hud(void);
 
+void update_hud(void);
+
 void draw_hud(void);
 
 #endif // CG_HUD_H

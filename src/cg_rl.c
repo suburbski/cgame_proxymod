@@ -47,10 +47,13 @@ void init_rl(void)
   rl_.line_shader = trap_R_RegisterShader("railCore");
 }
 
-void draw_rl(void)
+void update_rl(void)
 {
   update_cvars(rl_cvars, ARRAY_LEN(rl_cvars));
+}
 
+void draw_rl(void)
+{
   if (!target_draw.integer && !path_draw.integer) return;
 
   refEntity_t beam;
@@ -81,7 +84,7 @@ void draw_rl(void)
       m_shader, beam_trace.endpos, beam_trace.plane.normal, 0, 1, 1, 1, 1, qfalse, target_size.value, qtrue);
   }
 
-  // todo: lerp trajectory stuff?
+  // TODO: lerp trajectory stuff?
   for (int32_t i = 0; i < snap->numEntities; ++i)
   {
     entityState_t const entity = snap->entities[i];

@@ -14,11 +14,14 @@ static entityState_t cg_entityStates[1024];
 void init_entityStates(void)
 {
   init_cvars(sound_cvars, ARRAY_LEN(sound_cvars));
+
   memset(cg_entityStates, -1, sizeof(cg_entityStates));
 }
 
 void update_entityStates(void)
 {
+  update_cvars(sound_cvars, ARRAY_LEN(sound_cvars));
+
   snapshot_t const* const snap = getSnap();
   for (int i = 0; i < snap->numEntities; i++)
   {
@@ -28,8 +31,6 @@ void update_entityStates(void)
 
 int8_t should_filter_sound(int entity_num, int8_t is_loop)
 {
-  update_cvars(sound_cvars, ARRAY_LEN(sound_cvars));
-
   // TODO: also bail if its sp?
   if (!sound_local_only.integer) return 0;
 

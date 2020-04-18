@@ -21,7 +21,6 @@
 #include "cg_main.h"
 
 #include "assert.h"
-#include "cg_entity.h"
 #include "cg_hud.h"
 #include "version.h"
 
@@ -52,7 +51,6 @@ intptr_t vmMain(
   {
   case CG_INIT: // void CG_Init( int32_t serverMessageNum, int32_t serverCommandSequence, int32_t clientNum )
     CG_Init(arg2);
-    init_entityStates();
     break;
 
   case CG_CONSOLE_COMMAND: // qboolean (*CG_ConsoleCommand)( void );
@@ -61,7 +59,6 @@ intptr_t vmMain(
   case CG_DRAW_ACTIVE_FRAME: // void (*CG_DrawActiveFrame)( int32_t serverTime, stereoFrame_t stereoView, qboolean
                              // demoPlayback );
     CG_DrawActiveFrame(arg0, arg1, arg2);
-    update_entityStates();
     break;
 
   case CG_CROSSHAIR_PLAYER: // int32_t (*CG_CrosshairPlayer)( void );
@@ -149,6 +146,7 @@ CG_UpdateCvars
 */
 void CG_UpdateCvars(void)
 {
+  update_hud();
 }
 
 //===========================================================================

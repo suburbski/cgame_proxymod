@@ -117,11 +117,14 @@ void init_ammo(void)
   memset(ammo_.graph_model_angles, 0, 3 * sizeof(vec_t));
 }
 
-void draw_ammo(void)
+void update_ammo(void)
 {
   update_cvars(ammo_cvars, ARRAY_LEN(ammo_cvars));
   ammo.integer = cvar_getInteger("mdd_ammo");
+}
 
+void draw_ammo(void)
+{
   if (!(ammo.integer & AMMO_DRAW)) return;
 
   ParseVec(ammo_graph_xywh.string, ammo_.graph_xywh, 4);

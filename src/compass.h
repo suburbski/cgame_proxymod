@@ -3,6 +3,8 @@
 
 void init_compass(void);
 
+void update_compass(void);
+
 void draw_compass(void);
 
 #endif // COMPASS_H

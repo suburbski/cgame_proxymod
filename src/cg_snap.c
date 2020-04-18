@@ -122,6 +122,13 @@ void init_snap(void)
   init_help(snap_help, ARRAY_LEN(snap_help));
 }
 
+void update_snap(void)
+{
+  update_cvars(snap_cvars, ARRAY_LEN(snap_cvars));
+  snap.integer          = cvar_getInteger("mdd_snap");
+  snap_trueness.integer = cvar_getInteger("mdd_snap_trueness");
+}
+
 #define MAX_SNAPHUD_ZONES_Q1                                                                                           \
   101 // Max nb of snapzones in 1 quadrant
       // => round(2.56 * 15 * 1.3) * 2 + 1 = 101
@@ -166,12 +173,7 @@ static void one_snap_draw(int yaw);
 
 void draw_snap(void)
 {
-  update_cvars(snap_cvars, ARRAY_LEN(snap_cvars));
-
-  snap.integer = cvar_getInteger("mdd_snap");
   if (!snap.integer) return;
-
-  snap_trueness.integer = cvar_getInteger("mdd_snap_trueness");
 
   s.pm_ps = *getPs();
 
