@@ -27,14 +27,13 @@
       raise(SIGABRT);                                                                                                  \
     }
 #  define ASSERT_TRUE(x)                                                                                               \
-    if (!(x)) trap_Error(vaf("^1(%s:%d) %s -> %.*g^7\n", __FILE__, __LINE__, #x, FLT_DECIMAL_DIG, (double)(x)));
+    if (!(x)) trap_Error(vaf("(%s:%d) %s -> %.*g\n", __FILE__, __LINE__, #x, FLT_DECIMAL_DIG, (double)(x)));
 #  define ASSERT_FALSE(x)                                                                                              \
-    if (!(!(x)))                                                                                                       \
-      trap_Error(vaf("^1(%s:%d) !(%s) -> !(%.*g)^7\n", __FILE__, __LINE__, #x, FLT_DECIMAL_DIG, (double)(x)));
+    if (!(!(x))) trap_Error(vaf("(%s:%d) !(%s) -> !(%.*g)\n", __FILE__, __LINE__, #x, FLT_DECIMAL_DIG, (double)(x)));
 #  define ASSERT_EQ(x, y)                                                                                              \
     if (!((x) == (y)))                                                                                                 \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s == %s -> %.*g == %.*g^7\n",                                                                      \
+        "(%s:%d) %s == %s -> %.*g == %.*g\n",                                                                          \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -46,7 +45,7 @@
 #  define ASSERT_NE(x, y)                                                                                              \
     if (!((x) != (y)))                                                                                                 \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s != %s -> %.*g != %.*g^7\n",                                                                      \
+        "(%s:%d) %s != %s -> %.*g != %.*g\n",                                                                          \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -58,7 +57,7 @@
 #  define ASSERT_GT(x, y)                                                                                              \
     if (!((x) > (y)))                                                                                                  \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s > %s -> %.*g > %.*g^7\n",                                                                        \
+        "(%s:%d) %s > %s -> %.*g > %.*g\n",                                                                            \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -70,7 +69,7 @@
 #  define ASSERT_LT(x, y)                                                                                              \
     if (!((x) < (y)))                                                                                                  \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s < %s -> %.*g < %.*g^7\n",                                                                        \
+        "(%s:%d) %s < %s -> %.*g < %.*g\n",                                                                            \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -82,7 +81,7 @@
 #  define ASSERT_GE(x, y)                                                                                              \
     if (!((x) >= (y)))                                                                                                 \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s >= %s -> %.*g >= %.*g^7\n",                                                                      \
+        "(%s:%d) %s >= %s -> %.*g >= %.*g\n",                                                                          \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -94,7 +93,7 @@
 #  define ASSERT_LE(x, y)                                                                                              \
     if (!((x) <= (y)))                                                                                                 \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) %s <= %s -> %.*g <= %.*g^7\n",                                                                      \
+        "(%s:%d) %s <= %s -> %.*g <= %.*g\n",                                                                          \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -106,7 +105,7 @@
 #  define ASSERT_FLOAT_EQ(x, y)                                                                                        \
     if (!(fabsf((x) - (y)) <= fabsf(((x) + (y)) / 2) * 1.e-6f))                                                        \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) |(%s) - (%s)| <= |((%s) + (%s)) / 2| * 1e-6 -> |%.*g - %.*g| <= |%.*g| * 1e-6^7\n",                 \
+        "(%s:%d) |(%s) - (%s)| <= |((%s) + (%s)) / 2| * 1e-6 -> |%.*g - %.*g| <= |%.*g| * 1e-6\n",                     \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \
@@ -122,7 +121,7 @@
 #  define ASSERT_FLOAT_GE(x, y)                                                                                        \
     if (!((x) - (y) >= fabsf(((x) + (y)) / 2) * -1.e-6f))                                                              \
       trap_Error(vaf(                                                                                                  \
-        "^1(%s:%d) (%s - %s) >= |((%s) + (%s)) / 2| * -1e-6 -> %.*g - %.*g >= |%.*g| * -1e-6^7\n",                     \
+        "(%s:%d) (%s - %s) >= |((%s) + (%s)) / 2| * -1e-6 -> %.*g - %.*g >= |%.*g| * -1e-6\n",                         \
         __FILE__,                                                                                                      \
         __LINE__,                                                                                                      \
         #x,                                                                                                            \

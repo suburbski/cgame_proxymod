@@ -715,8 +715,8 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
     free(vmBase);
     memset(vm, 0, sizeof(vm_t));
     trap_Error(vaf(
-      "^1Proxymod only works with defrag %s. "
-      "Download it from https://q3defrag.org/files/defrag/defrag_%s.zip^1.^7\n",
+      "Proxymod only works with defrag %s. "
+      "Download it from https://q3defrag.org/files/defrag/defrag_%s.zip.\n",
       DF_VERSION,
       DF_VERSION));
     return qfalse;
