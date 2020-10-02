@@ -161,7 +161,7 @@ static void update_jump_state(void)
   uint32_t const             now     = getSnap()->serverTime;
   playerState_t const* const ps      = getPs();
   int8_t const               inAir   = ps->groundEntityNum == ENTITYNUM_NONE;
-  int8_t const               jumping = ps->stats[13] & PSF_USERINPUT_JUMP;
+  int8_t const               jumping = (ps->stats[13] & PSF_USERINPUT_JUMP) / PSF_USERINPUT_JUMP;
 
   // Determine current state
   state_t state;
