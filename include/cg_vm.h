@@ -23,7 +23,6 @@
 #ifndef CG_VM_H
 #define CG_VM_H
 
-#include "ExportImport.h"
 #include "q_shared.h"
 
 // magic number is stored in file as 44 14 72 12

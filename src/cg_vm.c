@@ -37,6 +37,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DEFAULT_VMPATH "vm/cgame.qvm"
+
 /* VM_Run, VM_Exec, VM_Create, VM_Destroy, and VM_Restart
  * originally from Q3Fusion (http://www.sourceforge.net/projects/q3fusion/)
  */
