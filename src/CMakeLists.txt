@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.13)
 
-add_library(${BINARY_NAME} SHARED
+add_library(cgame_obj OBJECT
   bg_misc.c
   bg_pmove.c
   cg_ammo.c
@@ -29,35 +29,44 @@ add_library(${BINARY_NAME} SHARED
   q_shared.c
 )
 
-target_include_directories(${BINARY_NAME}
-  PRIVATE ../include
+target_include_directories(cgame_obj
+  PUBLIC ../include
 )
 
-target_compile_definitions(${BINARY_NAME} PRIVATE BUILDING_SHARED)
+target_compile_definitions(cgame_obj PRIVATE BUILDING_SHARED)
+
+target_compile_features(cgame_obj PUBLIC c_std_99)
 
 if(MSVC)
-  target_compile_options(${BINARY_NAME} PRIVATE /W4)
+  target_compile_options(cgame_obj PRIVATE
+    /WX
+    /W4
+    /wd4996
+  )
+  target_link_options(cgame_obj PRIVATE /WX)
 else()
-  target_compile_options(${BINARY_NAME} PRIVATE
-    -std=c99
+  target_compile_options(cgame_obj PRIVATE
+    -Werror
     -Wall
     -Wextra
     -pedantic-errors
     -Wmissing-prototypes
     -Wshadow
     -Wstrict-prototypes
+
     $<$<C_COMPILER_ID:Clang>:-Wunreachable-code-return>
     $<$<C_COMPILER_ID:GNU>:-Wunreachable-code>
   )
 endif()
 
-if(NOT MSVC)
-  target_link_libraries(${BINARY_NAME} PUBLIC m)
-endif()
-
-set_target_properties(${BINARY_NAME} PROPERTIES
-  LINK_FLAGS_RELEASE -s
-  PREFIX ""
+set_target_properties(cgame_obj PROPERTIES
+  C_VISIBILITY_PRESET hidden
+  C_VISIBILITY_INLINES_HIDDEN 1
+  POSITION_INDEPENDENT_CODE ON
 )
 
+add_library(${BINARY_NAME} SHARED $<TARGET_OBJECTS:cgame_obj>)
+set_target_properties(${BINARY_NAME} PROPERTIES
+  PREFIX "" # remove "lib" prefix
+)
 install(TARGETS ${BINARY_NAME} DESTINATION .)
