@@ -196,12 +196,12 @@ static inline int32_t VectorCompare(vec3_t const v1, vec3_t const v2)
 
 static inline vec_t VectorLength(vec3_t const v)
 {
-  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  return sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
 static inline vec_t VectorLength2(vec2_t const v)
 {
-  return (vec_t)sqrtf(v[0] * v[0] + v[1] * v[1]);
+  return sqrtf(v[0] * v[0] + v[1] * v[1]);
 }
 
 static inline vec_t VectorLengthSquared(vec3_t const v)
