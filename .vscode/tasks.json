@@ -16,6 +16,28 @@
       "problemMatcher": []
     },
     {
+      "label": "cmake Debug Linux 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}/build/Debug/Linux_32-bit",
+        "-G",
+        "Ninja",
+        "-DBINARY_NAME=cgamei386",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
+        "-DCMAKE_CXX_COMPILER=g++-9",
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m32\"",
+        "-DCMAKE_INSTALL_PREFIX=${env:HOME}/Quake3e/defrag",
+        "-DFORCE_COLORED_OUTPUT=TRUE",
+        "-DINSTALL_GTEST=OFF"
+      ]
+    },
+    {
       "label": "cmake Debug Linux 64-bit",
       "type": "shell",
       "command": "cmake",
@@ -111,6 +133,28 @@
         "-DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll",
         "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
         "-DFORCE_COLORED_OUTPUT=TRUE"
+      ]
+    },
+    {
+      "label": "build Debug Linux 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build/Debug/Linux_32-bit",
+        "--",
+        "install"
+      ],
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/Debug/Linux_32-bit"
+        ]
+      },
+      "group": "build",
+      "dependsOn": [
+        "cmake Debug Linux 32-bit"
       ]
     },
     {
@@ -225,6 +269,15 @@
       "dependsOn": [
         "cmake Release Windows 64-bit"
       ]
+    },
+    {
+      "label": "build Debug All",
+      "group": "build",
+      "dependsOn": [
+        "build Debug Linux 32-bit",
+        "build Debug Linux 64-bit",
+      ],
+      "problemMatcher": []
     },
     {
       "label": "build Release All",
