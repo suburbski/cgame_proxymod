@@ -33,7 +33,7 @@ static void CG_CalcFov(void)
 
   // set it
   cg.refdef.fov_x = DEG2RAD(fov_x);
-  cg.refdef.fov_y = atan2f(cg.refdef.height, cg.refdef.width / tanf(cg.refdef.fov_x / 2)) * 2;
+  cg.refdef.fov_y = atan2f((float)cg.refdef.height, cg.refdef.width / tanf(cg.refdef.fov_x / 2)) * 2;
 }
 
 /*

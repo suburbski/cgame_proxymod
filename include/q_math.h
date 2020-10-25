@@ -41,8 +41,6 @@ void         RotateAroundDirection(vec3_t axis[3], float yaw);
 void         MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]);
 qboolean     PlaneFromPoints(vec4_t plane, vec3_t const a, vec3_t const b, vec3_t const c);
 float        NormalizeColor(vec3_t const in, vec3_t out);
-unsigned     ColorBytes4(float r, float g, float b, float a);
-unsigned     ColorBytes3(float r, float g, float b);
 void         ByteToDir(int b, vec3_t dir);
 int          DirToByte(vec3_t const dir);
 signed short ClampShort(int i);

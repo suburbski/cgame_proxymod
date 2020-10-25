@@ -20,8 +20,8 @@ static void weapon_grenadelauncher_fire(gentity_t* m, gentity_t const* ent)
   VectorNormalize(forward);
 
   fire_grenade(m, ent, muzzle, forward);
-  m->damage *= s_quadFactor;
-  m->splashDamage *= s_quadFactor;
+  m->damage       = (int32_t)(m->damage * s_quadFactor);
+  m->splashDamage = (int32_t)(m->splashDamage * s_quadFactor);
 
   // VectorAdd(m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta); // "real" physics
 }
@@ -36,8 +36,8 @@ ROCKET
 static void Weapon_RocketLauncher_Fire(gentity_t* m, gentity_t const* ent)
 {
   fire_rocket(m, ent, muzzle, forward);
-  m->damage *= s_quadFactor;
-  m->splashDamage *= s_quadFactor;
+  m->damage       = (int32_t)(m->damage * s_quadFactor);
+  m->splashDamage = (int32_t)(m->splashDamage * s_quadFactor);
 
   // VectorAdd( m->s.pos.trDelta, ent->client->ps.velocity, m->s.pos.trDelta );  // "real" physics
 }

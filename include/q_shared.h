@@ -180,9 +180,9 @@ extern vec3_t axisDefault[3];
 
 #define SnapVector(v)                                                                                                  \
   {                                                                                                                    \
-    v[0] = ((int32_t)(v[0]));                                                                                          \
-    v[1] = ((int32_t)(v[1]));                                                                                          \
-    v[2] = ((int32_t)(v[2]));                                                                                          \
+    v[0] = ((vec_t)(int32_t)(v[0]));                                                                                   \
+    v[1] = ((vec_t)(int32_t)(v[1]));                                                                                   \
+    v[2] = ((vec_t)(int32_t)(v[2]));                                                                                   \
   }
 
 static inline int32_t VectorCompare(vec3_t const v1, vec3_t const v2)

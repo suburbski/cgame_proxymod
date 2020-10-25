@@ -30,7 +30,7 @@ float PM_CmdScale(playerState_t const* pm_ps, usercmd_t const* cmd)
   }
 
   float const total =
-    sqrtf(cmd->forwardmove * cmd->forwardmove + cmd->rightmove * cmd->rightmove + cmd->upmove * cmd->upmove);
+    sqrtf((float)(cmd->forwardmove * cmd->forwardmove + cmd->rightmove * cmd->rightmove + cmd->upmove * cmd->upmove));
   return (float)pm_ps->speed * max / (127.f * total);
 }
 
@@ -47,7 +47,7 @@ float PM_AltCmdScale(playerState_t const* pm_ps, usercmd_t const* cmd)
     return 0;
   }
 
-  float const total = sqrtf(cmd->forwardmove * cmd->forwardmove + cmd->rightmove * cmd->rightmove);
+  float const total = sqrtf((float)(cmd->forwardmove * cmd->forwardmove + cmd->rightmove * cmd->rightmove));
   return (float)pm_ps->speed * max / (127.f * total);
 }
 

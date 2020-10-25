@@ -276,9 +276,11 @@ static void PmoveSingle(void)
     PM_AirMove();
   }
 
-  int yaw = ANGLE2SHORT(s.pm_ps.viewangles[YAW]) + RAD2SHORT(atan2f(-s.pm.cmd.rightmove, s.pm.cmd.forwardmove));
+  // TODO: calc yaw similar to cgaz
+  float const yaw = (s.pm_ps.viewangles[YAW] * 65536 / 360) +
+                    RAD2SHORT(atan2f((float)-s.pm.cmd.rightmove, (float)s.pm.cmd.forwardmove));
 
-  one_snap_draw(yaw);
+  one_snap_draw(AngleNormalize65536(lroundf(yaw)));
 }
 
 /*
@@ -519,18 +521,19 @@ static void update_snap_state(void)
   // double timeElapsed = endTime - startTime;
   // g_syscall( CG_PRINT, vaf("Elapsed time: %.6f\n", timeElapsed));
 
-  s.maxAccel             = floorf(s.a + .5f);
-  unsigned char xnyAccel = floorf(s.a / sqrtf(2.f) + .5f); // xAccel and yAccel at 45deg
-                                                           // ^       ^  ^
+  ASSERT_GT(s.a, 0);
+  s.maxAccel             = (unsigned char)(s.a + .5f);
+  unsigned char xnyAccel = (unsigned char)(s.a / sqrtf(2.f) + .5f); // xAccel and yAccel at 45deg
+                                                                    // ^       ^  ^
   // Find the last shortangle in each snapzone which is smaller than 45deg (= 8192) using
   //  /asin -> increasing angles
   //  \acos -> decreasing angles
   // and concatenate those 2 sorted arrays in the upperhalf of 'zones' so we can merge them
   // in the lower half afterwards                 ^^^^^^^^^ => s.maxAccel +
   for (unsigned char i = 0; i <= xnyAccel - 1; ++i)
-    s.zones[s.maxAccel + i] = 16383 - floorf(RAD2SHORT(acosf((i + .5f) / s.a)));
+    s.zones[s.maxAccel + i] = 16383 - (unsigned short)(RAD2SHORT(acosf((i + .5f) / s.a)));
   for (unsigned char i = xnyAccel; i <= s.maxAccel - 1; ++i)
-    s.zones[s.maxAccel + (s.maxAccel - 1) - (i - xnyAccel)] = floorf(RAD2SHORT(acosf((i + .5f) / s.a)));
+    s.zones[s.maxAccel + (s.maxAccel - 1) - (i - xnyAccel)] = (unsigned short)(RAD2SHORT(acosf((i + .5f) / s.a)));
 
   // Merge 2 sorted arrays in the lowerhalf
   unsigned char bi      = s.maxAccel + 0;          // begin i
@@ -543,11 +546,11 @@ static void update_snap_state(void)
   unsigned char xAccel_ = s.maxAccel - (j - bj);
   unsigned char yAccel_ = i - bi;
   float         absAccel_;
-  s.minAbsAccel = 2 * s.maxAccel; // upperbound > sqrt(2)*s.maxAccel
-  s.maxAbsAccel = 0;              // lowerbound
+  s.minAbsAccel = (float)(2 * s.maxAccel); // upperbound > sqrt(2)*s.maxAccel
+  s.maxAbsAccel = 0;                       // lowerbound
   while (i < ei && j < ej)
   {
-    absAccel_ = sqrtf(xAccel_ * xAccel_ + yAccel_ * yAccel_);
+    absAccel_ = sqrtf((float)(xAccel_ * xAccel_ + yAccel_ * yAccel_));
     if (absAccel_ < s.minAbsAccel) s.minAbsAccel = absAccel_;
     if (absAccel_ > s.maxAbsAccel) s.maxAbsAccel = absAccel_;
     s.xAccel[k]                    = xAccel_;
@@ -569,7 +572,7 @@ static void update_snap_state(void)
   }
   while (i < ei) // Store remaining elements
   {
-    absAccel_ = sqrtf(xAccel_ * xAccel_ + yAccel_ * yAccel_);
+    absAccel_ = sqrtf((float)(xAccel_ * xAccel_ + yAccel_ * yAccel_));
     if (absAccel_ < s.minAbsAccel) s.minAbsAccel = absAccel_;
     if (absAccel_ > s.maxAbsAccel) s.maxAbsAccel = absAccel_;
     s.xAccel[k]                    = xAccel_;
@@ -583,7 +586,7 @@ static void update_snap_state(void)
   }
   while (j < ej) // Store remaining elements
   {
-    absAccel_ = sqrtf(xAccel_ * xAccel_ + yAccel_ * yAccel_);
+    absAccel_ = sqrtf((float)(xAccel_ * xAccel_ + yAccel_ * yAccel_));
     if (absAccel_ < s.minAbsAccel) s.minAbsAccel = absAccel_;
     if (absAccel_ > s.maxAbsAccel) s.maxAbsAccel = absAccel_;
     s.xAccel[k]                    = xAccel_;

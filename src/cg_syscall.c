@@ -51,7 +51,7 @@ void trap_Error(char const* fmt)
 
 int32_t trap_Milliseconds(void)
 {
-  return syscall(CG_MILLISECONDS);
+  return (int32_t)syscall(CG_MILLISECONDS);
 }
 
 void trap_Cvar_Register(vmCvar_t* vmCvar, char const* varName, char const* defaultValue, int32_t flags)
@@ -76,7 +76,7 @@ void trap_Cvar_VariableStringBuffer(char const* var_name, char* buffer, int32_t 
 
 int32_t trap_Argc(void)
 {
-  return syscall(CG_ARGC);
+  return (int32_t)syscall(CG_ARGC);
 }
 
 void trap_Argv(int32_t n, char* buffer, int32_t bufferLength)
@@ -91,7 +91,7 @@ void trap_Args(char* buffer, int32_t bufferLength)
 
 int32_t trap_FS_FOpenFile(char const* qpath, fileHandle_t* f, fsMode_t mode)
 {
-  return syscall(CG_FS_FOPENFILE, qpath, f, mode);
+  return (int32_t)syscall(CG_FS_FOPENFILE, qpath, f, mode);
 }
 
 void trap_FS_Read(void* buffer, int32_t len, fileHandle_t f)
@@ -111,7 +111,7 @@ void trap_FS_FCloseFile(fileHandle_t f)
 
 int32_t trap_FS_Seek(fileHandle_t f, long offset, int32_t origin)
 {
-  return syscall(CG_FS_SEEK, f, offset, origin);
+  return (int32_t)syscall(CG_FS_SEEK, f, offset, origin);
 }
 
 void trap_AddCommand(char const* cmdName)
@@ -126,12 +126,12 @@ void trap_RemoveCommand(char const* cmdName)
 
 int32_t trap_CM_NumInlineModels(void)
 {
-  return syscall(CG_CM_NUMINLINEMODELS);
+  return (int32_t)syscall(CG_CM_NUMINLINEMODELS);
 }
 
 int32_t trap_CM_PointContents(vec3_t const p, clipHandle_t model)
 {
-  return syscall(CG_CM_POINTCONTENTS, p, model);
+  return (int32_t)syscall(CG_CM_POINTCONTENTS, p, model);
 }
 
 void trap_CM_BoxTrace(
@@ -157,28 +157,28 @@ int32_t trap_CM_MarkFragments(
   int32_t         maxFragments,
   markFragment_t* fragmentBuffer)
 {
-  return syscall(
+  return (int32_t)syscall(
     CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments, fragmentBuffer);
 }
 
 qhandle_t trap_R_RegisterModel(char const* name)
 {
-  return syscall(CG_R_REGISTERMODEL, name);
+  return (qhandle_t)syscall(CG_R_REGISTERMODEL, name);
 }
 
 qhandle_t trap_R_RegisterSkin(char const* name)
 {
-  return syscall(CG_R_REGISTERSKIN, name);
+  return (qhandle_t)syscall(CG_R_REGISTERSKIN, name);
 }
 
 qhandle_t trap_R_RegisterShader(char const* name)
 {
-  return syscall(CG_R_REGISTERSHADER, name);
+  return (qhandle_t)syscall(CG_R_REGISTERSHADER, name);
 }
 
 qhandle_t trap_R_RegisterShaderNoMip(char const* name)
 {
-  return syscall(CG_R_REGISTERSHADERNOMIP, name);
+  return (qhandle_t)syscall(CG_R_REGISTERSHADERNOMIP, name);
 }
 
 void trap_R_ClearScene(void)
@@ -203,7 +203,7 @@ void trap_R_AddPolysToScene(qhandle_t hShader, int32_t numVerts, polyVert_t cons
 
 int32_t trap_R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir)
 {
-  return syscall(CG_R_LIGHTFORPOINT, point, ambientLight, directedLight, lightDir);
+  return (int32_t)syscall(CG_R_LIGHTFORPOINT, point, ambientLight, directedLight, lightDir);
 }
 
 void trap_R_AddLightToScene(vec3_t const org, float intensity, float r, float g, float b)
@@ -272,22 +272,22 @@ void trap_GetCurrentSnapshotNumber(int32_t* snapshotNumber, int32_t* serverTime)
 
 qboolean trap_GetSnapshot(int32_t snapshotNumber, snapshot_t* snapshot)
 {
-  return syscall(CG_GETSNAPSHOT, snapshotNumber, snapshot);
+  return (qboolean)syscall(CG_GETSNAPSHOT, snapshotNumber, snapshot);
 }
 
 int32_t trap_GetCurrentCmdNumber(void)
 {
-  return syscall(CG_GETCURRENTCMDNUMBER);
+  return (int32_t)syscall(CG_GETCURRENTCMDNUMBER);
 }
 
 qboolean trap_GetUserCmd(int32_t cmdNumber, usercmd_t* ucmd)
 {
-  return syscall(CG_GETUSERCMD, cmdNumber, ucmd);
+  return (qboolean)syscall(CG_GETUSERCMD, cmdNumber, ucmd);
 }
 
 qboolean trap_GetEntityToken(char* buffer, int32_t bufferSize)
 {
-  return syscall(CG_GET_ENTITY_TOKEN, buffer, bufferSize);
+  return (qboolean)syscall(CG_GET_ENTITY_TOKEN, buffer, bufferSize);
 }
 
 //=================================================

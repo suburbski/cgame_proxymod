@@ -77,10 +77,10 @@ void CG_ImpactMark(
   numFragments = trap_CM_MarkFragments(
     4, (void*)originalPoints, projection, MAX_MARK_POINTS, markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
 
-  colors[0] = red * 255;
-  colors[1] = green * 255;
-  colors[2] = blue * 255;
-  colors[3] = alpha * 255;
+  colors[0] = (byte)(red * 255);
+  colors[1] = (byte)(green * 255);
+  colors[2] = (byte)(blue * 255);
+  colors[3] = (byte)(alpha * 255);
 
   for (i = 0, mf = markFragments; i < numFragments; i++, mf++)
   {

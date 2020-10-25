@@ -20,7 +20,7 @@ void init_help(help_t const* help, size_t size)
 #ifndef NDEBUG
   for (size_t i = 0; i < size; ++i)
   {
-    assert(!Q_strncmp(help[i].cvarTable->cvarName, help[i].message[0], strlen(help[i].cvarTable->cvarName)));
+    assert(!Q_strncmp(help[i].cvarTable->cvarName, help[i].message[0], (int)strlen(help[i].cvarTable->cvarName)));
   }
 #endif
   helpTable[helpTableIdx].help = help;
@@ -114,7 +114,7 @@ static void preHelp(cvarKind_t kind, char const* defaultString)
     trap_Print("  ^3a^2lpha [0,1]^7\n");
     return;
   default:
-    assert(qfalse);
+    assert(0);
     return;
   }
 }
@@ -137,7 +137,7 @@ static void postHelp(cvarKind_t kind)
   case RGBAS:
     return;
   default:
-    assert(qfalse);
+    assert(0);
     return;
   }
 }

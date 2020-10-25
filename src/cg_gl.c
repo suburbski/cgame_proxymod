@@ -66,7 +66,7 @@ void draw_gl(void)
   if (ps->weapon == WP_GRENADE_LAUNCHER && gl_path_preview_draw.integer)
   {
     ParseVec(gl_path_preview_rgba.string, color, 4);
-    for (uint8_t i = 0; i < 4; ++i) preview_color[i] = color[i] * 255;
+    for (uint8_t i = 0; i < 4; ++i) preview_color[i] = (uint8_t)(color[i] * 255);
 
     gentity_t ent;
     BG_PlayerStateToEntityState(ps, &ent.s, qtrue);
@@ -84,7 +84,7 @@ void draw_gl(void)
   if (!gl_path_draw.integer) return;
 
   ParseVec(gl_path_rgba.string, color, 4);
-  for (uint8_t i = 0; i < 4; ++i) path_color[i] = color[i] * 255;
+  for (uint8_t i = 0; i < 4; ++i) path_color[i] = (uint8_t)(color[i] * 255);
 
   for (uint8_t i = 0; i < MAX_NADES; ++i)
   {
@@ -154,7 +154,7 @@ static void draw_nade_path(trajectory_t const* pos, int end_time, uint8_t const*
       int    hitTime;
 
       // reflect the velocity on the trace plane
-      hitTime = (leveltime - 8) + 8 * trace.fraction;
+      hitTime = (leveltime - 8) + (int)(8 * trace.fraction);
       BG_EvaluateTrajectoryDelta(&local_pos, hitTime, velocity);
       dot = DotProduct(velocity, trace.plane.normal);
       VectorMA(velocity, -2 * dot, trace.plane.normal, local_pos.trDelta);

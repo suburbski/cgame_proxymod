@@ -104,10 +104,10 @@ void draw_rl(void)
         beam.reType       = RT_RAIL_CORE;
         beam.customShader = rl_.line_shader;
         AxisClear(beam.axis);
-        beam.shaderRGBA[0] = color[0] * 255;
-        beam.shaderRGBA[1] = color[1] * 255;
-        beam.shaderRGBA[2] = color[2] * 255;
-        beam.shaderRGBA[3] = color[3] * 255;
+        beam.shaderRGBA[0] = (byte)(color[0] * 255);
+        beam.shaderRGBA[1] = (byte)(color[1] * 255);
+        beam.shaderRGBA[2] = (byte)(color[2] * 255);
+        beam.shaderRGBA[3] = (byte)(color[3] * 255);
         trap_R_AddRefEntityToScene(&beam);
       }
 

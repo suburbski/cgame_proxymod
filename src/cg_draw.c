@@ -130,9 +130,9 @@ void CG_DrawChar(float x, float y, float w, float h, uint8_t ch)
 {
   if (ch == ' ') return;
 
-  float const frow = .0625 * (ch >> 4);
-  float const fcol = .0625 * (ch & 15);
-  float const size = .0625;
+  float const frow = .0625f * (ch >> 4);
+  float const fcol = .0625f * (ch & 15);
+  float const size = .0625f;
 
   CG_AdjustFrom640(&x, &y, &w, &h);
   trap_R_DrawStretchPic(x, y, w, h, fcol, frow, fcol + size, frow + size, cgs.media.charsetShader);
@@ -230,10 +230,10 @@ void CG_Draw3DModel(
   refdef.fov_x = 30;
   refdef.fov_y = 30;
 
-  refdef.x      = x;
-  refdef.y      = y;
-  refdef.width  = w;
-  refdef.height = h;
+  refdef.x      = (int32_t)x;
+  refdef.y      = (int32_t)y;
+  refdef.width  = (int32_t)w;
+  refdef.height = (int32_t)h;
 
   refdef.time = 0; // getSnap()->serverTime;
   // refdef.time = cg.time;
@@ -267,7 +267,7 @@ static inline float Projection(float angle)
   case 2: // Panini projection. Breaks with fov >=360.
     return SCREEN_WIDTH / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
   default:
-    assert(qfalse);
+    assert(0);
     return 0;
   }
 }

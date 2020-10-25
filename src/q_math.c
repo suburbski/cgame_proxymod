@@ -112,7 +112,7 @@ signed char ClampChar(int i)
   {
     return 127;
   }
-  return i;
+  return (signed char)i;
 }
 
 signed short ClampShort(int i)
@@ -125,7 +125,7 @@ signed short ClampShort(int i)
   {
     return 0x7fff;
   }
-  return i;
+  return (signed short)i;
 }
 
 // this isn't a real cheap function to call!
@@ -162,29 +162,6 @@ void ByteToDir(int b, vec3_t dir)
     return;
   }
   VectorCopy(bytedirs[b], dir);
-}
-
-unsigned ColorBytes3(float r, float g, float b)
-{
-  unsigned i;
-
-  ((byte*)&i)[0] = r * 255;
-  ((byte*)&i)[1] = g * 255;
-  ((byte*)&i)[2] = b * 255;
-
-  return i;
-}
-
-unsigned ColorBytes4(float r, float g, float b, float a)
-{
-  unsigned i;
-
-  ((byte*)&i)[0] = r * 255;
-  ((byte*)&i)[1] = g * 255;
-  ((byte*)&i)[2] = b * 255;
-  ((byte*)&i)[3] = a * 255;
-
-  return i;
 }
 
 float NormalizeColor(vec3_t const in, vec3_t out)
@@ -606,7 +583,7 @@ SetPlaneSignbits
 */
 void SetPlaneSignbits(cplane_t* out)
 {
-  int bits, j;
+  byte bits, j;
 
   // for fast box on planeside test
   bits = 0;
