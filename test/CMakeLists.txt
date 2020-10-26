@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
 add_executable(UnitTest
-  main.cpp
+  syscalls.cpp
+  syscalls_client_fake.cpp
+  syscalls_cvar_fake.cpp
+  syscalls_mock.cpp
 )
 
 target_compile_features(UnitTest PUBLIC cxx_std_17)
@@ -34,6 +37,7 @@ endif()
 
 target_link_libraries(UnitTest
   PRIVATE cgame_obj
+  PRIVATE gmock
   PRIVATE gtest_main
 )
 
