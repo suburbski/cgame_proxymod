@@ -16,7 +16,7 @@
       "problemMatcher": []
     },
     {
-      "label": "cmake Debug Linux 32-bit",
+      "label": "configure Debug Linux 32-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -29,16 +29,13 @@
         "-DBINARY_NAME=cgamei386",
         "-DCMAKE_BUILD_TYPE=Debug",
         "-DCMAKE_C_COMPILER=gcc-9",
-        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
         "-DCMAKE_CXX_COMPILER=g++-9",
-        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m32\"",
-        "-DCMAKE_INSTALL_PREFIX=${env:HOME}/Quake3e/defrag",
-        "-DFORCE_COLORED_OUTPUT=TRUE",
-        "-DINSTALL_GTEST=OFF"
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m32\""
       ]
     },
     {
-      "label": "cmake Debug Linux 64-bit",
+      "label": "configure Debug Linux 64-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -51,16 +48,13 @@
         "-DBINARY_NAME=cgamex86_64",
         "-DCMAKE_BUILD_TYPE=Debug",
         "-DCMAKE_C_COMPILER=gcc-9",
-        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
         "-DCMAKE_CXX_COMPILER=g++-9",
-        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m64\"",
-        "-DCMAKE_INSTALL_PREFIX=${env:HOME}/Quake3e/defrag",
-        "-DFORCE_COLORED_OUTPUT=TRUE",
-        "-DINSTALL_GTEST=OFF"
+        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m64\""
       ]
     },
     {
-      "label": "cmake Release Linux 32-bit",
+      "label": "configure Release Linux 32-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -73,13 +67,13 @@
         "-DBINARY_NAME=cgamei386",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_CXX_COMPILER=g++-9",
         "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
-        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
-        "-DFORCE_COLORED_OUTPUT=TRUE"
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m32\""
       ]
     },
     {
-      "label": "cmake Release Linux 64-bit",
+      "label": "configure Release Linux 64-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -92,47 +86,9 @@
         "-DBINARY_NAME=cgamex86_64",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_C_COMPILER=gcc-9",
+        "-DCMAKE_CXX_COMPILER=g++-9",
         "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
-        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
-        "-DFORCE_COLORED_OUTPUT=TRUE"
-      ]
-    },
-    {
-      "label": "cmake Release Windows 32-bit",
-      "type": "shell",
-      "command": "cmake",
-      "args": [
-        "-S",
-        "${workspaceFolder}",
-        "-B",
-        "${workspaceFolder}/build/Release/Windows_32-bit",
-        "-DBINARY_NAME=cgamex86",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DCMAKE_C_COMPILER=i686-w64-mingw32-gcc",
-        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m32\"",
-        "-DCMAKE_POSITION_INDEPENDENT_CODE=FALSE",
-        "-DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll",
-        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
-        "-DFORCE_COLORED_OUTPUT=TRUE"
-      ]
-    },
-    {
-      "label": "cmake Release Windows 64-bit",
-      "type": "shell",
-      "command": "cmake",
-      "args": [
-        "-S",
-        "${workspaceFolder}",
-        "-B",
-        "${workspaceFolder}/build/Release/Windows_64-bit",
-        "-DBINARY_NAME=cgamex86_64",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc",
-        "-DCMAKE_C_FLAGS=\"${CMAKE_C_FLAGS} -m64\"",
-        "-DCMAKE_POSITION_INDEPENDENT_CODE=FALSE",
-        "-DCMAKE_SHARED_LIBRARY_SUFFIX_C=.dll",
-        "-DCMAKE_INSTALL_PREFIX=${workspaceFolder}/bin",
-        "-DFORCE_COLORED_OUTPUT=TRUE"
+        "-DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS} -m64\""
       ]
     },
     {
@@ -141,9 +97,7 @@
       "command": "cmake",
       "args": [
         "--build",
-        "build/Debug/Linux_32-bit",
-        "--",
-        "install"
+        "build/Debug/Linux_32-bit"
       ],
       "problemMatcher": {
         "base": "$gcc",
@@ -154,7 +108,7 @@
       },
       "group": "build",
       "dependsOn": [
-        "cmake Debug Linux 32-bit"
+        "configure Debug Linux 32-bit"
       ]
     },
     {
@@ -163,9 +117,7 @@
       "command": "cmake",
       "args": [
         "--build",
-        "build/Debug/Linux_64-bit",
-        "--",
-        "install"
+        "build/Debug/Linux_64-bit"
       ],
       "problemMatcher": {
         "base": "$gcc",
@@ -174,12 +126,9 @@
           "${workspaceFolder}/build/Debug/Linux_64-bit"
         ]
       },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "dependsOn": [
-        "cmake Debug Linux 64-bit"
+        "configure Debug Linux 64-bit"
       ]
     },
     {
@@ -188,9 +137,7 @@
       "command": "cmake",
       "args": [
         "--build",
-        "build/Release/Linux_32-bit",
-        "--",
-        "install"
+        "build/Release/Linux_32-bit"
       ],
       "problemMatcher": {
         "base": "$gcc",
@@ -201,7 +148,7 @@
       },
       "group": "build",
       "dependsOn": [
-        "cmake Release Linux 32-bit"
+        "configure Release Linux 32-bit"
       ]
     },
     {
@@ -210,9 +157,7 @@
       "command": "cmake",
       "args": [
         "--build",
-        "build/Release/Linux_64-bit",
-        "--",
-        "install"
+        "build/Release/Linux_64-bit"
       ],
       "problemMatcher": {
         "base": "$gcc",
@@ -223,51 +168,76 @@
       },
       "group": "build",
       "dependsOn": [
-        "cmake Release Linux 64-bit"
+        "configure Release Linux 64-bit"
       ]
     },
     {
-      "label": "build Release Windows 32-bit",
+      "label": "install Debug Linux 32-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
-        "--build",
-        "build/Release/Windows_32-bit",
-        "--",
-        "install"
+        "--install",
+        "build/Debug/Linux_32-bit",
+        "--prefix",
+        "${env:HOME}/Quake3e/defrag"
       ],
-      "problemMatcher": {
-        "base": "$gcc",
-        "fileLocation": [
-          "relative",
-          "${workspaceFolder}/build/Release/Windows_32-bit"
-        ]
-      },
+      "problemMatcher": [],
       "group": "build",
       "dependsOn": [
-        "cmake Release Windows 32-bit"
+        "build Debug Linux 32-bit"
       ]
     },
     {
-      "label": "build Release Windows 64-bit",
+      "label": "install Debug Linux 64-bit",
       "type": "shell",
       "command": "cmake",
       "args": [
-        "--build",
-        "build/Release/Windows_64-bit",
-        "--",
-        "install"
+        "--install",
+        "build/Debug/Linux_64-bit",
+        "--prefix",
+        "${env:HOME}/Quake3e/defrag"
       ],
-      "problemMatcher": {
-        "base": "$gcc",
-        "fileLocation": [
-          "relative",
-          "${workspaceFolder}/build/Release/Windows_64-bit"
-        ]
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
       },
+      "dependsOn": [
+        "build Debug Linux 64-bit"
+      ]
+    },
+    {
+      "label": "install Release Linux 32-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--install",
+        "build/Release/Linux_32-bit",
+        "--prefix",
+        "bin",
+        "--strip"
+      ],
+      "problemMatcher": [],
       "group": "build",
       "dependsOn": [
-        "cmake Release Windows 64-bit"
+        "build Release Linux 32-bit"
+      ]
+    },
+    {
+      "label": "install Release Linux 64-bit",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--install",
+        "build/Release/Linux_64-bit",
+        "--prefix",
+        "bin",
+        "--strip"
+      ],
+      "problemMatcher": [],
+      "group": "build",
+      "dependsOn": [
+        "build Release Linux 64-bit"
       ]
     },
     {
@@ -280,13 +250,11 @@
       "problemMatcher": []
     },
     {
-      "label": "build Release All",
+      "label": "install Release All",
       "group": "build",
       "dependsOn": [
-        "build Release Linux 32-bit",
-        "build Release Linux 64-bit",
-        "build Release Windows 32-bit",
-        "build Release Windows 64-bit"
+        "install Release Linux 32-bit",
+        "install Release Linux 64-bit",
       ],
       "problemMatcher": []
     }
