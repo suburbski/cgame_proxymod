@@ -1,5 +1,5 @@
-#ifndef ASSERT_H
-#define ASSERT_H
+#ifndef Q_ASSERT_H
+#define Q_ASSERT_H
 
 #include "cg_local.h"
 
@@ -136,4 +136,4 @@
         (double)(((x) + (y)) / 2)));
 #endif
 
-#endif // ASSERT_H
+#endif // Q_ASSERT_H

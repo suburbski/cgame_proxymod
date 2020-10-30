@@ -20,8 +20,8 @@
 */
 #include "cg_main.h"
 
-#include "assert.h"
 #include "cg_hud.h"
+#include "q_assert.h"
 #include "version.h"
 
 #include <stdlib.h>

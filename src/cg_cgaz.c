@@ -1,12 +1,12 @@
 #include "cg_cgaz.h"
 
-#include "assert.h"
 #include "bg_pmove.h"
 #include "cg_cvar.h"
 #include "cg_draw.h"
 #include "cg_local.h"
 #include "cg_utils.h"
 #include "help.h"
+#include "q_assert.h"
 
 static vmCvar_t cgaz;
 static vmCvar_t cgaz_trueness;

@@ -20,8 +20,8 @@
 */
 #include "cg_cvar.h"
 
-#include "assert.h"
 #include "cg_local.h"
+#include "q_assert.h"
 
 #include <ctype.h>
 #include <stdlib.h>

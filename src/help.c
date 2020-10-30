@@ -1,6 +1,6 @@
 #include "help.h"
 
-#include "assert.h"
+#include "q_assert.h"
 
 typedef struct
 {

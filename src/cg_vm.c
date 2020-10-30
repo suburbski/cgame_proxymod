@@ -22,7 +22,6 @@
 */
 #include "cg_vm.h"
 
-#include "assert.h"
 #include "cg_ammo.h"
 #include "cg_cgaz.h"
 #include "cg_hud.h"
@@ -33,6 +32,7 @@
 #include "cg_timer.h"
 #include "compass.h"
 #include "defrag.h"
+#include "q_assert.h"
 
 #include <stdio.h>
 #include <stdlib.h>

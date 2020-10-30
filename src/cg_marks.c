@@ -1,5 +1,5 @@
-#include "assert.h"
 #include "cg_local.h"
+#include "q_assert.h"
 
 /*
 =================
