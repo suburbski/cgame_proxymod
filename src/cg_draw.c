@@ -23,7 +23,7 @@
 #include "cg_local.h"
 #include "q_assert.h"
 
-#define RF_NOSHADOW 0x0040      // don't add stencil shadows
+#define RF_NOSHADOW      0x0040 // don't add stencil shadows
 #define RDF_NOWORLDMODEL 0x0001 // used for player configuration screen
 
 /*

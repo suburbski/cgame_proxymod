@@ -33,8 +33,8 @@ static help_t compass_help[] = {
       "              +--- draw arrow",
     } },
 #define QUADRANTS 1
-#define TICKS 2
-#define ARROW 4
+#define TICKS     2
+#define ARROW     4
   {
     compass_cvars + 1,
     Y | H,

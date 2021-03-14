@@ -13,7 +13,7 @@ passed to the renderer.
 =================
 */
 #define MAX_MARK_FRAGMENTS 128
-#define MAX_MARK_POINTS 384
+#define MAX_MARK_POINTS    384
 
 void CG_ImpactMark(
   qhandle_t    markShader,

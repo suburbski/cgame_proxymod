@@ -26,7 +26,7 @@
 #include "q_shared.h"
 
 // magic number is stored in file as 44 14 72 12
-#define VM_MAGIC 0x12721444
+#define VM_MAGIC     0x12721444
 #define VM_MAGIC_BIG 0x44147212
 
 #define MAX_QPATH 64

@@ -24,15 +24,15 @@
 #include "cg_public.h"
 
 // TODO: remove this
-#define PSF_USERINPUT_NONE 0
-#define PSF_USERINPUT_FORWARD 1
+#define PSF_USERINPUT_NONE     0
+#define PSF_USERINPUT_FORWARD  1
 #define PSF_USERINPUT_BACKWARD 2
-#define PSF_USERINPUT_LEFT 8
-#define PSF_USERINPUT_RIGHT 16
-#define PSF_USERINPUT_JUMP 32
-#define PSF_USERINPUT_CROUCH 64
-#define PSF_USERINPUT_ATTACK 256
-#define PSF_USERINPUT_WALK 512
+#define PSF_USERINPUT_LEFT     8
+#define PSF_USERINPUT_RIGHT    16
+#define PSF_USERINPUT_JUMP     32
+#define PSF_USERINPUT_CROUCH   64
+#define PSF_USERINPUT_ATTACK   256
+#define PSF_USERINPUT_WALK     512
 
 snapshot_t const*    getSnap(void);
 playerState_t const* getPs(void);

@@ -31,10 +31,10 @@ static help_t ammo_help[] = {
       "           +---- use 3D models",
     },
   },
-#define AMMO_DRAW 1
+#define AMMO_DRAW           1
 #define AMMO_WEAPONLESSAMMO 2
-#define AMMO_GUN 4
-#define AMMO_3D 8
+#define AMMO_GUN            4
+#define AMMO_3D             8
   {
     ammo_cvars + 1,
     X | Y | W | H,

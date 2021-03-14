@@ -18,22 +18,22 @@
 #define pm_duckScale .25f
 #define pm_swimScale .50f
 
-#define pm_accelerate 10.f
-#define pm_airaccelerate 1.f
+#define pm_accelerate      10.f
+#define pm_airaccelerate   1.f
 #define pm_slickaccelerate 1.f
 #define pm_wateraccelerate 4.f
-#define pm_flyaccelerate 8.f
+#define pm_flyaccelerate   8.f
 
-#define cpm_accelerate 15.f
+#define cpm_accelerate      15.f
 #define cpm_slickaccelerate 15.f
 
-#define cpm_airstopaccelerate 2.5f
+#define cpm_airstopaccelerate   2.5f
 #define cpm_airstrafeaccelerate 70.f
-#define cpm_airwishspeed 30.f
+#define cpm_airwishspeed        30.f
 
-#define pm_friction 6.f
-#define pm_waterfriction 1.f
-#define pm_flightfriction 3.f
+#define pm_friction          6.f
+#define pm_waterfriction     1.f
+#define pm_flightfriction    3.f
 #define pm_spectatorfriction 5.f
 
 // all of the locals will be zeroed before each

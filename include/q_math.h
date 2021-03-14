@@ -19,7 +19,7 @@ void        ClearBounds(vec3_t mins, vec3_t maxs);
 float       RadiusFromBounds(vec3_t const mins, vec3_t const maxs);
 #if defined __LCC__ || defined C_ONLY || !id386 ||                                                                     \
   defined __VECTORC && !((defined __linux__ || __FreeBSD__) && (defined __i386__) && (!defined C_ONLY)) // rb010123
-int       BoxOnPlaneSide(vec3_t const emins, vec3_t const emaxs, struct cplane_s* p);
+int BoxOnPlaneSide(vec3_t const emins, vec3_t const emaxs, struct cplane_s* p);
 #endif
 #if !(defined __LCC__ || defined C_ONLY || !id386 || defined __VECTORC) &&                                             \
   !((defined __linux__ || __FreeBSD__) && (defined __i386__) && (!defined C_ONLY)) // rb010123

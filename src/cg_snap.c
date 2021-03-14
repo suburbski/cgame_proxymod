@@ -46,11 +46,11 @@ static help_t snap_help[] = {
       "           +----- accel-based height (min/max => low/high)",
     },
   },
-#define SNAP_NORMAL 1
+#define SNAP_NORMAL    1
 #define SNAP_HL_ACTIVE 2
-#define SNAP_45 4
-#define SNAP_BLUERED 8
-#define SNAP_HEIGHT 16
+#define SNAP_45        4
+#define SNAP_BLUERED   8
+#define SNAP_HEIGHT    16
   {
     snap_cvars + 1,
     BINARY_LITERAL,
@@ -63,8 +63,8 @@ static help_t snap_help[] = {
     },
   },
 #define SNAP_JUMPCROUCH 1
-#define SNAP_CPM 2
-#define SNAP_GROUND 4 // TODO: Remove
+#define SNAP_CPM        2
+#define SNAP_GROUND     4 // TODO: Remove
   {
     snap_cvars + 3,
     Y | H,

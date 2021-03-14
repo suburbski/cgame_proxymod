@@ -46,7 +46,7 @@ int32_t  setVMPtr(int32_t arg0);
 int32_t  initVM(void);
 
 #define MAX_VERTS_ON_POLY 10
-#define MAX_MARK_POLYS 256
+#define MAX_MARK_POLYS    256
 
 //=================================================
 
@@ -134,7 +134,7 @@ typedef struct centity_s
 
 //======================================================================
 
-#define MAX_CONFIGSTRINGS 1024
+#define MAX_CONFIGSTRINGS   1024
 #define MAX_GAMESTATE_CHARS 16000
 
 typedef struct

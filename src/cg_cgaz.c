@@ -51,8 +51,8 @@ static help_t cgaz_help[] = {
     },
   },
 #define CGAZ_JUMPCROUCH 1
-#define CGAZ_CPM 2
-#define CGAZ_GROUND 4
+#define CGAZ_CPM        2
+#define CGAZ_GROUND     4
   {
     cgaz_cvars + 3,
     Y | H,

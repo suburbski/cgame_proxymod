@@ -49,19 +49,19 @@ typedef int32_t  sfxHandle_t;
 typedef int32_t  fileHandle_t;
 typedef int32_t  clipHandle_t;
 
-#define ARRAY_LEN(x) (sizeof(x) / sizeof(*(x)))
+#define ARRAY_LEN(x)    (sizeof(x) / sizeof(*(x)))
 #define STRARRAY_LEN(x) (ARRAY_LEN(x) - 1)
 
 // angle indexes
 #define PITCH 0 // up / down
-#define YAW 1   // left / right
-#define ROLL 2  // fall over
+#define YAW   1 // left / right
+#define ROLL  2 // fall over
 
 // the game guarantees that no string from the network will ever
 // exceed MAX_STRING_CHARS
-#define MAX_STRING_CHARS 1024  // max length of a string passed to Cmd_TokenizeString
+#define MAX_STRING_CHARS  1024 // max length of a string passed to Cmd_TokenizeString
 #define MAX_STRING_TOKENS 1024 // max tokens resulting from Cmd_TokenizeString
-#define MAX_TOKEN_CHARS 1024   // max length of an individual token
+#define MAX_TOKEN_CHARS   1024 // max length of an individual token
 
 #define BIG_INFO_STRING 8192 // used for system info key only
 
@@ -72,25 +72,25 @@ typedef int32_t  clipHandle_t;
 //
 #define MAX_MAP_AREA_BYTES 32 // bit vector of area visibility
 
-#define PROP_GAP_WIDTH 3
-#define PROP_SPACE_WIDTH 8
-#define PROP_HEIGHT 27
+#define PROP_GAP_WIDTH        3
+#define PROP_SPACE_WIDTH      8
+#define PROP_HEIGHT           27
 #define PROP_SMALL_SIZE_SCALE 0.75
 
 #define BLINK_DIVISOR 200
 #define PULSE_DIVISOR 75
 
-#define UI_LEFT 0x00000000 // default
-#define UI_CENTER 0x00000001
-#define UI_RIGHT 0x00000002
+#define UI_LEFT       0x00000000 // default
+#define UI_CENTER     0x00000001
+#define UI_RIGHT      0x00000002
 #define UI_FORMATMASK 0x00000007
-#define UI_SMALLFONT 0x00000010
-#define UI_BIGFONT 0x00000020 // default
-#define UI_GIANTFONT 0x00000040
+#define UI_SMALLFONT  0x00000010
+#define UI_BIGFONT    0x00000020 // default
+#define UI_GIANTFONT  0x00000040
 #define UI_DROPSHADOW 0x00000800
-#define UI_BLINK 0x00001000
-#define UI_INVERSE 0x00002000
-#define UI_PULSE 0x00004000
+#define UI_BLINK      0x00001000
+#define UI_INVERSE    0x00002000
+#define UI_PULSE      0x00004000
 
 /*
 ==============================================================
@@ -119,19 +119,19 @@ extern vec3_t bytedirs[NUMVERTEXNORMALS];
 
 // all drawing is done to a 640*480 virtual screen size
 // and will be automatically scaled to the real resolution
-#define SCREEN_WIDTH 640
+#define SCREEN_WIDTH  640
 #define SCREEN_HEIGHT 480
 
-#define TINYCHAR_WIDTH (SMALLCHAR_WIDTH)
+#define TINYCHAR_WIDTH  (SMALLCHAR_WIDTH)
 #define TINYCHAR_HEIGHT (SMALLCHAR_HEIGHT / 2)
 
-#define SMALLCHAR_WIDTH 8
+#define SMALLCHAR_WIDTH  8
 #define SMALLCHAR_HEIGHT 16
 
-#define BIGCHAR_WIDTH 16
+#define BIGCHAR_WIDTH  16
 #define BIGCHAR_HEIGHT 16
 
-#define GIANTCHAR_WIDTH 32
+#define GIANTCHAR_WIDTH  32
 #define GIANTCHAR_HEIGHT 48
 
 extern vec4_t colorBlack;
@@ -146,8 +146,8 @@ extern vec4_t colorLtGrey;
 extern vec4_t colorMdGrey;
 extern vec4_t colorDkGrey;
 
-#define DEG2RAD(a) ((a) * ((float)M_PI / 180.f))
-#define RAD2DEG(a) ((a) * (180.f / (float)M_PI))
+#define DEG2RAD(a)   ((a) * ((float)M_PI / 180.f))
+#define RAD2DEG(a)   ((a) * (180.f / (float)M_PI))
 #define RAD2SHORT(a) ((a) * (32768.f / (float)M_PI))
 #define SHORT2RAD(a) ((a) * ((float)M_PI / 32768.f))
 
@@ -155,26 +155,26 @@ extern vec3_t vec3_origin;
 extern vec3_t axisDefault[3];
 
 #if 1
-#  define DotProduct(x, y) ((x)[0] * (y)[0] + (x)[1] * (y)[1] + (x)[2] * (y)[2])
+#  define DotProduct(x, y)        ((x)[0] * (y)[0] + (x)[1] * (y)[1] + (x)[2] * (y)[2])
 #  define VectorSubtract(a, b, c) ((c)[0] = (a)[0] - (b)[0], (c)[1] = (a)[1] - (b)[1], (c)[2] = (a)[2] - (b)[2])
-#  define VectorAdd(a, b, c) ((c)[0] = (a)[0] + (b)[0], (c)[1] = (a)[1] + (b)[1], (c)[2] = (a)[2] + (b)[2])
-#  define VectorCopy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2])
-#  define VectorScale(v, s, o) ((o)[0] = (v)[0] * (s), (o)[1] = (v)[1] * (s), (o)[2] = (v)[2] * (s))
+#  define VectorAdd(a, b, c)      ((c)[0] = (a)[0] + (b)[0], (c)[1] = (a)[1] + (b)[1], (c)[2] = (a)[2] + (b)[2])
+#  define VectorCopy(a, b)        ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2])
+#  define VectorScale(v, s, o)    ((o)[0] = (v)[0] * (s), (o)[1] = (v)[1] * (s), (o)[2] = (v)[2] * (s))
 #  define VectorMA(v, s, b, o)                                                                                         \
     ((o)[0] = (v)[0] + (b)[0] * (s), (o)[1] = (v)[1] + (b)[1] * (s), (o)[2] = (v)[2] + (b)[2] * (s))
 #else
-#  define DotProduct(x, y) _DotProduct(x, y)
+#  define DotProduct(x, y)        _DotProduct(x, y)
 #  define VectorSubtract(a, b, c) _VectorSubtract(a, b, c)
-#  define VectorAdd(a, b, c) _VectorAdd(a, b, c)
-#  define VectorCopy(a, b) _VectorCopy(a, b)
-#  define VectorScale(v, s, o) _VectorScale(v, s, o)
-#  define VectorMA(v, s, b, o) _VectorMA(v, s, b, o)
+#  define VectorAdd(a, b, c)      _VectorAdd(a, b, c)
+#  define VectorCopy(a, b)        _VectorCopy(a, b)
+#  define VectorScale(v, s, o)    _VectorScale(v, s, o)
+#  define VectorMA(v, s, b, o)    _VectorMA(v, s, b, o)
 #endif
 
-#define VectorClear(a) ((a)[0] = (a)[1] = (a)[2] = 0)
-#define VectorNegate(a, b) ((b)[0] = -(a)[0], (b)[1] = -(a)[1], (b)[2] = -(a)[2])
+#define VectorClear(a)        ((a)[0] = (a)[1] = (a)[2] = 0)
+#define VectorNegate(a, b)    ((b)[0] = -(a)[0], (b)[1] = -(a)[1], (b)[2] = -(a)[2])
 #define VectorSet(v, x, y, z) ((v)[0] = (x), (v)[1] = (y), (v)[2] = (z))
-#define Vector4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
+#define Vector4Copy(a, b)     ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
 
 #define Byte4Copy(a, b) ((b)[0] = (a)[0], (b)[1] = (a)[1], (b)[2] = (a)[2], (b)[3] = (a)[3])
 
@@ -305,30 +305,30 @@ default values.
 */
 
 #define CVAR_ARCHIVE                                                                                                   \
-  0x0001                       // set to cause it to be saved to vars.rc
-                               // used for system variables, not for player
-                               // specific configurations
-#define CVAR_USERINFO 0x0002   // sent to server on connect or change
+  0x0001 // set to cause it to be saved to vars.rc
+         // used for system variables, not for player
+         // specific configurations
+#define CVAR_USERINFO   0x0002 // sent to server on connect or change
 #define CVAR_SERVERINFO 0x0004 // sent in response to front end requests
 #define CVAR_SYSTEMINFO 0x0008 // these cvars will be duplicated on all clients
 #define CVAR_INIT                                                                                                      \
   0x0010 // don't allow change from console at all,
          // but can be set from the command line
 #define CVAR_LATCH                                                                                                     \
-  0x0020                         // will only change when C code next does
-                                 // a Cvar_Get(), so it can't be changed
-                                 // without proper initialization.  modified
-                                 // will be set, even though the value hasn't
-                                 // changed yet
-#define CVAR_ROM 0x0040          // display only, cannot be set by user at all
+  0x0020 // will only change when C code next does
+         // a Cvar_Get(), so it can't be changed
+         // without proper initialization.  modified
+         // will be set, even though the value hasn't
+         // changed yet
+#define CVAR_ROM          0x0040 // display only, cannot be set by user at all
 #define CVAR_USER_CREATED 0x0080 // created by a set command
-#define CVAR_TEMP 0x0100         // can be set even when cheats are disabled, but is not archived
-#define CVAR_CHEAT 0x0200        // can not be changed if cheats are disabled
-#define CVAR_NORESTART 0x0400    // do not clear when a cvar_restart is issued
+#define CVAR_TEMP         0x0100 // can be set even when cheats are disabled, but is not archived
+#define CVAR_CHEAT        0x0200 // can not be changed if cheats are disabled
+#define CVAR_NORESTART    0x0400 // do not clear when a cvar_restart is issued
 
 #define CVAR_SERVER_CREATED 0x0800 // cvar was created by a server the client connected to.
-#define CVAR_VM_CREATED 0x1000     // cvar was created exclusively in one of the VMs.
-#define CVAR_PROTECTED 0x2000      // prevent modifying this var from VMs or the server
+#define CVAR_VM_CREATED     0x1000 // cvar was created exclusively in one of the VMs.
+#define CVAR_PROTECTED      0x2000 // prevent modifying this var from VMs or the server
 
 #define CVAR_NODEFAULT 0x4000 // do not write to config if matching with default value
 
@@ -339,7 +339,7 @@ default values.
 #define CVAR_ARCHIVE_ND (CVAR_ARCHIVE | CVAR_NODEFAULT)
 
 // These flags are only returned by the Cvar_Flags() function
-#define CVAR_MODIFIED 0x40000000    // Cvar was modified
+#define CVAR_MODIFIED    0x40000000 // Cvar was modified
 #define CVAR_NONEXISTENT 0x80000000 // Cvar doesn't exist.
 
 // nothing outside the Cvar_*() functions should modify these fields!
@@ -446,22 +446,22 @@ typedef struct
 #define SHORT2ANGLE(x) ((x) * (360.0 / 65536))
 
 #define GENTITYNUM_BITS 10 // don't need to send any more
-#define MAX_GENTITIES (1 << GENTITYNUM_BITS)
+#define MAX_GENTITIES   (1 << GENTITYNUM_BITS)
 
 // entitynums are communicated with GENTITY_BITS, so any reserved
 // values that are going to be communcated over the net need to
 // also be in this range
-#define ENTITYNUM_NONE (MAX_GENTITIES - 1)
-#define ENTITYNUM_WORLD (MAX_GENTITIES - 2)
+#define ENTITYNUM_NONE       (MAX_GENTITIES - 1)
+#define ENTITYNUM_WORLD      (MAX_GENTITIES - 2)
 #define ENTITYNUM_MAX_NORMAL (MAX_GENTITIES - 2)
 
 //=========================================================
 
 // bit field limits
-#define MAX_STATS 16
+#define MAX_STATS      16
 #define MAX_PERSISTANT 16
-#define MAX_POWERUPS 16
-#define MAX_WEAPONS 16
+#define MAX_POWERUPS   16
+#define MAX_WEAPONS    16
 
 #define MAX_PS_EVENTS 2
 
@@ -551,10 +551,10 @@ typedef struct playerState_s
 // usercmd_t->button bits, many of which are generated by the client system,
 // so they aren't game/cgame only definitions
 //
-#define BUTTON_ATTACK 1
-#define BUTTON_TALK 2 // displays talk balloon and disables actions
+#define BUTTON_ATTACK       1
+#define BUTTON_TALK         2 // displays talk balloon and disables actions
 #define BUTTON_USE_HOLDABLE 4
-#define BUTTON_GESTURE 8
+#define BUTTON_GESTURE      8
 #define BUTTON_WALKING                                                                                                 \
   16 // walking can't just be inferred from MOVE_RUN
      // because a key pressed late in the frame will
@@ -562,12 +562,12 @@ typedef struct playerState_s
      // walking will use different animations and
      // won't generate footsteps
 #define BUTTON_AFFIRMATIVE 32
-#define BUTTON_NEGATIVE 64
+#define BUTTON_NEGATIVE    64
 
-#define BUTTON_GETFLAG 128
+#define BUTTON_GETFLAG   128
 #define BUTTON_GUARDBASE 256
-#define BUTTON_PATROL 512
-#define BUTTON_FOLLOWME 1024
+#define BUTTON_PATROL    512
+#define BUTTON_FOLLOWME  1024
 
 #define BUTTON_ANY 2048 // any key whatsoever
 
@@ -661,10 +661,10 @@ typedef struct entityState_s
 
 // font support
 
-#define GLYPH_START 0
-#define GLYPH_END 255
+#define GLYPH_START     0
+#define GLYPH_END       255
 #define GLYPH_CHARSTART 32
-#define GLYPH_CHAREND 127
+#define GLYPH_CHAREND   127
 #define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
 typedef struct
 {

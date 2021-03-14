@@ -9,14 +9,14 @@
 #define REFENTITYNUM_MASK ((1 << REFENTITYNUM_BITS) - 1)
 // the last N-bit number (2^REFENTITYNUM_BITS - 1) is reserved for the special world refentity,
 //  and this is reflected by the value of MAX_REFENTITIES (which therefore is not a power-of-2)
-#define MAX_REFENTITIES ((1 << REFENTITYNUM_BITS) - 1)
+#define MAX_REFENTITIES    ((1 << REFENTITYNUM_BITS) - 1)
 #define REFENTITYNUM_WORLD ((1 << REFENTITYNUM_BITS) - 1)
 
 // renderfx flags
-#define RF_MINLIGHT 0x0001     // allways have some light (viewmodel, some items)
+#define RF_MINLIGHT     0x0001 // allways have some light (viewmodel, some items)
 #define RF_THIRD_PERSON 0x0002 // don't draw through eyes, only mirrors (player bodies, chat sprites)
 #define RF_FIRST_PERSON 0x0004 // only draw through eyes (view weapon, damage blood blob)
-#define RF_DEPTHHACK 0x0008    // for view weapon Z crunching
+#define RF_DEPTHHACK    0x0008 // for view weapon Z crunching
 
 #define RF_CROSSHAIR                                                                                                   \
   0x0010 // This item is a cross hair and will draw over everything similar to
@@ -39,7 +39,7 @@
 
 // refdef flags
 #define RDF_NOWORLDMODEL 0x0001 // used for player configuration screen
-#define RDF_HYPERSPACE 0x0004   // teleportation effect
+#define RDF_HYPERSPACE   0x0004 // teleportation effect
 
 typedef struct
 {
@@ -105,7 +105,7 @@ typedef struct
   float rotation;
 } refEntity_t;
 
-#define MAX_RENDER_STRINGS 8
+#define MAX_RENDER_STRINGS       8
 #define MAX_RENDER_STRING_LENGTH 32
 
 typedef struct

@@ -9,10 +9,10 @@
 
 #define LIGHTNING_RANGE 768
 
-#define MINS_Z -24
+#define MINS_Z             -24
 #define DEFAULT_VIEWHEIGHT 26
-#define CROUCH_VIEWHEIGHT 12
-#define DEAD_VIEWHEIGHT -16
+#define CROUCH_VIEWHEIGHT  12
+#define DEAD_VIEWHEIGHT    -16
 
 //
 // config strings are a general means of communicating variable length strings
@@ -57,19 +57,19 @@ typedef enum
 } weaponstate_t;
 
 // pmove->pm_flags
-#define PMF_DUCKED 1
-#define PMF_JUMP_HELD 2
-#define PMF_BACKWARDS_JUMP 8   // go into backwards land
-#define PMF_BACKWARDS_RUN 16   // coast down to backwards run
-#define PMF_TIME_LAND 32       // pm_time is time before rejump
-#define PMF_TIME_KNOCKBACK 64  // pm_time is an air-accelerate only time
+#define PMF_DUCKED         1
+#define PMF_JUMP_HELD      2
+#define PMF_BACKWARDS_JUMP 8 // go into backwards land
+#define PMF_BACKWARDS_RUN  16 // coast down to backwards run
+#define PMF_TIME_LAND      32 // pm_time is time before rejump
+#define PMF_TIME_KNOCKBACK 64 // pm_time is an air-accelerate only time
 #define PMF_TIME_WATERJUMP 256 // pm_time is waterjump
-#define PMF_RESPAWNED 512      // clear after attack and jump buttons come up
-#define PMF_USE_ITEM_HELD 1024
-#define PMF_GRAPPLE_PULL 2048 // pull towards grapple location
-#define PMF_FOLLOW 4096       // spectate following another player
-#define PMF_SCOREBOARD 8192   // spectate as a scoreboard
-#define PMF_INVULEXPAND 16384 // invulnerability sphere set to full size
+#define PMF_RESPAWNED      512 // clear after attack and jump buttons come up
+#define PMF_USE_ITEM_HELD  1024
+#define PMF_GRAPPLE_PULL   2048 // pull towards grapple location
+#define PMF_FOLLOW         4096 // spectate following another player
+#define PMF_SCOREBOARD     8192 // spectate as a scoreboard
+#define PMF_INVULEXPAND    16384 // invulnerability sphere set to full size
 
 #define PMF_PROMODE 32768 // is CPM physic
 
@@ -132,26 +132,26 @@ typedef enum
 } statIndex_t;
 
 // entityState_t->eFlags
-#define EF_DEAD 0x00000001            // don't draw a foe marker over players with EF_DEAD
-#define EF_TELEPORT_BIT 0x00000004    // toggled every time the origin abruptly changes
-#define EF_AWARD_EXCELLENT 0x00000008 // draw an excellent sprite
-#define EF_PLAYER_EVENT 0x00000010
-#define EF_BOUNCE 0x00000010         // for missiles
-#define EF_BOUNCE_HALF 0x00000020    // for missiles
-#define EF_AWARD_GAUNTLET 0x00000040 // draw a gauntlet sprite
-#define EF_NODRAW 0x00000080         // may have an event, but no model (unspawned items)
-#define EF_FIRING 0x00000100         // for lightning gun
-#define EF_KAMIKAZE 0x00000200
-#define EF_MOVER_STOP 0x00000400       // will push otherwise
-#define EF_AWARD_CAP 0x00000800        // draw the capture sprite
-#define EF_TALK 0x00001000             // draw a talk balloon
-#define EF_CONNECTION 0x00002000       // draw a connection trouble sprite
-#define EF_VOTED 0x00004000            // already cast a vote
+#define EF_DEAD             0x00000001 // don't draw a foe marker over players with EF_DEAD
+#define EF_TELEPORT_BIT     0x00000004 // toggled every time the origin abruptly changes
+#define EF_AWARD_EXCELLENT  0x00000008 // draw an excellent sprite
+#define EF_PLAYER_EVENT     0x00000010
+#define EF_BOUNCE           0x00000010 // for missiles
+#define EF_BOUNCE_HALF      0x00000020 // for missiles
+#define EF_AWARD_GAUNTLET   0x00000040 // draw a gauntlet sprite
+#define EF_NODRAW           0x00000080 // may have an event, but no model (unspawned items)
+#define EF_FIRING           0x00000100 // for lightning gun
+#define EF_KAMIKAZE         0x00000200
+#define EF_MOVER_STOP       0x00000400 // will push otherwise
+#define EF_AWARD_CAP        0x00000800 // draw the capture sprite
+#define EF_TALK             0x00001000 // draw a talk balloon
+#define EF_CONNECTION       0x00002000 // draw a connection trouble sprite
+#define EF_VOTED            0x00004000 // already cast a vote
 #define EF_AWARD_IMPRESSIVE 0x00008000 // draw an impressive sprite
-#define EF_AWARD_DEFEND 0x00010000     // draw a defend sprite
-#define EF_AWARD_ASSIST 0x00020000     // draw a assist sprite
-#define EF_AWARD_DENIED 0x00040000     // denied
-#define EF_TEAMVOTED 0x00080000        // already cast a team vote
+#define EF_AWARD_DEFEND     0x00010000 // draw a defend sprite
+#define EF_AWARD_ASSIST     0x00020000 // draw a assist sprite
+#define EF_AWARD_DENIED     0x00040000 // denied
+#define EF_TEAMVOTED        0x00080000 // already cast a team vote
 
 // NOTE: may not have more than 16
 typedef enum
@@ -213,13 +213,13 @@ typedef struct animation_s
 } animation_t;
 
 // content masks
-#define MASK_ALL (-1)
-#define MASK_SOLID (CONTENTS_SOLID)
+#define MASK_ALL         (-1)
+#define MASK_SOLID       (CONTENTS_SOLID)
 #define MASK_PLAYERSOLID (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY)
-#define MASK_DEADSOLID (CONTENTS_SOLID | CONTENTS_PLAYERCLIP)
-#define MASK_WATER (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME)
-#define MASK_OPAQUE (CONTENTS_SOLID | CONTENTS_SLIME | CONTENTS_LAVA)
-#define MASK_SHOT (CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE)
+#define MASK_DEADSOLID   (CONTENTS_SOLID | CONTENTS_PLAYERCLIP)
+#define MASK_WATER       (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME)
+#define MASK_OPAQUE      (CONTENTS_SOLID | CONTENTS_SLIME | CONTENTS_LAVA)
+#define MASK_SHOT        (CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE)
 
 //
 // entityState_t->eType
