@@ -43,6 +43,7 @@ if(MSVC)
     /WX
     /W4
     /wd4996
+    /wd5105 # disable Windows SDK 10.0.19041.0 warnings with C11
   )
   target_link_options(cgame_obj PRIVATE /WX)
 else()
