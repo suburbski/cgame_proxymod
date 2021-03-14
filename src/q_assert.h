@@ -7,6 +7,8 @@
 
 #define FLT_DECIMAL_DIG 9
 
+#define static_assert(x, m) _Static_assert(x, m)
+
 #ifdef NDEBUG
 #  define assert(x)
 #  define ASSERT_TRUE(x)

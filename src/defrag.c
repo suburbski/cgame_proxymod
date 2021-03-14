@@ -3,6 +3,8 @@
 #include "cg_local.h"
 #include "q_assert.h"
 
+#include <stdlib.h>
+
 static defrag_t const* defrag_version;
 
 defrag_t defrag_versions[] = {
@@ -39,7 +41,7 @@ qboolean init_defrag(uint32_t crc32sum)
   defrag_version = NULL;
 
   // Report error about unsupported defrag version
-  assert(ARRAY_LEN(defrag_versions) > 0);
+  static_assert(ARRAY_LEN(defrag_versions) > 0, "");
   size_t len = strlen(defrag_versions[0].name);
   for (size_t i = 1, n = ARRAY_LEN(defrag_versions); i < n; ++i)
   {

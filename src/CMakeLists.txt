@@ -36,7 +36,7 @@ target_include_directories(cgame_obj
 
 target_compile_definitions(cgame_obj PRIVATE BUILDING_SHARED)
 
-target_compile_features(cgame_obj PUBLIC c_std_99)
+target_compile_features(cgame_obj PUBLIC c_std_11)
 
 if(MSVC)
   target_compile_options(cgame_obj PRIVATE
