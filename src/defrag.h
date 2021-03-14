@@ -1,13 +1,22 @@
 #ifndef DEFRAG_H
 #define DEFRAG_H
 
-#define DF_VERSION "1.91.26"
+#include "q_shared.h"
 
-#define DF_CRC32SUM 0xC2840107
+typedef struct
+{
+  char const* name;
 
-#define DF_PPS_OFFSET 0x000E9DA0
+  uint32_t crc32sum;
 
-#define DF_CG_DRAW2D_DEFRAG  0x00002956
-#define DF_CG_DRAW2D_VANILLA 0x0001CBC9
+  int32_t pps_offset;
+
+  int32_t cg_draw2d_defrag;
+  int32_t cg_draw2d_vanilla;
+} defrag_t;
+
+qboolean init_defrag(uint32_t crc32sum);
+
+defrag_t const* defrag(void);
 
 #endif // DEFRAG_H

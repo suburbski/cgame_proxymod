@@ -22,6 +22,7 @@ add_library(cgame_obj OBJECT
   cg_view.c
   cg_vm.c
   compass.c
+  defrag.c
   g_missile.c
   g_weapon.c
   help.c

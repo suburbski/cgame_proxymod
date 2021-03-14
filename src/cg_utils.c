@@ -38,5 +38,5 @@ snapshot_t const* getSnap(void)
 playerState_t const* getPs(void)
 {
   if (cvar_getInteger("g_synchronousClients")) return &getSnap()->ps;
-  return (playerState_t const*)VM_ArgPtr(DF_PPS_OFFSET);
+  return (playerState_t const*)VM_ArgPtr(defrag()->pps_offset);
 }

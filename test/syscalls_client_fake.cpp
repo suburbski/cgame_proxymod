@@ -20,7 +20,7 @@ class SyscallsClientFake::Impl
 public:
   Impl() : snapshots_(PACKET_BACKUP)
   {
-    // Fake predicted player state, VM_ArgPtr(DF_PPS_OFFSET)
+    // Fake predicted player state, VM_ArgPtr(defrag()->pps_offset)
     std::memset(&g_VM, 0, sizeof(g_VM));
     g_VM.dataSegment = reinterpret_cast<byte*>(&pps_);
   }

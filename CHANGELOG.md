@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add support for defrag versions 1.91.24 and 1.91.25.
 
 ## [1.3.1] - 2020-05-05
 ### Changed

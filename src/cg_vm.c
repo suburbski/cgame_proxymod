@@ -70,6 +70,8 @@ static void VM_Run(vm_t* vm)
   dataSegment     = vm->dataSegment;
   dataSegmentMask = vm->dataSegmentMask;
 
+  defrag_t const* const df = defrag();
+
   // keep going until opPointer is NULL
   // opPointer is set in OP_LEAVE, stored in the function stack
   // VM_Exec sets this to NULL before calling so that as soon as vmMain is done, execution stops
@@ -120,7 +122,7 @@ static void VM_Run(vm_t* vm)
 #endif
       {
         intptr_t const subFunc = (opPointer - 2 - vm->codeSegment) / 2;
-        if (subFunc == DF_CG_DRAW2D_DEFRAG || subFunc == DF_CG_DRAW2D_VANILLA)
+        if (subFunc == df->cg_draw2d_defrag || subFunc == df->cg_draw2d_vanilla)
         {
           draw_hud();
         }
@@ -712,15 +714,10 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
 
   // check defrag version
   uint32_t const crc32sum = crc32_reflect((byte const*)header, vm->fileSize);
-  if (crc32sum != DF_CRC32SUM)
+  if (!init_defrag(crc32sum))
   {
     free(vmBase);
     memset(vm, 0, sizeof(vm_t));
-    trap_Error(vaf(
-      "Proxymod only works with defrag %s. "
-      "Download it from https://q3defrag.org/files/defrag/defrag_%s.zip.\n",
-      DF_VERSION,
-      DF_VERSION));
     return qfalse;
   }
 
