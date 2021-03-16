@@ -10,6 +10,7 @@
 
 static vmCvar_t snap;
 static vmCvar_t snap_trueness;
+static vmCvar_t snap_min_speed;
 static vmCvar_t snap_speed;
 static vmCvar_t snap_yh;
 static vmCvar_t snap_def_rgba;
@@ -22,6 +23,7 @@ static vmCvar_t snap_45_alt_rgba;
 static cvarTable_t snap_cvars[] = {
   { &snap, "mdd_snap", "0b00011", CVAR_ARCHIVE_ND },
   { &snap_trueness, "mdd_snap_trueness", "0b000", CVAR_ARCHIVE_ND },
+  { &snap_min_speed, "mdd_snap_min_speed", "0", CVAR_ARCHIVE_ND },
   { &snap_speed, "mdd_snap_speed", "320", CVAR_ARCHIVE_ND },
   { &snap_yh, "mdd_snap_yh", "176 4", CVAR_ARCHIVE_ND },
   { &snap_def_rgba, "mdd_snap_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
@@ -66,49 +68,49 @@ static help_t snap_help[] = {
 #define SNAP_CPM        2
 #define SNAP_GROUND     4 // TODO: Remove
   {
-    snap_cvars + 3,
+    snap_cvars + 4,
     Y | H,
     {
       "mdd_snap_yh X X",
     },
   },
   {
-    snap_cvars + 4,
+    snap_cvars + 5,
     RGBA,
     {
       "mdd_snap_def_rgba X X X X",
     },
   },
   {
-    snap_cvars + 5,
+    snap_cvars + 6,
     RGBA,
     {
       "mdd_snap_alt_rgba X X X X",
     },
   },
   {
-    snap_cvars + 6,
+    snap_cvars + 7,
     RGBA,
     {
       "mdd_snap_hl_def_rgba X X X X",
     },
   },
   {
-    snap_cvars + 7,
+    snap_cvars + 8,
     RGBA,
     {
       "mdd_snap_hl_alt_rgba X X X X",
     },
   },
   {
-    snap_cvars + 8,
+    snap_cvars + 9,
     RGBA,
     {
       "mdd_snap_45_def_rgba X X X X",
     },
   },
   {
-    snap_cvars + 9,
+    snap_cvars + 10,
     RGBA,
     {
       "mdd_snap_45_alt_rgba X X X X",
@@ -179,7 +181,7 @@ void draw_snap(void)
 
   s.pm.tracemask = s.pm_ps.pm_type == PM_DEAD ? MASK_PLAYERSOLID & ~CONTENTS_BODY : MASK_PLAYERSOLID;
 
-  PmoveSingle();
+  if (VectorLengthSquared2(s.pm_ps.velocity) >= snap_min_speed.value * snap_min_speed.value) PmoveSingle();
 }
 
 static void PmoveSingle(void)
@@ -646,7 +648,7 @@ static void one_zone_draw(
 static void one_snap_draw(int yaw)
 {
   ParseVec(snap_yh.string, s.graph_yh, 2);
-  for (uint8_t i = 0; i < 6; ++i) ParseVec(snap_cvars[4 + i].vmCvar->string, s.graph_rgba[i], 4);
+  for (uint8_t i = 0; i < 6; ++i) ParseVec(snap_cvars[5 + i].vmCvar->string, s.graph_rgba[i], 4);
 
   if (snap.integer & SNAP_BLUERED) // blue/red (min/max accel)
   {
