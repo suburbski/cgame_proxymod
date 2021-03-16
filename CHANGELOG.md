@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Don't show the compass and the timer hud by default.
 - Make compass, CampingGaz-HUD and Snap-HUD thinner by default.
+- Rename `mdd_cgaz_speed` cvar to `mdd_cgaz_min_speed`.
 
 ## [1.3.1] - 2020-05-05
 ### Changed

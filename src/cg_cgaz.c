@@ -10,7 +10,7 @@
 
 static vmCvar_t cgaz;
 static vmCvar_t cgaz_trueness;
-static vmCvar_t cgaz_speed;
+static vmCvar_t cgaz_min_speed;
 static vmCvar_t cgaz_yh;
 static vmCvar_t cgaz_rgbaNoAccel;
 static vmCvar_t cgaz_rgbaPartialAccel;
@@ -20,7 +20,7 @@ static vmCvar_t cgaz_rgbaTurnZone;
 static cvarTable_t cgaz_cvars[] = {
   { &cgaz, "mdd_cgaz", "0b1", CVAR_ARCHIVE_ND },
   { &cgaz_trueness, "mdd_cgaz_trueness", "0b110", CVAR_ARCHIVE_ND },
-  { &cgaz_speed, "mdd_cgaz_speed", "1", CVAR_ARCHIVE_ND },
+  { &cgaz_min_speed, "mdd_cgaz_min_speed", "1", CVAR_ARCHIVE_ND },
   { &cgaz_yh, "mdd_cgaz_yh", "180 8", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaNoAccel, "mdd_cgaz_rgbaNoAccel", ".25 .25 .25 .5", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaPartialAccel, "mdd_cgaz_rgbaPartialAccel", "0 1 0 .5", CVAR_ARCHIVE_ND },
@@ -156,7 +156,7 @@ void draw_cgaz(void)
 
   s.pm.tracemask = s.pm_ps.pm_type == PM_DEAD ? MASK_PLAYERSOLID & ~CONTENTS_BODY : MASK_PLAYERSOLID;
 
-  if (VectorLengthSquared2(s.pm_ps.velocity) >= cgaz_speed.value * cgaz_speed.value) PmoveSingle();
+  if (VectorLengthSquared2(s.pm_ps.velocity) >= cgaz_min_speed.value * cgaz_min_speed.value) PmoveSingle();
 }
 
 static void PmoveSingle(void)
