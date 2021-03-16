@@ -11,7 +11,7 @@
 static vmCvar_t snap;
 static vmCvar_t snap_trueness;
 static vmCvar_t snap_min_speed;
-static vmCvar_t snap_speed;
+static vmCvar_t snap_scale;
 static vmCvar_t snap_yh;
 static vmCvar_t snap_def_rgba;
 static vmCvar_t snap_alt_rgba;
@@ -24,7 +24,7 @@ static cvarTable_t snap_cvars[] = {
   { &snap, "mdd_snap", "0b00011", CVAR_ARCHIVE_ND },
   { &snap_trueness, "mdd_snap_trueness", "0b000", CVAR_ARCHIVE_ND },
   { &snap_min_speed, "mdd_snap_min_speed", "0", CVAR_ARCHIVE_ND },
-  { &snap_speed, "mdd_snap_speed", "320", CVAR_ARCHIVE_ND },
+  { &snap_scale, "mdd_snap_scale", "1", CVAR_ARCHIVE_ND },
   { &snap_yh, "mdd_snap_yh", "176 4", CVAR_ARCHIVE_ND },
   { &snap_def_rgba, "mdd_snap_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
   { &snap_alt_rgba, "mdd_snap_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
@@ -294,7 +294,7 @@ Handles user intended acceleration
 */
 static void PM_Accelerate(float const wishspeed, float const accel)
 {
-  float a = accel * (snap_speed.value == 320 ? wishspeed : wishspeed / 320 * snap_speed.value) * pm_frametime;
+  float a = accel * (snap_scale.value * wishspeed) * pm_frametime;
   if (a > 50)
     a = 50; // 2.56 * 15 * 1.3 ~ 50
             //        ^^   ^^^
@@ -312,7 +312,7 @@ static void PM_SlickAccelerate(float const wishspeed, float const accel)
   // TODO
   // float const g          = s.pm_ps.gravity * pm_frametime;
   // float const g_squared  = g * g;
-  float a = accel * (snap_speed.value == 320 ? wishspeed : wishspeed / 320 * snap_speed.value) * pm_frametime;
+  float a = accel * (snap_scale.value * wishspeed) * pm_frametime;
   if (a > 50)
     a = 50; // 2.56 * 15 * 1.3 ~ 50
             //        ^^   ^^^
