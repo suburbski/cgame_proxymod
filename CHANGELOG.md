@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add support for defrag versions 1.91.24 and 1.91.25.
 
+### Changed
+- Don't show the compass and the timer hud by default.
+- Make compass, CampingGaz-HUD and Snap-HUD thinner by default.
+
 ## [1.3.1] - 2020-05-05
 ### Changed
 - Only support defrag version 1.91.26.

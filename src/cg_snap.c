@@ -23,7 +23,7 @@ static cvarTable_t snap_cvars[] = {
   { &snap, "mdd_snap", "0b00011", CVAR_ARCHIVE_ND },
   { &snap_trueness, "mdd_snap_trueness", "0b000", CVAR_ARCHIVE_ND },
   { &snap_speed, "mdd_snap_speed", "320", CVAR_ARCHIVE_ND },
-  { &snap_yh, "mdd_snap_yh", "180 12", CVAR_ARCHIVE_ND },
+  { &snap_yh, "mdd_snap_yh", "176 4", CVAR_ARCHIVE_ND },
   { &snap_def_rgba, "mdd_snap_def_rgba", ".9 .5 .7 .7", CVAR_ARCHIVE_ND },
   { &snap_alt_rgba, "mdd_snap_alt_rgba", ".05 .05 .05 .15", CVAR_ARCHIVE_ND },
   { &snap_hl_def_rgba, "mdd_snap_hl_def_rgba", ".5 .7 .9 .7", CVAR_ARCHIVE_ND },

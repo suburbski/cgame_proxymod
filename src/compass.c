@@ -12,8 +12,8 @@ static vmCvar_t compass_ticks_rgba;
 static vmCvar_t compass_arrow_rgbas;
 
 static cvarTable_t compass_cvars[] = {
-  { &compass, "mdd_compass", "0b111", CVAR_ARCHIVE_ND },
-  { &compass_yh, "mdd_compass_yh", "192 12", CVAR_ARCHIVE_ND },
+  { &compass, "mdd_compass", "0b000", CVAR_ARCHIVE_ND },
+  { &compass_yh, "mdd_compass_yh", "188 8", CVAR_ARCHIVE_ND },
   { &compass_quadrant_rgbas,
     "mdd_compass_quadrant_rgbas",
     "1 1 0 .25 / 0 1 0 .25 / 0 0 1 .25 / 1 0 1 .25",

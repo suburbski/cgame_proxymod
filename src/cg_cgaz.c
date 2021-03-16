@@ -21,7 +21,7 @@ static cvarTable_t cgaz_cvars[] = {
   { &cgaz, "mdd_cgaz", "0b1", CVAR_ARCHIVE_ND },
   { &cgaz_trueness, "mdd_cgaz_trueness", "0b110", CVAR_ARCHIVE_ND },
   { &cgaz_speed, "mdd_cgaz_speed", "1", CVAR_ARCHIVE_ND },
-  { &cgaz_yh, "mdd_cgaz_yh", "180 12", CVAR_ARCHIVE_ND },
+  { &cgaz_yh, "mdd_cgaz_yh", "180 8", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaNoAccel, "mdd_cgaz_rgbaNoAccel", ".25 .25 .25 .5", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaPartialAccel, "mdd_cgaz_rgbaPartialAccel", "0 1 0 .5", CVAR_ARCHIVE_ND },
   { &cgaz_rgbaFullAccel, "mdd_cgaz_rgbaFullAccel", "0 .25 .25 .5", CVAR_ARCHIVE_ND },
