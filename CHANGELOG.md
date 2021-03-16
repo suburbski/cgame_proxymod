@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add support for defrag versions 1.91.24 and 1.91.25.
+- Add support for defrag versions 1.91.24, 1.91.25, 1.91.26 and 1.91.27.
 
 ### Changed
 - Don't show the compass and the timer hud by default.
