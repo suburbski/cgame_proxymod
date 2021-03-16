@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.4.0] - 2021-03-16
 ### Added
 - Add support for defrag versions 1.91.24, 1.91.25, 1.91.26 and 1.91.27.
 - New cvar `mdd_snap_min_speed`. Like cvar `mdd_cgaz_min_speed`, a minimum velocity is required to show the hud.
@@ -72,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial CampingGaz-HUD which is more accurate/flexible than `df_hud_cgaz`.
 - Initial Snap-HUD which is more accurate/flexible than `scr_hud_snap`.
 
-[Unreleased]: ../../compare/v1.3.1...HEAD
+[Unreleased]: ../../compare/v1.4.0...HEAD
+[1.4.0]: ../../compare/v1.3.1...v1.4.0
 [1.3.1]: ../../compare/v1.3.0...v1.3.1
 [1.3.0]: ../../compare/v1.2.0...v1.3.0
 [1.2.0]: ../../compare/v1.1.3...v1.2.0

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(cgame_proxymod
-  VERSION 1.3.1 # <mayor>.<minor>.<patch>
+  VERSION 1.4.0 # <mayor>.<minor>.<patch>
 )
 
 option(BINARY_NAME "Name of the cgame_proxymod binary." "cgame")
