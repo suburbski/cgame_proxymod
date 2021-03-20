@@ -302,14 +302,16 @@ jobs:
 
             // prepare body
             let body = `Please see [CHANGELOG](CHANGELOG.md#Unreleased) for all notable changes.\n`;
-            body += `### Commits\n`;
-            for (const [i, commit] of commits.entries()) {
-              const message = commit.commit.message.slice(0, commit.commit.message.indexOf("\n"));
-              body += `- [\`${commit.sha.slice(0, 7)}\`](${commit.html_url}) ${message}`;
-              if (pull_requests[i].length > 0) {
-                body += ` (${pull_requests[i].join(", ")})`;
+            if (commits.length > 0) {
+              body += `### Commits\n`;
+              for (const [i, commit] of commits.entries()) {
+                const message = commit.commit.message.slice(0, commit.commit.message.indexOf("\n"));
+                body += `- [\`${commit.sha.slice(0, 7)}\`](${commit.html_url}) ${message}`;
+                if (pull_requests[i].length > 0) {
+                  body += ` (${pull_requests[i].join(", ")})`;
+                }
+                body += `\n`;
               }
-              body += `\n`;
             }
             core.setOutput("body", body);
 
