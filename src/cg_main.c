@@ -177,7 +177,7 @@ Will perform callbacks to make the loading info screen update.
 */
 static void CG_Init(int32_t clientNum)
 {
-  trap_Print(vaf("^7[^1m^3D^1d^7] cgame-proxy: %s\n", VERSION));
+  trap_Print(vaf("^7[^1m^3D^1d^7] cgame-proxy %s\n", VERSION));
 
   // clear everything
   memset(&cgs, 0, sizeof(cgs));

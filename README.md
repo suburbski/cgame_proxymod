@@ -1,4 +1,6 @@
-# mDd client Proxymod:
+# mDd client Proxymod
+
+[![build](../../workflows/build/badge.svg)](../../actions?query=workflow%3Abuild)
 
 This proxymod helps players to train their abilities in the Quake III Arena modification DeFRaG. It adds hud elements to the standard defrag hud.
 
@@ -14,7 +16,7 @@ Quick and easy:
   2. Download and copy this binary into the *defrag* folder of your Quake III Arena directory.
   3. Put `seta vm_cgame 0` in your config file (e.g. *defrag/autoexec.cfg*).
 
-You've correctly installed the proxymod if you load your favorite map and you see the following colored text in the console: `[mDd] cgame-proxy: x.x.x`.
+You've correctly installed the proxymod if you load your favorite map and you see the following colored text in the console: `[mDd] cgame-proxy X.X.X`.
 
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for notable changes between [releases](../../releases).

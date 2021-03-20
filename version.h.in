@@ -2,6 +2,6 @@
 #define VERSION_H
 
 // The configured options and settings
-#define VERSION "@PROJECT_VERSION@"
+#define VERSION "@CGAME_VERSION@"
 
 #endif // VERSION_H
