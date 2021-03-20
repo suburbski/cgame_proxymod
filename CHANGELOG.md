@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Correctly position Snap-HUD when roll is not zero. ([#8](https://github.com/Jelvan1/cgame_proxymod/pull/8))
 
 ## [1.4.0] - 2021-03-16
 ### Added
