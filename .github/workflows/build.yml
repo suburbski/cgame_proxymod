@@ -1,0 +1,332 @@
+name: build 
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.clang-format'
+      - '.gitignore'
+      - '.vscode/**'
+  push:
+    branches:
+      - master
+    tags:
+      - v*.*.*
+    paths-ignore:
+      - '**.md'
+      - '.clang-format'
+      - '.gitignore'
+      - '.vscode/**'
+
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: ${{ matrix.config }} Windows ${{ matrix.arch }}-bit (${{ matrix.c }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        c: [gcc]
+        config: [Release]
+        arch: [32, 64]
+        include:
+          - arch: 32
+            name: cgamex86
+            msystem: MINGW32
+            prefix: mingw-w64-i686
+          - arch: 64
+            name: cgamex86_64
+            msystem: MINGW64
+            prefix: mingw-w64-x86_64
+          - c: gcc
+            cxx: g++
+ 
+    defaults:
+      run:
+        shell: msys2 {0}
+ 
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: ${{ matrix.prefix }}-cmake ${{ matrix.prefix }}-ninja ${{ matrix.prefix }}-${{ matrix.c }}
+        msystem: ${{ matrix.msystem }}
+        path-type: minimal
+        release: false
+        update: false
+ 
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # fetch annotated tags for proper versioning
+        submodules: recursive
+ 
+    - name: Configure
+      run: cmake
+        -S .
+        -B build
+        -G Ninja
+        -DBINARY_NAME=${{ matrix.name }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m${{ matrix.arch }}"
+        -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m${{ matrix.arch }}"
+        -DCMAKE_C_COMPILER=${{ matrix.c }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+ 
+    - name: Build
+      run: cmake --build build
+ 
+    - name: Test
+      working-directory: build
+      run: ctest --no-tests=error --output-on-failure
+ 
+    - name: Install
+      run: cmake --install build --prefix bin --strip
+ 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: artifact
+        path: bin/*.dll
+        if-no-files-found: error
+        retention-days: 5
+
+  ubuntu:
+    name: ${{ matrix.config }} Ubuntu ${{ matrix.arch }}-bit (${{ matrix.c }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        c: [gcc]
+        config: [Release]
+        arch: [32, 64]
+        include:
+          - arch: 32
+            name: cgamei386
+          - arch: 64
+            name: cgamex86_64
+          - c: gcc
+            cxx: g++
+
+    steps:
+    - name: Install tools
+      run: |
+        sudo apt-get -qq update
+        if [ ${{ matrix.arch }} -eq 32 ]; then
+          sudo apt-get -y install gcc-multilib g++-multilib
+        fi
+        sudo apt-get -y install ninja-build
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # fetch annotated tags for proper versioning
+        submodules: recursive
+
+    - name: Configure
+      run: cmake
+        -S .
+        -B build
+        -G Ninja
+        -DBINARY_NAME=${{ matrix.name }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m${{ matrix.arch }}"
+        -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m${{ matrix.arch }}"
+        -DCMAKE_C_COMPILER=${{ matrix.c }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Test
+      working-directory: build
+      run: ctest --no-tests=error --output-on-failure
+
+    - name: Install
+      run: cmake --install build --prefix bin --strip
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: artifact
+        path: bin/*.so
+        if-no-files-found: error
+        retention-days: 5
+
+  macos:
+    name: ${{ matrix.config }} macOS 64-bit (${{ matrix.c }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        c: [gcc]
+        config: [Release]
+        include:
+          - c: gcc
+            cxx: g++
+ 
+    steps:
+    - name: Install tools
+      run: brew install ninja
+ 
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # fetch annotated tags for proper versioning
+        submodules: recursive
+ 
+    - name: Configure
+      run: cmake
+        -S .
+        -B build
+        -G Ninja
+        -DBINARY_NAME=cgamex86_64
+        -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64"
+        -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m64"
+        -DCMAKE_C_COMPILER=${{ matrix.c }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+ 
+    - name: Build
+      run: cmake --build build
+ 
+    - name: Test
+      working-directory: build
+      run: ctest --no-tests=error --output-on-failure
+ 
+    - name: Install
+      run: cmake --install build --prefix bin --strip
+ 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: artifact
+        path: bin/*.dylib
+        if-no-files-found: error
+        retention-days: 5
+
+  pre-release:
+    name: Pre-release
+    if: (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')) && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [windows, ubuntu, macos]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # fetch annotated tags for proper versioning
+          submodules: recursive
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: bin/
+
+      - uses: actions/github-script@v3.1.0
+        id: script
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            // delete 'latest' pre-release
+            try {
+              const prerelease = await github.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: "latest",
+              });
+              console.log(`Found latest pre-release`)
+              await github.repos.deleteRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: prerelease.data.id,
+              });
+              console.log(`Deleted latest pre-release`);
+            } catch (e) {
+              console.log(`Failed deleting latest pre-release: ${e.message}`);
+            }
+
+            // create/update 'latest' tag
+            try {
+              await github.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/latest",
+                sha: context.sha,
+              });
+              console.log(`Created new \`latest\` tag`);
+            } catch (e) {
+              await github.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "tags/latest",
+                sha: context.sha,
+              });
+              console.log(`Updated \`latest\` tag`);
+            }
+
+            // compare commits
+            let commits = [];
+            try {
+              const latest_release = await github.repos.getLatestRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+              console.log(`Found latest release \`${latest_release.data.tag_name}\``);
+              const r_commits = await github.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: latest_release.data.tag_name,
+                head: "latest",
+              });
+              commits = r_commits.data.commits;
+              console.log(`Found ${commits.length} commits comparing \`${latest_release.data.tag_name}\`...\`latest\``);
+            } catch (e) {
+              commits = await github.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: "master",
+              });
+              console.log(`Found ${commits.length} commits comparing \`master\`...\`latest\``);
+            }
+
+            // find associated pull requests
+            const find_pull_requests = async (commit) => {
+              let pull_requests = [];
+              try {
+                const r_pull_requests = await github.repos.listPullRequestsAssociatedWithCommit({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  commit_sha: commit.sha,
+                });
+                if (r_pull_requests.data.length > 0) {
+                  console.log(`Found ${r_pull_requests.data.length} pull requests for commit ${commit.sha}`);
+                  for (const pull_request of r_pull_requests.data) {
+                    pull_requests.push(`[#${pull_request.number}](${pull_request.html_url})`);
+                  }
+                }
+              } catch (e) {
+                core.setFailed(`Failed retrieving associated pull requests for commit ${commit.sha}: ${e.message}`);
+              }
+              return pull_requests;
+            };
+            const pull_requests = await Promise.all(commits.map(commit => find_pull_requests(commit)));
+
+            // prepare body
+            let body = `Please see [CHANGELOG](CHANGELOG.md#Unreleased) for all notable changes.\n`;
+            body += `### Commits\n`;
+            for (const [i, commit] of commits.entries()) {
+              body += `- [\`${commit.sha.slice(0, 7)}\`](${commit.html_url}) ${commit.commit.message}`;
+              if (pull_requests[i].length > 0) {
+                body += ` (${pull_requests[i].join(", ")})`;
+              }
+              body += `\n`;
+            }
+            core.setOutput("body", body);
+
+      - uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: ${{ steps.script.outputs.body }}
+          draft: false
+          prerelease: true
+          files: |
+            bin/*.dll
+            bin/*.so
+            bin/*.dylib
+          name: Pre-release
+          tag_name: latest

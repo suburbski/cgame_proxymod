@@ -1,6 +1,6 @@
-name: CMake
+name: build_all
 
-on: [push, pull_request]
+on: workflow_dispatch
 
 jobs:
   windows_gcc:
