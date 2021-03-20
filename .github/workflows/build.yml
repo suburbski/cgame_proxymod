@@ -275,12 +275,7 @@ jobs:
               commits = r_commits.data.commits;
               console.log(`Found ${commits.length} commits comparing \`${latest_release.data.tag_name}\`...\`latest\``);
             } catch (e) {
-              commits = await github.repos.listCommits({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                sha: "master",
-              });
-              console.log(`Found ${commits.length} commits comparing \`master\`...\`latest\``);
+              console.log(`No commits found`);
             }
 
             // find associated pull requests
