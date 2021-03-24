@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Pitch hud which marks one or more pitch angles, e.g. `mdd_pitch 71 66`.
+
 ### Fixed
 - Correctly position Snap-HUD when roll is not zero. ([#8](https://github.com/Jelvan1/cgame_proxymod/pull/8))
 

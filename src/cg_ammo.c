@@ -168,7 +168,7 @@ void draw_ammo(void)
     }
 
     ParseVec(ammo_text_xh.string, ammo_.text_xh, 2);
-    qboolean const alignRight = ammo_.graph_xywh[0] + ammo_.graph_xywh[2] / 2.f > SCREEN_WIDTH / 2;
+    qboolean const alignRight = ammo_.graph_xywh[0] + ammo_.graph_xywh[2] / 2.f > cgs.screenWidth / 2;
     CG_DrawText(
       alignRight ? ammo_.graph_xywh[0] - ammo_.text_xh[0]
                  : ammo_.graph_xywh[0] + ammo_.graph_xywh[2] + ammo_.text_xh[0],

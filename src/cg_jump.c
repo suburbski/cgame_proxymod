@@ -2,6 +2,7 @@
 
 #include "cg_cvar.h"
 #include "cg_draw.h"
+#include "cg_local.h"
 #include "cg_utils.h"
 #include "help.h"
 
@@ -308,7 +309,7 @@ void draw_jump(void)
   if (jump.integer & 2)
   {
     ParseVec(jump_text_xh.string, jump_.text_xh, 2);
-    qboolean const alignRight = jump_.graph_xywh[0] + jump_.graph_xywh[2] / 2.f > SCREEN_WIDTH / 2;
+    qboolean const alignRight = jump_.graph_xywh[0] + jump_.graph_xywh[2] / 2.f > cgs.screenWidth / 2;
     CG_DrawText(
       alignRight ? jump_.graph_xywh[0] - jump_.text_xh[0]
                  : jump_.graph_xywh[0] + jump_.graph_xywh[2] + jump_.text_xh[0],

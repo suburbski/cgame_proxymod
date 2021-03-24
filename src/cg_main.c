@@ -198,8 +198,9 @@ static void CG_Init(int32_t clientNum)
 
   // get the rendering configuration from the client system
   trap_GetGlconfig(&cgs.glconfig); // rendering configuration
-  cgs.screenXScale = cgs.glconfig.vidWidth / 640.f;
-  cgs.screenYScale = cgs.glconfig.vidHeight / 480.f;
+  cgs.screenXScale = cgs.glconfig.vidWidth / (float)SCREEN_WIDTH;
+  cgs.screenWidth  = SCREEN_WIDTH; // = cgs.glconfig.vidWidth / cgs.screenXScale)
+  cgs.screenHeight = cgs.glconfig.vidHeight / cgs.screenXScale;
 
   // get the gamestate from the client system
   trap_GetGameState(&cgs.gameState);

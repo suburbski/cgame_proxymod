@@ -243,29 +243,58 @@ void CG_Draw3DModel(
   trap_R_RenderScene(&refdef);
 }
 
-static inline qboolean AngleInFov(float angle)
+static inline qboolean AngleInFovY(float pitch)
 {
-  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
-  float const half_fov_x = cg.refdef.fov_x / 2;
-  return angle > -half_fov_x && angle < half_fov_x;
+  ASSERT_FLOAT_EQ(pitch, AngleNormalizePI(pitch));
+  float const half_fov_y = cg.refdef.fov_y / 2;
+  return pitch > -half_fov_y && pitch < half_fov_y;
 }
 
-static inline float Projection(float angle)
+static inline qboolean AngleInFovX(float yaw)
+{
+  ASSERT_FLOAT_EQ(yaw, AngleNormalizePI(yaw));
+  float const half_fov_x = cg.refdef.fov_x / 2;
+  return yaw > -half_fov_x && yaw < half_fov_x;
+}
+
+static inline float ProjectionY(float angle)
+{
+  ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
+  float const half_fov_y = cg.refdef.fov_y / 2;
+  if (angle >= half_fov_y) return 0;
+  if (angle <= -half_fov_y) return cgs.screenHeight;
+
+  ASSERT_TRUE(AngleInFovY(angle));
+  switch (mdd_projection.integer)
+  {
+  case 0: // Rectilinear projection. Breaks with fov >=180.
+    return cgs.screenHeight / 2 * (1 + tanf(angle) / tanf(half_fov_y));
+  case 1: // Cylindrical projection. Breaks with fov >360.
+    return cgs.screenHeight / 2 * (1 + angle / half_fov_y);
+  case 2: // Panini projection. Breaks with fov >=360.
+    return cgs.screenHeight / 2 * (1 + tanf(angle / 2) / tanf(half_fov_y / 2));
+  default:
+    assert(0);
+    return 0;
+  }
+}
+
+static inline float ProjectionX(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_x = cg.refdef.fov_x / 2;
   if (angle >= half_fov_x) return 0;
-  if (angle <= -half_fov_x) return SCREEN_WIDTH;
+  if (angle <= -half_fov_x) return cgs.screenWidth;
 
-  ASSERT_TRUE(AngleInFov(angle));
+  ASSERT_TRUE(AngleInFovX(angle));
   switch (mdd_projection.integer)
   {
   case 0: // Rectilinear projection. Breaks with fov >=180.
-    return SCREEN_WIDTH / 2 * (1 - tanf(angle) / tanf(half_fov_x));
+    return cgs.screenWidth / 2 * (1 - tanf(angle) / tanf(half_fov_x));
   case 1: // Cylindrical projection. Breaks with fov >360.
-    return SCREEN_WIDTH / 2 * (1 - angle / half_fov_x);
+    return cgs.screenWidth / 2 * (1 - angle / half_fov_x);
   case 2: // Panini projection. Breaks with fov >=360.
-    return SCREEN_WIDTH / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
+    return cgs.screenWidth / 2 * (1 - tanf(angle / 2) / tanf(half_fov_x / 2));
   default:
     assert(0);
     return 0;
@@ -283,7 +312,7 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
 {
   if (fabsf(end - start) > 2 * (float)M_PI)
   {
-    range_t const ret = { 0, SCREEN_WIDTH, qfalse };
+    range_t const ret = { 0, cgs.screenWidth, qfalse };
     return ret;
   }
 
@@ -299,8 +328,17 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
     end             = tmp;
   }
 
-  range_t const ret = { Projection(start), Projection(end), split };
+  range_t const ret = { ProjectionX(start), ProjectionX(end), split };
   return ret;
+}
+
+void CG_DrawLinePitch(float angle, float pitch, float x, float w, float h, vec4_t const color)
+{
+  angle = AngleNormalizePI(angle - pitch);
+  if (!AngleInFovY(angle)) return; // TODO: thick lines => if half of line goes out of screen, nothing will be drawn
+
+  float const y = ProjectionY(angle);
+  CG_FillRect(x, y - h / 2, w, h, color);
 }
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color)
@@ -313,25 +351,25 @@ void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t
   else
   {
     CG_FillRect(0, y, range.x1, h, color);
-    CG_FillRect(range.x2, y, SCREEN_WIDTH - range.x2, h, color);
+    CG_FillRect(range.x2, y, cgs.screenWidth - range.x2, h, color);
   }
 }
 
 void CG_DrawLineYaw(float angle, float yaw, float y, float w, float h, vec4_t const color)
 {
   angle = AngleNormalizePI(angle - yaw);
-  if (!AngleInFov(angle)) return;
+  if (!AngleInFovX(angle)) return; // TODO: thick lines => if half of line goes out of screen, nothing will be drawn
 
-  float const x = Projection(angle);
+  float const x = ProjectionX(angle);
   CG_FillRect(x - w / 2, y, w, h, color);
 }
 
 void CG_DrawCharYaw(float angle, float yaw, float y, float w, float h, uint8_t ch, vec4_t const color)
 {
   angle = AngleNormalizePI(angle - yaw);
-  if (!AngleInFov(angle)) return;
+  if (!AngleInFovX(angle)) return; // TODO: wide chars => if half of char goes out of screen, nothing will be drawn
 
-  float const x = Projection(angle);
+  float const x = ProjectionX(angle);
   trap_R_SetColor(color);
   CG_DrawChar(x - w / 2, y, w, h, ch);
   trap_R_SetColor(NULL);

@@ -9,7 +9,7 @@ typedef struct
 } helpTable_t;
 
 static size_t      helpTableIdx = 0;
-static helpTable_t helpTable[8];
+static helpTable_t helpTable[9];
 
 static void preHelp(cvarKind_t kind, char const* defaultString);
 static void postHelp(cvarKind_t kind);

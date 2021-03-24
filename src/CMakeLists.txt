@@ -26,6 +26,7 @@ add_library(cgame_obj OBJECT
   g_missile.c
   g_weapon.c
   help.c
+  pitch.c
   q_math.c
   q_shared.c
 )

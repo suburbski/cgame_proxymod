@@ -31,6 +31,7 @@
 #include "cg_snap.h"
 #include "cg_timer.h"
 #include "compass.h"
+#include "pitch.h"
 #include "version.h"
 
 static vmCvar_t hud;
@@ -56,6 +57,7 @@ void init_hud(void)
   init_entityStates();
   init_gl();
   init_jump();
+  init_pitch();
   init_rl();
   init_snap();
   init_timer();
@@ -73,6 +75,7 @@ void update_hud(void)
   update_entityStates();
   update_gl();
   update_jump();
+  update_pitch();
   update_rl();
   update_snap();
   update_timer();
@@ -88,6 +91,7 @@ void draw_hud(void)
   draw_compass();
   draw_cgaz();
   draw_snap();
+  draw_pitch();
 
   draw_ammo();
   draw_jump();
