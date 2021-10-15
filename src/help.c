@@ -9,7 +9,7 @@ typedef struct
 } helpTable_t;
 
 static size_t      helpTableIdx = 0;
-static helpTable_t helpTable[9];
+static helpTable_t helpTable[10];
 
 static void preHelp(cvarKind_t kind, char const* defaultString);
 static void postHelp(cvarKind_t kind);
@@ -20,7 +20,10 @@ void init_help(help_t const* help, size_t size)
 #ifndef NDEBUG
   for (size_t i = 0; i < size; ++i)
   {
-    assert(!Q_strncmp(help[i].cvarTable->cvarName, help[i].message[0], (int)strlen(help[i].cvarTable->cvarName)));
+    size_t const len = strlen(help[i].cvarTable->cvarName);
+    assert(strlen(help[i].message[0]) > len);
+    assert(!Q_strncmp(help[i].message[0], help[i].cvarTable->cvarName, (int)len));
+    assert(help[i].message[0][len] == ' ');
   }
 #endif
   helpTable[helpTableIdx].help = help;

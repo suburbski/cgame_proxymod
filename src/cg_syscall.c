@@ -20,6 +20,7 @@
 */
 #include "cg_syscall.h"
 
+#include "bbox.h"
 #include "cg_entity.h"
 #include "cg_gl.h"
 #include "cg_local.h"
@@ -481,6 +482,7 @@ intptr_t QDECL CG_SysCalls(uint8_t* memoryBase, int32_t cmd, int32_t* args)
   case CG_R_RENDERSCENE:
     draw_gl();
     draw_rl();
+    draw_bbox();
 
     syscall(cmd, ptr(0));
     return 0;

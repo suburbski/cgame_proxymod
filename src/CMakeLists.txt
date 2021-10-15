@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 add_library(cgame_obj OBJECT
+  bbox.c
   bg_misc.c
   bg_pmove.c
   cg_ammo.c

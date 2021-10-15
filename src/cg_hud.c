@@ -20,6 +20,7 @@
 */
 #include "cg_hud.h"
 
+#include "bbox.h"
 #include "cg_ammo.h"
 #include "cg_cgaz.h"
 #include "cg_cvar.h"
@@ -53,6 +54,7 @@ void init_hud(void)
   init_cvars(hud_cvars, ARRAY_LEN(hud_cvars));
 
   init_ammo();
+  init_bbox();
   init_cgaz();
   init_compass();
   init_entityStates();
@@ -76,6 +78,7 @@ void update_hud(void)
   if (!hud.integer) return;
 
   update_ammo();
+  update_bbox();
   update_cgaz();
   update_compass();
   update_entityStates();
