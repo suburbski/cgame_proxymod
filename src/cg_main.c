@@ -28,6 +28,8 @@
 
 static void CG_Init(int32_t clientNum);
 
+static void CG_Shutdown(void);
+
 /* CLIENT to VM */
 intptr_t vmMain(
   int32_t cmd,
@@ -118,7 +120,7 @@ intptr_t vmMain(
     break;
 
   case CG_SHUTDOWN: // void (*CG_Shutdown)( void )
-    ret = callVM_Destroy();
+    CG_Shutdown();
     ASSERT_EQ(ret, 0);
     break;
   }
@@ -211,4 +213,23 @@ static void CG_Init(int32_t clientNum)
   cgs.media.deferShader = trap_R_RegisterShaderNoMip("gfx/2d/defer");
 
   initVM();
+}
+
+/*
+=================
+CG_Shutdown
+
+Called before every level change or subsystem restart
+=================
+*/
+void CG_Shutdown(void)
+{
+  // some mods may need to do cleanup work here,
+  // like closing files or archiving session data
+
+  del_hud();
+
+  intptr_t const ret = callVM_Destroy();
+  (void)ret;
+  ASSERT_EQ(ret, 0);
 }

@@ -28,9 +28,14 @@ void init_help(help_t const* help, size_t size)
   ++helpTableIdx;
 }
 
+void del_help(void)
+{
+  helpTableIdx = 0;
+}
+
 void cvar_help(char const* cvarName)
 {
-  for (size_t i = 0; i < ARRAY_LEN(helpTable); ++i)
+  for (size_t i = 0; i < helpTableIdx; ++i)
   {
     for (size_t j = 0; j < helpTable[i].size; ++j)
     {

@@ -31,6 +31,7 @@
 #include "cg_snap.h"
 #include "cg_timer.h"
 #include "compass.h"
+#include "help.h"
 #include "pitch.h"
 #include "version.h"
 
@@ -61,6 +62,11 @@ void init_hud(void)
   init_rl();
   init_snap();
   init_timer();
+}
+
+void del_hud(void)
+{
+  del_help();
 }
 
 void update_hud(void)

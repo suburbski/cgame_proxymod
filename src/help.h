@@ -24,6 +24,8 @@ typedef struct
 
 void init_help(help_t const* help, size_t size);
 
+void del_help(void);
+
 void cvar_help(char const* cvarName);
 
 void cvars_with_help(void);
