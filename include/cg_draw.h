@@ -50,6 +50,7 @@ void CG_Draw3DModel(
   vec3_t const origin,
   vec3_t const angles);
 
+void CG_FillAnglePitch(float start, float end, float pitch, float x, float w, vec4_t const color);
 void CG_DrawLinePitch(float angle, float pitch, float x, float w, float h, vec4_t const color);
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color);

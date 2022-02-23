@@ -261,8 +261,8 @@ static inline float ProjectionY(float angle)
 {
   ASSERT_FLOAT_EQ(angle, AngleNormalizePI(angle));
   float const half_fov_y = cg.refdef.fov_y / 2;
-  if (angle >= half_fov_y) return 0;
-  if (angle <= -half_fov_y) return cgs.screenHeight;
+  if (angle <= -half_fov_y) return 0;
+  if (angle >= half_fov_y) return cgs.screenHeight;
 
   ASSERT_TRUE(AngleInFovY(angle));
   switch (mdd_projection.integer)
@@ -308,7 +308,31 @@ typedef struct
   qboolean split;
 } range_t;
 
-static inline range_t AnglesToRange(float start, float end, float yaw)
+static inline range_t AnglesToRangeY(float start, float end, float pitch)
+{
+  if (fabsf(end - start) > 2 * (float)M_PI)
+  {
+    range_t const ret = { 0, cgs.screenHeight, qfalse };
+    return ret;
+  }
+
+  qboolean split = end < start;
+  start          = AngleNormalizePI(start - pitch);
+  end            = AngleNormalizePI(end - pitch);
+
+  if (end < start)
+  {
+    split           = !split;
+    float const tmp = start;
+    start           = end;
+    end             = tmp;
+  }
+
+  range_t const ret = { ProjectionY(start), ProjectionY(end), split };
+  return ret;
+}
+
+static inline range_t AnglesToRangeX(float start, float end, float yaw)
 {
   if (fabsf(end - start) > 2 * (float)M_PI)
   {
@@ -332,6 +356,20 @@ static inline range_t AnglesToRange(float start, float end, float yaw)
   return ret;
 }
 
+void CG_FillAnglePitch(float start, float end, float pitch, float x, float w, vec4_t const color)
+{
+  range_t const range = AnglesToRangeY(start, end, pitch);
+  if (!range.split)
+  {
+    CG_FillRect(x, range.x1, w, range.x2 - range.x1, color);
+  }
+  else
+  {
+    CG_FillRect(x, 0, w, range.x1, color);
+    CG_FillRect(x, range.x2, w, cgs.screenHeight - range.x2, color);
+  }
+}
+
 void CG_DrawLinePitch(float angle, float pitch, float x, float w, float h, vec4_t const color)
 {
   angle = AngleNormalizePI(angle - pitch);
@@ -343,7 +381,7 @@ void CG_DrawLinePitch(float angle, float pitch, float x, float w, float h, vec4_
 
 void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t const color)
 {
-  range_t const range = AnglesToRange(start, end, yaw);
+  range_t const range = AnglesToRangeX(start, end, yaw);
   if (!range.split)
   {
     CG_FillRect(range.x1, y, range.x2 - range.x1, h, color);
