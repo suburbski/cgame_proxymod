@@ -391,14 +391,17 @@ static void PM_AirMove(void)
     }
     else
     {
-      if (ANGLE2SHORT(s.pm_ps.viewangles[ROLL]) % 32768 == 0) // Fullbeat zones are only symmetric with horizontal roll (or pitch)
+      // Fullbeat zones are only symmetric with horizontal roll (or pitch)
+      if (ANGLE2SHORT(s.pm_ps.viewangles[ROLL]) % 32768 == 0)
       {
         // Always show the zones for holding 2 keys
         if (s.pm.cmd.forwardmove)
           s.pm.cmd.rightmove = s.pm.cmd.forwardmove;
         else
           s.pm.cmd.forwardmove = s.pm.cmd.rightmove;
-        PM_UpdateWishvel(); // At this point wishvel is only used to position the hud based on view direction and pressed keys.
+
+        // At this point wishvel is only used to position the hud based on view direction and pressed keys.
+        PM_UpdateWishvel();
       }
       PM_Accelerate(wishspeed, pm_airaccelerate);
     }

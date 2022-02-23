@@ -110,7 +110,7 @@ static void CG_AddBoundingBox(void)
   if (s.pm_ps->pm_type >= PM_SPECTATOR) return;
 
   // if they don't exist, forget it
-  if (/*!s.bboxShader || */!s.bboxShader_nocull) return;
+  if (/*!s.bboxShader || */ !s.bboxShader_nocull) return;
 
   if (s.pm_ps->pm_flags & PMF_DUCKED)
   {
