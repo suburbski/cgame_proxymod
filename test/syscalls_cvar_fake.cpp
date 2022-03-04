@@ -13,11 +13,13 @@ class Cvar
 public:
   Cvar(char const* string, std::int32_t flags) : flags_(flags)
   {
+    assert(string);
     set(string);
   }
 
   void set(char const* string)
   {
+    assert(string);
     string_  = string;
     value_   = static_cast<float>(std::atof(string));
     integer_ = std::atoi(string);
@@ -77,6 +79,7 @@ public:
   {
     assert(var_name);
     assert(buffer);
+    assert(bufsize > 0);
 
     auto const* const cvar = find(var_name);
     if (!cvar || cvar->flags_ & flag)
@@ -85,7 +88,7 @@ public:
     }
     else
     {
-      std::strncpy(buffer, cvar->string_.c_str(), bufsize - 1);
+      std::strncpy(buffer, cvar->string_.c_str(), static_cast<std::size_t>(bufsize - 1));
       buffer[bufsize - 1] = '\0';
     }
   }

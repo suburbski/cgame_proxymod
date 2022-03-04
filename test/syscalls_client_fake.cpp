@@ -25,6 +25,12 @@ public:
     g_VM.dataSegment = reinterpret_cast<byte*>(&pps_);
   }
 
+  ~Impl()
+  {
+    assert(g_VM.dataSegment == reinterpret_cast<byte*>(&pps_));
+    g_VM.dataSegment = nullptr;
+  }
+
   void CL_GetCurrentSnapshotNumber(std::int32_t* snapshotNumber, std::int32_t* serverTime) const
   {
     assert(snapshotNumber);
