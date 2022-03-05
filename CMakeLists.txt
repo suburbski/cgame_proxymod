@@ -4,7 +4,7 @@ project(cgame_proxymod
   VERSION 1.4.0 # <mayor>.<minor>.<patch>
 )
 
-option(BINARY_NAME "Name of the cgame_proxymod binary." "cgame")
+set(BINARY_NAME cgame CACHE STRING "Name of the cgame_proxymod binary")
 
 # set cgame version:
 #   release     X.X.X
@@ -68,8 +68,11 @@ endif()
 
 add_subdirectory(src)
 
-enable_testing()
-set(CMAKE_CXX_STANDARD 17)           # set C++ standard for googletest
-set(INSTALL_GTEST OFF CACHE BOOL "") # disable installation of googletest
-add_subdirectory(googletest)
-add_subdirectory(test)
+option(ENABLE_TESTING "Enable the tests" ON)
+if(ENABLE_TESTING)
+  enable_testing()
+  set(CMAKE_CXX_STANDARD 17)           # set C++ standard for googletest
+  set(INSTALL_GTEST OFF CACHE BOOL "") # disable installation of googletest
+  add_subdirectory(googletest)
+  add_subdirectory(test)
+endif()

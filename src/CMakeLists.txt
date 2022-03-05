@@ -65,12 +65,11 @@ endif()
 
 set_target_properties(cgame_obj PROPERTIES
   C_VISIBILITY_PRESET hidden
-  C_VISIBILITY_INLINES_HIDDEN 1
   POSITION_INDEPENDENT_CODE ON
 )
 
 add_library(${BINARY_NAME} SHARED $<TARGET_OBJECTS:cgame_obj>)
 set_target_properties(${BINARY_NAME} PROPERTIES
-  PREFIX "" # remove "lib" prefix
+  PREFIX "" IMPORT_PREFIX "" # remove "lib" prefix
 )
 install(TARGETS ${BINARY_NAME} DESTINATION .)

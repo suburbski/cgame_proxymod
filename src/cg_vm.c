@@ -22,15 +22,9 @@
 */
 #include "cg_vm.h"
 
-#include "cg_ammo.h"
-#include "cg_cgaz.h"
 #include "cg_hud.h"
-#include "cg_jump.h"
 #include "cg_local.h"
-#include "cg_snap.h"
 #include "cg_syscall.h"
-#include "cg_timer.h"
-#include "compass.h"
 #include "defrag.h"
 #include "q_assert.h"
 
