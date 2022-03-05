@@ -1,4 +1,4 @@
-name: build 
+name: build
 
 on:
   pull_request:
@@ -41,11 +41,11 @@ jobs:
             prefix: mingw-w64-x86_64
           - c: gcc
             cxx: g++
- 
+
     defaults:
       run:
         shell: msys2 {0}
- 
+
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -54,12 +54,12 @@ jobs:
         path-type: minimal
         release: false
         update: false
- 
-    - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # fetch annotated tags for proper versioning
         submodules: recursive
- 
+
     - name: Configure
       run: cmake
         -S .
@@ -71,18 +71,18 @@ jobs:
         -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m${{ matrix.arch }}"
         -DCMAKE_C_COMPILER=${{ matrix.c }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
- 
+
     - name: Build
       run: cmake --build build
- 
+
     - name: Test
       working-directory: build
       run: ctest --no-tests=error --output-on-failure
- 
+
     - name: Install
       run: cmake --install build --prefix bin --strip
- 
-    - uses: actions/upload-artifact@v2
+
+    - uses: actions/upload-artifact@v3
       with:
         name: artifact
         path: bin/*.dll
@@ -115,7 +115,7 @@ jobs:
         fi
         sudo apt-get -y install ninja-build
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # fetch annotated tags for proper versioning
         submodules: recursive
@@ -142,7 +142,7 @@ jobs:
     - name: Install
       run: cmake --install build --prefix bin --strip
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: artifact
         path: bin/*.so
@@ -155,21 +155,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        c: [gcc]
+        c: [clang]
         config: [Release]
         include:
-          - c: gcc
-            cxx: g++
- 
+          - c: clang
+            cxx: clang++
+
     steps:
     - name: Install tools
       run: brew install ninja
- 
-    - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # fetch annotated tags for proper versioning
         submodules: recursive
- 
+
     - name: Configure
       run: cmake
         -S .
@@ -179,20 +179,22 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64"
         -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m64"
-        -DCMAKE_C_COMPILER=${{ matrix.c }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
- 
+        -DCMAKE_C_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.c }}
+        -DCMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.cxx }}
+        # clang 13.0.0 hangs while building cg_vm.c (related to branching macro UOP()) => use clang 13.0.1
+        # see https://github.com/actions/virtual-environments/blob/main/images/macos/macos-11-Readme.md#language-and-runtime
+
     - name: Build
       run: cmake --build build
- 
+
     - name: Test
       working-directory: build
       run: ctest --no-tests=error --output-on-failure
- 
+
     - name: Install
       run: cmake --install build --prefix bin --strip
- 
-    - uses: actions/upload-artifact@v2
+
+    - uses: actions/upload-artifact@v3
       with:
         name: artifact
         path: bin/*.dylib
@@ -206,30 +208,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # fetch annotated tags for proper versioning
           submodules: recursive
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: bin/
 
-      - uses: actions/github-script@v3.1.0
+      - uses: actions/github-script@v6
         id: script
         with:
-          github-token: ${{ github.token }}
           script: |
             // delete 'latest' pre-release
             try {
-              const prerelease = await github.repos.getReleaseByTag({
+              const prerelease = await github.rest.repos.getReleaseByTag({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag: "latest",
               });
               console.log(`Found latest pre-release`)
-              await github.repos.deleteRelease({
+              await github.rest.repos.deleteRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 release_id: prerelease.data.id,
@@ -241,7 +242,7 @@ jobs:
 
             // create/update 'latest' tag
             try {
-              await github.git.createRef({
+              await github.rest.git.createRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref: "refs/tags/latest",
@@ -249,7 +250,7 @@ jobs:
               });
               console.log(`Created new \`latest\` tag`);
             } catch (e) {
-              await github.git.updateRef({
+              await github.rest.git.updateRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref: "tags/latest",
@@ -261,12 +262,12 @@ jobs:
             // compare commits
             let commits = [];
             try {
-              const latest_release = await github.repos.getLatestRelease({
+              const latest_release = await github.rest.repos.getLatestRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
               });
               console.log(`Found latest release \`${latest_release.data.tag_name}\``);
-              const r_commits = await github.repos.compareCommits({
+              const r_commits = await github.rest.repos.compareCommits({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 base: latest_release.data.tag_name,
@@ -282,7 +283,7 @@ jobs:
             const find_pull_requests = async (commit) => {
               let pull_requests = [];
               try {
-                const r_pull_requests = await github.repos.listPullRequestsAssociatedWithCommit({
+                const r_pull_requests = await github.rest.repos.listPullRequestsAssociatedWithCommit({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   commit_sha: commit.sha,
@@ -316,8 +317,6 @@ jobs:
             core.setOutput("body", body);
 
       - uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           body: ${{ steps.script.outputs.body }}
           draft: false
@@ -328,3 +327,4 @@ jobs:
             bin/*.dylib
           name: Pre-release
           tag_name: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
