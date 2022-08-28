@@ -181,7 +181,7 @@ jobs:
         -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m64"
         -DCMAKE_C_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.c }}
         -DCMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.cxx }}
-        # clang 13.0.0 hangs while building cg_vm.c (related to branching macro UOP()) => use clang 13.0.1
+        # clang 13.0.0 hangs while building cg_vm.c (related to branching macro UOP()) => use clang 13.0.1 or higher
         # see https://github.com/actions/virtual-environments/blob/main/images/macos/macos-11-Readme.md#language-and-runtime
 
     - name: Build
@@ -320,11 +320,11 @@ jobs:
         with:
           body: ${{ steps.script.outputs.body }}
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             bin/*.dll
             bin/*.so
             bin/*.dylib
-          name: Pre-release
+          name: Latest release
           tag_name: latest
           token: ${{ secrets.GITHUB_TOKEN }}
