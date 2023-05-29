@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pitch hud which marks one or more pitch angles, e.g. `mdd_pitch 71 66`.
 - Bounding box `mdd_bbox`. It uses shader `bbox_nocull` and draws the full bbox with `1` and only the bottom with `2`.
 
+### Changed
+- Don't draw hud when using freecam, `cg_draw2D 0` or `+scores`.
+
 ### Fixed
 - Correctly position Snap-HUD when roll is not zero. ([#8](https://github.com/Jelvan1/cgame_proxymod/pull/8))
 

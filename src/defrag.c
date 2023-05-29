@@ -12,29 +12,29 @@ defrag_t defrag_versions[] = {
     "1.91.24",  // name
     0xF9C2764A, // crc32sum
     0x000E9D70, // pps_offset
-    0x00002924, // cg_draw2d_defrag
-    0x0001CB74, // cg_draw2d_vanilla
+    0x00002948, // cg_draw2d_defrag (0x00002924)
+    0x0001CBAF, // cg_draw2d_vanilla (0x0001CB74)
   },
   {
     "1.91.25",  // name
     0x04150518, // crc32sum
     0x000E9D98, // pps_offset
-    0x00002924, // cg_draw2d_defrag
-    0x0001CB95, // cg_draw2d_vanilla
+    0x00002948, // cg_draw2d_defrag (0x00002924)
+    0x0001CBD0, // cg_draw2d_vanilla (0x0001CB95)
   },
   {
     "1.91.26",  // name
     0xC2840107, // crc32sum
     0x000E9DA0, // pps_offset
-    0x00002956, // cg_draw2d_defrag
-    0x0001CBC9, // cg_draw2d_vanilla
+    0x0000297A, // cg_draw2d_defrag (0x00002956)
+    0x0001CC04, // cg_draw2d_vanilla (0x0001CBC9)
   },
   {
     "1.91.27",  // name
     0x8D53765B, // crc32sum
     0x000EA09C, // pps_offset
-    0x000029E5, // cg_draw2d_defrag
-    0x0001CCF1, // cg_draw2d_vanilla
+    0x00002A09, // cg_draw2d_defrag (0x000029E5)
+    0x0001CD2C, // cg_draw2d_vanilla (0x0001CCF1)
   },
 };
 

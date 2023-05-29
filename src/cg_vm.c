@@ -82,6 +82,14 @@ static void VM_Run(vm_t* vm)
     // move to the next opcode
     opPointer += 2;
 
+    {
+      intptr_t const offset = (opPointer - 2 - vm->codeSegment) / 2;
+      if (offset == df->cg_draw2d_vanilla || offset == df->cg_draw2d_defrag)
+      {
+        draw_hud();
+      }
+    }
+
     // here's the magic
     switch (op)
     {
@@ -114,14 +122,6 @@ static void VM_Run(vm_t* vm)
       // trap_Print(vaf("OP_ENTER: %d\n", nbfunc));
       ++nbfunc;
 #endif
-      {
-        intptr_t const subFunc = (opPointer - 2 - vm->codeSegment) / 2;
-        if (subFunc == df->cg_draw2d_defrag || subFunc == df->cg_draw2d_vanilla)
-        {
-          draw_hud();
-        }
-      }
-
       vm->opBase -= param;
       *((int32_t*)(dataSegment + vm->opBase) + 1) = *opStack++;
       break;
