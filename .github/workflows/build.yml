@@ -179,10 +179,8 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -m64"
         -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -m64"
-        -DCMAKE_C_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.c }}
-        -DCMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/${{ matrix.cxx }}
-        # clang 13.0.0 hangs while building cg_vm.c (related to branching macro UOP()) => use clang 13.0.1 or higher
-        # see https://github.com/actions/virtual-environments/blob/main/images/macos/macos-11-Readme.md#language-and-runtime
+        -DCMAKE_C_COMPILER=${{ matrix.c }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
 
     - name: Build
       run: cmake --build build
