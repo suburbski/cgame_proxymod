@@ -36,7 +36,7 @@ defrag_t defrag_versions[] = {
     0x00002A09, // cg_draw2d_defrag (0x000029E5)
     0x0001CD2C, // cg_draw2d_vanilla (0x0001CCF1)
   },
-  // TODO: 1.91.28 requires VM_MAGIC_VER2 support
+  // 1.91.28 requires VM_MAGIC_VER2 support
   {
     "1.91.29",  // name
     0xE5F9882A, // crc32sum

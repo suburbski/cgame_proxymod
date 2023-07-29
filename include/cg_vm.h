@@ -25,11 +25,7 @@
 
 #include "q_shared.h"
 
-// magic number is stored in file as 44 14 72 12
-#define VM_MAGIC     0x12721444
-#define VM_MAGIC_BIG 0x44147212
-
-#define MAX_QPATH 64
+#define VM_MAGIC 0x12721444
 
 typedef enum
 {
@@ -98,13 +94,16 @@ typedef enum
 typedef struct
 {
   int32_t vmMagic;
+
   int32_t instructionCount;
+
   int32_t codeOffset;
   int32_t codeLength;
+
   int32_t dataOffset;
   int32_t dataLength;
-  int32_t litLength; /* ( dataLength - litLength ) should be byteswapped on load */
-  int32_t bssLength; /* zero filled memory appended to datalength */
+  int32_t litLength; // ( dataLength - litLength ) should be byteswapped on load
+  int32_t bssLength; // zero filled memory appended to datalength
 } vmHeader_t;
 
 typedef struct vm_s
@@ -130,10 +129,6 @@ typedef struct vm_s
   /* memory */
   int32_t memorySize;
   byte*   memory;
-
-  qboolean   swapped;  /* was this file byteswapped? (is the server big-endian) */
-  int32_t    fileSize; /* .qvm file size (for qmmvm_status) */
-  vmHeader_t header;   /* store header information (useful later on) */
 
   /* non-API function hooking */
   int32_t hook_realfunc; /* address for a VM function to call after a hook completes (0 = don't call) */
@@ -163,8 +158,5 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem);
 void     VM_Destroy(vm_t* vm);
 qboolean VM_Restart(vm_t* vm, qboolean savemem);
 void*    VM_ArgPtr(int32_t intValue);
-void*    VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue);
-int32_t  int_byteswap(int32_t i);
-short    short_byteswap(short s);
 
 #endif // CG_VM_H

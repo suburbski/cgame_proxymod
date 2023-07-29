@@ -2,6 +2,18 @@
 
 #include <stddef.h>
 
+int32_t LongSwap(int32_t l)
+{
+  byte b1, b2, b3, b4;
+
+  b1 = l & 255;
+  b2 = (l >> 8) & 255;
+  b3 = (l >> 16) & 255;
+  b4 = (l >> 24) & 255;
+
+  return ((int32_t)b1 << 24) + ((int32_t)b2 << 16) + ((int32_t)b3 << 8) + b4;
+}
+
 int Q_stricmpn(const char* s1, const char* s2, int n)
 {
   int c1, c2;

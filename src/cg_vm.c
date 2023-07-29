@@ -43,8 +43,6 @@
 //---
 // vm = pointer to VM
 
-#define byteswap int_byteswap
-
 static void VM_Run(vm_t* vm)
 {
   vmOps_t op;
@@ -642,6 +640,88 @@ static uint32_t crc32_reflect(byte const* buf, int32_t len)
   return crc ^ 0xFFFFFFFFUL;
 }
 
+static void VM_SwapLongs(void* data, size_t length)
+{
+  int32_t* const ptr = (int32_t*)data;
+  length /= sizeof(int32_t);
+  for (size_t i = 0; i < length; ++i) ptr[i] = LongSwap(ptr[i]);
+}
+
+/*
+=================
+VM_ValidateHeader
+=================
+*/
+static char const* VM_ValidateHeader(vmHeader_t* header, int32_t fileSize, qboolean* swapped)
+{
+  static char errMsg[128];
+
+  // truncated
+  if ((size_t)fileSize < sizeof(vmHeader_t))
+  {
+    sprintf(errMsg, "truncated image header (%i bytes long)", fileSize);
+    return errMsg;
+  }
+
+  // bad magic
+  if (header->vmMagic != VM_MAGIC && LongSwap(header->vmMagic) != VM_MAGIC)
+  {
+    sprintf(errMsg, "bad file magic %08x", header->vmMagic);
+    return errMsg;
+  }
+
+  if (header->vmMagic != VM_MAGIC)
+  {
+    // byte swap the header
+    VM_SwapLongs(header, sizeof(vmHeader_t));
+    *swapped = qtrue;
+  }
+
+  // bad instruction count
+  if (header->instructionCount <= 0)
+  {
+    sprintf(errMsg, "bad instruction count %i", header->instructionCount);
+    return errMsg;
+  }
+
+  // bad code offset
+  if (header->codeOffset >= fileSize)
+  {
+    sprintf(errMsg, "bad code segment offset %i", header->codeOffset);
+    return errMsg;
+  }
+
+  // bad code length
+  if (header->codeLength <= 0 || header->codeOffset + header->codeLength > fileSize)
+  {
+    sprintf(errMsg, "bad code segment length %i", header->codeLength);
+    return errMsg;
+  }
+
+  // bad data offset
+  if (header->dataOffset >= fileSize || header->dataOffset != header->codeOffset + header->codeLength)
+  {
+    sprintf(errMsg, "bad data segment offset %i", header->dataOffset);
+    return errMsg;
+  }
+
+  // bad data length
+  if (header->dataOffset + header->dataLength > fileSize)
+  {
+    sprintf(errMsg, "bad data segment length %i", header->dataLength);
+    return errMsg;
+  }
+
+  // bad lit length
+  if (header->dataOffset + header->dataLength + header->litLength != fileSize)
+  {
+    sprintf(errMsg, "bad lit segment length %i", header->litLength);
+    return errMsg;
+  }
+
+  return NULL;
+}
+
 // load the .qvm into the vm_t
 //---
 // this function opens the .qvm in a file stream, stores in dynamic mem
@@ -653,64 +733,44 @@ static uint32_t crc32_reflect(byte const* buf, int32_t len)
 qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
 {
   vmHeader_t*  header;
-  byte*        vmBase;
-  byte*        src;
-  int32_t*     lsrc;
+  byte const*  src;
   int32_t*     dst;
   vmOps_t      op;
   int32_t      codeSegmentSize;
   fileHandle_t fvm;
-  vm->swapped = qfalse;
 
   if (!vm || !path || !path[0]) return qfalse;
 
   // open VM file (use engine calls so we can easily read into .pk3)
-  vm->fileSize = trap_FS_FOpenFile(path, &fvm, FS_READ);
+  int32_t const fileSize = trap_FS_FOpenFile(path, &fvm, FS_READ);
   // allocate memory block the size of the file
-  vmBase = (byte*)malloc(vm->fileSize);
-
-  // malloc failed
-  if (!vmBase)
+  header = (vmHeader_t*)malloc(fileSize);
+  if (!header)
   {
     memset(vm, 0, sizeof(vm_t));
+    trap_FS_FCloseFile(fvm);
     return qfalse;
   }
 
   // read VM file into memory block
-  trap_FS_Read(vmBase, vm->fileSize, fvm);
+  trap_FS_Read(header, fileSize, fvm);
   trap_FS_FCloseFile(fvm);
 
-  header = (vmHeader_t*)vmBase;
-
-  // if we are a big-endian machine, need to swap everything around
-  if (header->vmMagic == VM_MAGIC_BIG)
+  qboolean    swapped  = qfalse;
+  char const* errorMsg = VM_ValidateHeader(header, fileSize, &swapped);
+  if (errorMsg)
   {
-    // RS_Printf("WARNING: VM_Create: Big-endian magic number detected, will byteswap during load.\n");
-    vm->swapped              = qtrue;
-    header->vmMagic          = byteswap(header->vmMagic);
-    header->instructionCount = byteswap(header->instructionCount);
-    header->codeOffset       = byteswap(header->codeOffset);
-    header->codeLength       = byteswap(header->codeLength);
-    header->dataOffset       = byteswap(header->dataOffset);
-    header->dataLength       = byteswap(header->dataLength);
-    header->litLength        = byteswap(header->litLength);
-    header->bssLength        = byteswap(header->bssLength);
-  }
-  vm->header = *header; // save header info in vm_t
-
-  // check file
-  if (header->vmMagic != VM_MAGIC || header->instructionCount <= 0 || header->codeLength <= 0)
-  {
-    free(vmBase);
+    free(header);
     memset(vm, 0, sizeof(vm_t));
+    trap_Print(vaf(S_COLOR_RED "%s\n", errorMsg));
     return qfalse;
   }
 
   // check defrag version
-  uint32_t const crc32sum = crc32_reflect((byte const*)header, vm->fileSize);
+  uint32_t const crc32sum = crc32_reflect((byte const*)header, fileSize);
   if (!init_defrag(crc32sum))
   {
-    free(vmBase);
+    free(header);
     memset(vm, 0, sizeof(vm_t));
     return qfalse;
   }
@@ -735,12 +795,11 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   vm->memorySize = codeSegmentSize + vm->dataSegmentLen + vm_stacksize;
   // load memory code block (freed in VM_Destroy)
   // if we are reloading, we should keep the same memory location, otherwise, make more
-  vm->memory = (oldmem ? oldmem : (byte*)malloc(vm->memorySize));
-  // malloc failed
+  vm->memory = oldmem ? oldmem : (byte*)malloc(vm->memorySize);
   if (!vm->memory)
   {
     // RS_Printf("Unable to allocate VM memory chunk (size=%i)\n", vm->memorySize);
-    free(vmBase);
+    free(header);
     memset(vm, 0, sizeof(vm_t));
     return qfalse;
   }
@@ -758,7 +817,7 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   vm->opBase    = vm->dataSegmentLen + vm_stacksize / 2;
 
   // load instructions from file to memory
-  src = vmBase + header->codeOffset;
+  src = (byte const*)header + header->codeOffset;
   dst = vm->codeSegment;
 
   // loop through each instruction
@@ -795,7 +854,7 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
     case OP_GEF:
     case OP_BLOCK_COPY:
       *dst = *(int32_t*)src;
-      if (vm->swapped == qtrue) *dst = byteswap(*dst);
+      if (swapped) *dst = LongSwap(*dst);
       dst++;
       src += 4;
       break;
@@ -811,25 +870,21 @@ qboolean VM_Create(vm_t* vm, char const* path, byte* oldmem)
   }
 
   // load data segment from file to memory
-  lsrc = (int32_t*)(vmBase + header->dataOffset);
-  dst  = (int32_t*)(vm->dataSegment);
+  src = (byte const*)header + header->dataOffset;
+  dst = (int32_t*)vm->dataSegment;
 
-  // loop through each 4-byte data block (even though data may be single bytes)
-  for (uint32_t n = 0; n < header->dataLength / sizeof(int32_t); ++n)
+  // copy the intialized data
+  memcpy(dst, src, header->dataLength + header->litLength);
+
+  if (swapped)
   {
-    *dst = *lsrc++;
-    // swap if need-be
-    if (vm->swapped == qtrue) *dst = byteswap(*dst);
-    dst++;
+    // byte swap the longs
+    VM_SwapLongs(dst, header->dataLength);
   }
 
-  // copy remaining data into the lit segment
-  memcpy(dst, lsrc, header->litLength);
-
   // free file from memory
-  free(vmBase);
+  free(header);
 
-  // a winner is us
   return qtrue;
 }
 
@@ -878,14 +933,8 @@ qboolean VM_Restart(vm_t* vm, qboolean savemem)
 
 void* VM_ArgPtr(int32_t intValue)
 {
-  // TODO: assert if intValue < g_VM.dataSegmentMask
+  ASSERT_LT(intValue, g_VM.dataSegmentMask);
   return (void*)(g_VM.dataSegment + (intValue & g_VM.dataSegmentMask));
-}
-
-void* VM_ExplicitArgPtr(vm_t const* vm, int32_t intValue)
-{
-  // TODO: assert if intValue < vm->dataSegmentMask
-  return (void*)(vm->dataSegment + (intValue & vm->dataSegmentMask));
 }
 
 vm_t    g_VM;
@@ -904,7 +953,7 @@ int32_t initVM(void)
   vmpath[sizeof(vmpath) - 1] = '\0';
 
   vm_stacksize = 1;
-  vm_stacksize *= (1 << 20); // convert to MB
+  vm_stacksize *= 1 << 20; // convert to MB
 
   // clear VM
   memset(&g_VM, 0, sizeof(vm_t));
@@ -969,37 +1018,4 @@ intptr_t callVM_Destroy(void)
 {
   VM_Destroy(&g_VM);
   return 0;
-}
-
-/*
-============
-int_byteswap
-============
-*/
-// from sdk/game/q_shared.c
-int32_t int_byteswap(int32_t i)
-{
-  byte b1, b2, b3, b4;
-
-  b1 = i & 255;
-  b2 = (i >> 8) & 255;
-  b3 = (i >> 16) & 255;
-  b4 = (i >> 24) & 255;
-
-  return ((int32_t)b1 << 24) + ((int32_t)b2 << 16) + ((int32_t)b3 << 8) + b4;
-}
-
-/*
-============
-short_byteswap
-============
-*/
-short short_byteswap(short s)
-{
-  byte b1, b2;
-
-  b1 = s & 255;
-  b2 = (s >> 8) & 255;
-
-  return ((int32_t)b1 << 8) + b2;
 }

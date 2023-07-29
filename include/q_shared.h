@@ -2,7 +2,11 @@
 #define Q_SHARED_H
 
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
+
+// endianness
+int32_t LongSwap(int32_t l);
 
 #ifdef _WIN32
 #  define vsnprintf _vsnprintf
@@ -30,7 +34,6 @@ static inline char* vaf(char const* format, ...)
 #endif
 
 #include <math.h>
-#include <stdint.h>
 
 #include "ExportImport.h"
 
@@ -145,6 +148,15 @@ extern vec4_t colorWhite;
 extern vec4_t colorLtGrey;
 extern vec4_t colorMdGrey;
 extern vec4_t colorDkGrey;
+
+#define S_COLOR_BLACK   "^0"
+#define S_COLOR_RED     "^1"
+#define S_COLOR_GREEN   "^2"
+#define S_COLOR_YELLOW  "^3"
+#define S_COLOR_BLUE    "^4"
+#define S_COLOR_CYAN    "^5"
+#define S_COLOR_MAGENTA "^6"
+#define S_COLOR_WHITE   "^7"
 
 #define DEG2RAD(a)   ((a) * ((float)M_PI / 180.f))
 #define RAD2DEG(a)   ((a) * (180.f / (float)M_PI))
