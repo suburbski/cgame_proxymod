@@ -138,6 +138,25 @@ void CG_DrawChar(float x, float y, float w, float h, uint8_t ch)
   trap_R_DrawStretchPic(x, y, w, h, fcol, frow, fcol + size, frow + size, cgs.media.charsetShader);
 }
 
+static size_t WordLength(char const* str)
+{
+  assert(*str);
+  size_t l = 0;
+  while (*str > ' ')
+  {
+    if (Q_IsColorString(str))
+    {
+      str += 2;
+    }
+    else
+    {
+      ++l;
+      ++str;
+    }
+  }
+  return l;
+}
+
 void CG_DrawText(
   float        x,
   float        y,
@@ -149,48 +168,42 @@ void CG_DrawText(
 {
   if (string == NULL) return;
 
-  float         tmpX = x;
-  int32_t const len  = (int32_t)strlen(string);
+  float const begX  = alignRight ? x - sizePx * WordLength(string) : x;
+  x                 = begX;
+  int32_t const len = (int32_t)strlen(string);
 
   // draw the drop shadow
   if (shadow)
   {
     trap_R_SetColor(colorBlack);
-    if (alignRight)
+    for (int32_t i = 0; i < len; ++i)
     {
-      for (int32_t i = len - 1; i >= 0; --i)
+      if (Q_IsColorString(string + i))
       {
-        tmpX -= sizePx;
-        CG_DrawChar(tmpX + 2, y + 2, sizePx, sizePx, string[i]);
+        ++i;
+        continue;
       }
-    }
-    else
-    {
-      for (int32_t i = 0; i < len; ++i)
-      {
-        CG_DrawChar(tmpX + 2, y + 2, sizePx, sizePx, string[i]);
-        tmpX += sizePx;
-      }
+      CG_DrawChar(x + 2, y + 2, sizePx, sizePx, string[i]);
+      x += sizePx;
     }
   }
 
-  tmpX = x;
+  // draw the colored text
+  x = begX;
+  vec4_t local_color;
   trap_R_SetColor(color);
-  if (alignRight)
+  for (int32_t i = 0; i < len; ++i)
   {
-    for (int32_t i = len - 1; i >= 0; --i)
+    if (Q_IsColorString(string + i))
     {
-      tmpX -= sizePx;
-      CG_DrawChar(tmpX, y, sizePx, sizePx, string[i]);
+      ++i;
+      memcpy(local_color, g_color_table[ColorIndexFromChar(string[i])], sizeof(local_color));
+      local_color[3] = color[3];
+      trap_R_SetColor(local_color);
+      continue;
     }
-  }
-  else
-  {
-    for (int32_t i = 0; i < len; ++i)
-    {
-      CG_DrawChar(tmpX, y, sizePx, sizePx, string[i]);
-      tmpX += sizePx;
-    }
+    CG_DrawChar(x, y, sizePx, sizePx, string[i]);
+    x += sizePx;
   }
   trap_R_SetColor(NULL);
 }
