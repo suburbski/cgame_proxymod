@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add support for defrag version 1.91.29.
+- Add support for defrag versions 1.91.29 and 1.91.30.
 - Pitch hud which marks one or more pitch angles, e.g. `mdd_pitch 71 66`.
 - Bounding box `mdd_bbox`. It uses shader `bbox_nocull` and draws the full bbox with `1` and only the bottom with `2`.
 
