@@ -445,14 +445,14 @@ void DrawLine(float x1, float y1, float x2, float y2, float w, float h, const ve
 
   // Use a single DrawPic for horizontal or vertical lines
   if (x1 == x2) {
-    CG_DrawPic(x1, y1 < y2 ? y1 : y2, w, fabs(y1 - y2),
+    CG_DrawPic(x1, y1 < y2 ? y1 : y2, w, fabsf(y1 - y2),
                cgs.media.whiteShader);
   } else if (y1 == y2) {
-    CG_DrawPic(x1 < x2 ? x1 : x2, y1, fabs(x1 - x2), h,
+    CG_DrawPic(x1 < x2 ? x1 : x2, y1, fabsf(x1 - x2), h,
                cgs.media.whiteShader);
   } else {
     len = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-    len = sqrt(len);
+    len = sqrtf(len);
     stepX = (x2 - x1) / len;
     stepY = (y2 - y1) / len;
     while (i < len) {
