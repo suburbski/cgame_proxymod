@@ -57,4 +57,7 @@ void CG_FillAngleYaw(float start, float end, float yaw, float y, float h, vec4_t
 void CG_DrawLineYaw(float angle, float yaw, float y, float w, float h, vec4_t const color);
 void CG_DrawCharYaw(float angle, float yaw, float y, float w, float h, uint8_t ch, vec4_t const color);
 
+void DrawLine(float x1, float y1, float x2, float y2, float w, float h, const vec4_t color);
+void DrawLine2(float x1, float y1, float x2, float y2, const vec4_t color);
+
 #endif // CG_DRAW_H

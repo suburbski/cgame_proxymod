@@ -18,7 +18,7 @@ static vmCvar_t cgaz_rgbaFullAccel;
 static vmCvar_t cgaz_rgbaTurnZone;
 
 static cvarTable_t cgaz_cvars[] = {
-  { &cgaz, "mdd_cgaz", "0b1", CVAR_ARCHIVE_ND },
+  { &cgaz, "mdd_cgaz", "0b01", CVAR_ARCHIVE_ND },
   { &cgaz_trueness, "mdd_cgaz_trueness", "0b110", CVAR_ARCHIVE_ND },
   { &cgaz_min_speed, "mdd_cgaz_min_speed", "1", CVAR_ARCHIVE_ND },
   { &cgaz_yh, "mdd_cgaz_yh", "180 8", CVAR_ARCHIVE_ND },
@@ -33,12 +33,14 @@ static help_t cgaz_help[] = {
     cgaz_cvars + 0,
     BINARY_LITERAL,
     {
-      "mdd_cgaz 0bX",
-      "           |",
-      "           +- draw hud",
+      "mdd_cgaz 0bXX",
+      "           ||",
+      "           |+- draw vanilla hud",
+      "           +-- draw et hud",
     },
   },
-#define CGAZ_DRAW 1
+#define CGAZ_VANILLA_DRAW 1
+#define CGAZ_ET_DRAW      2
   {
     cgaz_cvars + 1,
     BINARY_LITERAL,
@@ -257,24 +259,62 @@ static void PmoveSingle(void)
 
 static void CG_DrawCGaz(void)
 {
-  float const yaw = atan2f(s.wishvel[1], s.wishvel[0]) - s.d_vel;
-
-  ParseVec(cgaz_yh.string, s.graph_yh, 2);
-  ParseVec(cgaz_rgbaNoAccel.string, s.graph_rgbaNoAccel, 4);
   ParseVec(cgaz_rgbaPartialAccel.string, s.graph_rgbaPartialAccel, 4);
   ParseVec(cgaz_rgbaFullAccel.string, s.graph_rgbaFullAccel, 4);
-  ParseVec(cgaz_rgbaTurnZone.string, s.graph_rgbaTurnZone, 4);
 
-  CG_FillAngleYaw(-s.d_min, +s.d_min, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaNoAccel);
+  if (cgaz.integer & CGAZ_VANILLA_DRAW)
+  {
+    float const yaw = atan2f(s.wishvel[1], s.wishvel[0]) - s.d_vel;
 
-  CG_FillAngleYaw(+s.d_min, +s.d_opt, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaPartialAccel);
-  CG_FillAngleYaw(-s.d_opt, -s.d_min, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaPartialAccel);
+    ParseVec(cgaz_yh.string, s.graph_yh, 2);
+    ParseVec(cgaz_rgbaNoAccel.string, s.graph_rgbaNoAccel, 4);
+    ParseVec(cgaz_rgbaTurnZone.string, s.graph_rgbaTurnZone, 4);
 
-  CG_FillAngleYaw(+s.d_opt, +s.d_max_cos, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaFullAccel);
-  CG_FillAngleYaw(-s.d_max_cos, -s.d_opt, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaFullAccel);
+    CG_FillAngleYaw(-s.d_min, +s.d_min, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaNoAccel);
 
-  CG_FillAngleYaw(+s.d_max_cos, +s.d_max, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
-  CG_FillAngleYaw(-s.d_max, -s.d_max_cos, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
+    CG_FillAngleYaw(+s.d_min, +s.d_opt, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaPartialAccel);
+    CG_FillAngleYaw(-s.d_opt, -s.d_min, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaPartialAccel);
+
+    CG_FillAngleYaw(+s.d_opt, +s.d_max_cos, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaFullAccel);
+    CG_FillAngleYaw(-s.d_max_cos, -s.d_opt, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaFullAccel);
+
+    CG_FillAngleYaw(+s.d_max_cos, +s.d_max, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
+    CG_FillAngleYaw(-s.d_max, -s.d_max_cos, yaw, s.graph_yh[0], s.graph_yh[1], s.graph_rgbaTurnZone);
+  }
+
+  // Dzikie Weze's 2D-CGaz
+  if (cgaz.integer & CGAZ_ET_DRAW)
+  {
+    float const scx = cgs.screenWidth * 0.5f - 0.5f; // -0.5 since thickness is 1px
+    float const scy = cgs.screenHeight * 0.5f - 0.5f;
+    float const vf = VectorLengthSquared2(s.pm_ps.velocity);
+    float const drawVel = DEG2RAD(AngleNormalize180(s.pm_ps.viewangles[YAW] - AngleNormalize180(RAD2DEG(s.d_vel))));
+
+    DrawLine2(scx, scy, scx + s.pm.cmd.rightmove, scy - s.pm.cmd.forwardmove, s.graph_rgbaFullAccel);
+
+    // When under wishspeed velocity, most accel happens when
+    // you move straight towards your current velocity, so skip
+    // drawing the "wings" on the sides
+    float const scale = cgaz_trueness.integer & CGAZ_JUMPCROUCH ? PM_CmdScale(&s.pm_ps, &s.pm.cmd)
+                                                              : PM_AltCmdScale(&s.pm_ps, &s.pm.cmd);
+    float const wishspeed = scale * VectorLength2(s.wishvel);
+    qboolean const drawSides = vf > wishspeed;
+
+    float velSize = vf / 5.0f;
+    if (velSize > SCREEN_HEIGHT * 0.5f)
+    {
+      velSize = SCREEN_HEIGHT * 0.5f;
+    }
+
+    DrawLine2(scx, scy, scx + velSize * sinf(drawVel), scy - velSize * cosf(drawVel), s.graph_rgbaPartialAccel);
+
+    if (drawSides)
+    {
+      velSize /= 2.0f;
+      DrawLine2(scx, scy, scx + velSize * sinf(drawVel + s.d_opt), scy - velSize * cosf(drawVel + s.d_opt), s.graph_rgbaPartialAccel);
+      DrawLine2(scx, scy, scx + velSize * sinf(drawVel - s.d_opt), scy - velSize * cosf(drawVel - s.d_opt), s.graph_rgbaPartialAccel);
+    }
+  }
 }
 
 /*

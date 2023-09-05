@@ -425,3 +425,47 @@ void CG_DrawCharYaw(float angle, float yaw, float y, float w, float h, uint8_t c
   CG_DrawChar(x - w / 2, y, w, h, ch);
   trap_R_SetColor(NULL);
 }
+
+/*
+==============
+DrawLine
+Mainly used for drawing diagonal lines
+==============
+*/
+// Dzikie
+void DrawLine(float x1, float y1, float x2, float y2, float w, float h, const vec4_t color) {
+  float len, stepX, stepY;
+  float i = 0;
+
+  if (x1 == x2 && y1 == y2) {
+    return;
+  }
+
+  trap_R_SetColor(color);
+
+  // Use a single DrawPic for horizontal or vertical lines
+  if (x1 == x2) {
+    CG_DrawPic(x1, y1 < y2 ? y1 : y2, w, fabs(y1 - y2),
+               cgs.media.whiteShader);
+  } else if (y1 == y2) {
+    CG_DrawPic(x1 < x2 ? x1 : x2, y1, fabs(x1 - x2), h,
+               cgs.media.whiteShader);
+  } else {
+    len = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    len = sqrt(len);
+    stepX = (x2 - x1) / len;
+    stepY = (y2 - y1) / len;
+    while (i < len) {
+      CG_DrawPic(x1, y1, w, h, cgs.media.whiteShader);
+      x1 += stepX;
+      y1 += stepY;
+      i++;
+    }
+  }
+
+  trap_R_SetColor(NULL);
+}
+
+void DrawLine2(float x1, float y1, float x2, float y2, const vec4_t color) {
+  DrawLine(x1, y1, x2, y2, 1, 1, color);
+}
